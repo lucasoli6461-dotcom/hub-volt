@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>HUB VOLT - Sistema Conectado</title>
+    <!-- Ícone da aba do navegador -->
+    <link rel="icon" type="image/png" href="image_a87265.png">
+    
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --card-bg: #161616;
+            --volt-green: #c4f000;
+            --text-light: #ffffff;
+            --text-muted: #888888;
+            --border-color: #2a2a2a;
+            --error-red: #ff3333;
+            --success-green: #00cc66;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        
+        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
+        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
+        /* SVG do raio da VOLT em verde neon */
+        .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
+        
+        .header-info { display: flex; align-items: center; gap: 20px; }
+        .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; }
+        .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
+
+        .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
+        
+        .view-layer { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-layer.active { display: block; }
+        .sub-screen { display: none; }
+        .sub-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
+        .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
+        .btn-volt:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;}
+        .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
+        .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; }
+        
+        .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 150px;}
+        .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); }
+        .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
+        .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
+        .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
+        
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+
+        .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
+        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
+        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
+
+        #modalSenha, #modalNovoUsuario { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
+        
+        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
+        th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
+        td { font-size: 14px; }
+        .status-ativo { color: var(--success-green); font-weight: bold; }
+        .status-inativo { color: var(--error-red); font-weight: bold; }
+        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 5px;}
+        .input-editavel:focus { border-color: var(--volt-green); outline: none; }
+        .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
+        .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
+    </style>
+
+    <!-- IMPORTANDO O FIREBASE (VERSÃO COMPAT) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-container" onclick="voltarLogo()">
+            <div class="logo-text">
+                VOLT
+                <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.3333 0L0 18.6667H10.6667L8 32L24 10.6667H13.3333L16 0Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="header-info">
+            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Conectando ao Firebase...</span>
+            <button class="btn-logout" id="btnSair" onclick="fazerLogout()">Sair</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE SENHA -->
+    <div id="modalSenha">
+        <div class="senha-box">
+            <h3 id="nomeLogin" style="margin-top: 0;">Login</h3>
+            <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
+            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou usuário inativo.</p>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn-outline" style="flex: 1;" onclick="fecharSenha()">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE NOVO USUÁRIO -->
+    <div id="modalNovoUsuario">
+        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
+            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
+            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
+                <div><label style="font-size:11px; color:#888;">Nome</label><input type="text" id="novoNome" class="input-dark" placeholder="Nome completo"></div>
+                <div><label style="font-size:11px; color:#888;">Cargo / Função</label><input type="text" id="novoFuncao" class="input-dark" placeholder="Ex: Operador I"></div>
+            </div>
+            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-size:11px; color:#888;">Nível de Acesso</label>
+                    <select id="novoRole" class="input-dark">
+                        <option value="estoque">Operador (Estoque)</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div><label style="font-size:11px; color:#888;">Data de Admissão</label><input type="date" id="novoAdmissao" class="input-dark"></div>
+            </div>
+            <div class="grid-2" style="gap: 10px; margin-bottom: 20px;">
+                <div><label style="font-size:11px; color:#888;">Criar Login</label><input type="text" id="novoLogin" class="input-dark" placeholder="Ex: joao.silva"></div>
+                <div><label style="font-size:11px; color:#888;">Criar Senha</label><input type="text" id="novoSenha" class="input-dark" placeholder="Senha inicial"></div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar Usuário</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- TELA DE LOGIN -->
+        <div id="viewLogin" class="view-layer active">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="font-size: 32px;">Quem está acessando?</h1>
+                <p style="color: var(--text-muted);">Selecione seu perfil para entrar no HUB</p>
+            </div>
+            <div class="login-grid" id="gridUsuariosLogin">
+                <p style="color: var(--volt-green);">Carregando dados da nuvem...</p>
+            </div>
+        </div>
+
+        <!-- TELA DO ADMINISTRADOR -->
+        <div id="viewAdmin" class="view-layer">
+            <div id="adminDash" class="sub-screen active">
+                <h1 style="margin-bottom: 30px;">Painel de Gestão VOLT</h1>
+                <div class="grid-4">
+                    <div class="hub-card" onclick="alert('Lançamentos em desenvolvimento para a próxima fase.')">
+                        <div><h3>Lançamentos</h3><p>Suba novas OVs.</p></div>
+                        <div class="action">Abrir ➔</div>
+                    </div>
+                    <div class="hub-card" onclick="alert('Faturamento em desenvolvimento para a próxima fase.')">
+                        <div><h3>Faturamento</h3><p>OVs prontas para NF.</p></div>
+                        <div class="action">Ver Fila ➔</div>
+                    </div>
+                    <div class="hub-card" onclick="alert('Histórico em desenvolvimento para a próxima fase.')">
+                        <div><h3>Histórico</h3><p>Pedidos concluídos.</p></div>
+                        <div class="action">Acessar ➔</div>
+                    </div>
+                    <div class="hub-card" onclick="navegarAdmin('adminUsuarios')" style="border-color: var(--volt-green);">
+                        <div><h3 style="color: white;">Gestão da Equipe</h3><p>Cargos, senhas e desligamentos integrados com a nuvem.</p></div>
+                        <div class="action" style="color: var(--volt-green);">Configurar ➔</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin: Gestão de Equipe -->
+            <div id="adminUsuarios" class="sub-screen">
+                <div class="modulo-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="color: var(--volt-green); margin: 0;">Gestão da Equipe e Acessos</h2>
+                        <div>
+                            <button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px; margin-right: 15px;" onclick="document.getElementById('modalNovoUsuario').style.display = 'flex'">+ Novo Acesso</button>
+                            <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar</button>
+                        </div>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Colaborador</th>
+                                    <th>Admissão / Tempo</th>
+                                    <th>Acesso (Login / Senha)</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Ações na Nuvem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaEquipe">
+                                <!-- Gerado via JS conectando ao Firebase -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS E FIREBASE CONFIG -->
+    <script>
+        // SUAS CHAVES OFICIAIS DO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU",
+            authDomain: "hub-volt.firebaseapp.com",
+            projectId: "hub-volt",
+            storageBucket: "hub-volt.firebasestorage.app",
+            messagingSenderId: "483817757628",
+            appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9"
+        };
+
+        // Inicia o app e o banco de dados (Firestore)
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Variáveis globais do sistema
+        let bdUsuarios = {}; 
+        let currentUser = null;
+        let currentRole = null;
+        let loginTempData = {};
+
+        // AO CARREGAR A PÁGINA
+        window.onload = async function() {
+            await carregarUsuariosDaNuvem();
+            document.getElementById('headerNomeUser').innerText = "Identifique-se";
+        };
+
+        async function carregarUsuariosDaNuvem() {
+            const grid = document.getElementById('gridUsuariosLogin');
+            grid.innerHTML = '<p style="color: var(--volt-green);">Sincronizando...</p>';
+            
+            try {
+                const snapshot = await db.collection("usuarios").get();
+                bdUsuarios = {}; 
+                grid.innerHTML = ''; 
+                
+                snapshot.forEach((doc) => {
+                    const nome = doc.id;
+                    const user = doc.data();
+                    bdUsuarios[nome] = user; 
+                    
+                    if (user.status === 'ativo') {
+                        grid.innerHTML += `
+                            <div class="user-card" onclick="abrirSenha('${nome}')">
+                                <div class="user-avatar" style="${user.role === 'estoque' ? 'color:white; border-color:#444;' : ''}">${nome.charAt(0)}</div>
+                                <h3>${nome}</h3><span style="color: ${user.role === 'admin' ? 'var(--volt-green)' : 'var(--text-muted)'}; font-size: 12px; text-transform: uppercase;">${user.funcao}</span>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao ler usuários:", error);
+            }
+        }
+
+        // LOGIN
+        function abrirSenha(nome) {
+            loginTempData = { nome: nome };
+            document.getElementById('nomeLogin').innerText = `Login: ${nome}`;
+            document.getElementById('inputSenha').value = '';
+            document.getElementById('erroSenha').style.display = 'none';
+            document.getElementById('modalSenha').style.display = 'flex';
+            setTimeout(() => document.getElementById('inputSenha').focus(), 100);
+        }
+        function fecharSenha() { document.getElementById('modalSenha').style.display = 'none'; }
+        
+        function confirmarLogin() {
+            const digitada = document.getElementById('inputSenha').value;
+            const usuarioObj = bdUsuarios[loginTempData.nome];
+
+            if (usuarioObj && digitada === usuarioObj.senha) {
+                if (usuarioObj.status !== 'ativo') {
+                    document.getElementById('erroSenha').innerText = "Acesso negado. Usuário inativo.";
+                    document.getElementById('erroSenha').style.display = 'block';
+                    return;
+                }
+
+                currentUser = loginTempData.nome; 
+                currentRole = usuarioObj.role;
+                document.getElementById('headerNomeUser').innerHTML = `<strong style="color:white;">${currentUser}</strong>`;
+                document.getElementById('btnSair').style.display = 'block';
+                fecharSenha();
+                document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
+                
+                if (currentRole === 'admin') { 
+                    document.getElementById('viewAdmin').classList.add('active'); 
+                    renderizarEquipeAdmin();
+                    navegarAdmin('adminDash'); 
+                } else { 
+                    alert("Acesso Operador liberado! (Módulos de estoque serão conectados ao Firebase na próxima etapa).");
+                }
+            } else { 
+                document.getElementById('erroSenha').innerText = "Senha incorreta.";
+                document.getElementById('erroSenha').style.display = 'block'; 
+            }
+        }
+        document.getElementById('inputSenha').addEventListener('keypress', e => { if (e.key === 'Enter') confirmarLogin(); });
+        function fazerLogout() { location.reload(); }
+        function voltarLogo() { if (!currentUser) return; navegarAdmin('adminDash'); }
+        function navegarAdmin(id) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+        // ADMIN GESTÃO DE EQUIPE (SALVANDO NA NUVEM)
+        function calcularTempoEmpresa(dataIso) {
+            if (!dataIso) return "Data não informada";
+            const inicio = new Date(dataIso);
+            const hoje = new Date(); 
+            let meses = (hoje.getFullYear() - inicio.getFullYear()) * 12;
+            meses -= inicio.getMonth();
+            meses += hoje.getMonth();
+            if (meses < 0) return "Admissão Futura";
+            if (meses < 12) return `${meses} meses`;
+            const anos = Math.floor(meses / 12);
+            const resto = meses % 12;
+            return `${anos} ano(s) e ${resto} mês(es)`;
+        }
+
+        function renderizarEquipeAdmin() {
+            const tbody = document.getElementById('tabelaEquipe');
+            tbody.innerHTML = '';
+            for (let nome in bdUsuarios) {
+                const u = bdUsuarios[nome];
+                const tempo = calcularTempoEmpresa(u.admissao);
+                const isAtivo = u.status === 'ativo';
+                
+                tbody.innerHTML += `
+                    <tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255, 51, 51, 0.05);' : ''}">
+                        <td><strong>${nome}</strong><br><span style="font-size: 11px; color: #888;">${u.funcao}</span> <span class="badge-papel" style="margin-left: 5px;">${u.role}</span></td>
+                        <td style="width: 150px;">
+                            <input type="date" id="admissao_${nome}" value="${u.admissao}" class="input-editavel" style="font-size: 12px;">
+                            <br><span style="color: var(--volt-green); font-size: 11px; font-weight: bold;">${tempo}</span>
+                        </td>
+                        <td style="width: 180px;">
+                            <input type="text" id="login_${nome}" value="${u.login}" class="input-editavel" placeholder="Login">
+                            <input type="text" id="senha_${nome}" value="${u.senha}" class="input-editavel" placeholder="Senha">
+                        </td>
+                        <td><span class="${isAtivo ? 'status-ativo' : 'status-inativo'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarAcessoUsuarioNuvem('${nome}')">Salvar Nuvem</button>
+                            <button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 5px;" onclick="toggleStatusUsuarioNuvem('${nome}', '${isAtivo}')">${isAtivo ? 'Desligar' : 'Reativar'}</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        async function salvarAcessoUsuarioNuvem(nome) {
+            const login = document.getElementById(`login_${nome}`).value;
+            const senha = document.getElementById(`senha_${nome}`).value;
+            const admissao = document.getElementById(`admissao_${nome}`).value;
+            
+            try {
+                await db.collection("usuarios").doc(nome).update({
+                    login: login,
+                    senha: senha,
+                    admissao: admissao
+                });
+                
+                alert(`✅ Dados de ${nome} salvos no Firebase!`);
+                await carregarUsuariosDaNuvem(); 
+                renderizarEquipeAdmin();
+            } catch (error) {
+                console.error("Erro ao atualizar", error);
+                alert("Erro ao salvar na nuvem.");
+            }
+        }
+
+        async function toggleStatusUsuarioNuvem(nome, isAtivoStr) {
+            const isAtivo = isAtivoStr === 'true';
+            const novoStatus = isAtivo ? 'inativo' : 'ativo';
+            
+            if (isAtivo) {
+                if(!confirm(`Desligar ${nome}? O acesso será cortado da nuvem imediatamente.`)) return;
+            }
+
+            try {
+                await db.collection("usuarios").doc(nome).update({ status: novoStatus });
+                await carregarUsuariosDaNuvem();
+                renderizarEquipeAdmin();
+            } catch (error) {
+                console.error("Erro ao alterar status", error);
+                alert("Erro ao alterar status na nuvem.");
+            }
+        }
+
+        // CADASTRAR NOVO USUÁRIO DIRETO NA NUVEM
+        async function salvarNovoUsuario() {
+            const nome = document.getElementById('novoNome').value.trim();
+            const funcao = document.getElementById('novoFuncao').value.trim();
+            const role = document.getElementById('novoRole').value;
+            const admissao = document.getElementById('novoAdmissao').value;
+            const login = document.getElementById('novoLogin').value.trim();
+            const senha = document.getElementById('novoSenha').value.trim();
+
+            if(!nome || !login || !senha) return alert("Preencha Nome, Login e Senha.");
+            if(bdUsuarios[nome]) return alert("Já existe um colaborador com este nome.");
+
+            try {
+                await db.collection("usuarios").doc(nome).set({
+                    role: role,
+                    login: login,
+                    senha: senha,
+                    status: 'ativo',
+                    funcao: funcao || 'Sem cargo',
+                    admissao: admissao
+                });
+
+                alert(`✅ Perfil de ${nome} criado no Banco de Dados oficial!`);
+                
+                document.getElementById('modalNovoUsuario').style.display = 'none';
+                document.getElementById('novoNome').value = '';
+                document.getElementById('novoFuncao').value = '';
+                document.getElementById('novoAdmissao').value = '';
+                document.getElementById('novoLogin').value = '';
+                document.getElementById('novoSenha').value = '';
+                
+                await carregarUsuariosDaNuvem();
+                renderizarEquipeAdmin();
+            } catch (error) {
+                console.error("Erro ao criar usuário", error);
+                alert("Erro ao criar usuário na nuvem.");
+            }
+        }
+
+    </script>
+</body>
+</html>
