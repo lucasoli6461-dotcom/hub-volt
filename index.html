@@ -21,29 +21,36 @@
         .sub-screen { display: none; }
         .sub-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
         .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
         .btn-volt:hover { opacity: 0.9; }
         .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.2s;}
         .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
         .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; }
+        
         .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 150px;}
         .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); }
         .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
+        
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
         .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
+        
         #modalSenha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
         th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
         td { font-size: 14px; }
+        
         .status-ativo { color: var(--success-green); font-weight: bold; }
         .status-inativo { color: var(--error-red); font-weight: bold; }
         .status-pendente { color: var(--warning-yellow); font-weight: bold; }
@@ -53,16 +60,42 @@
         .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
         
-        /* Área de Drag & Drop para o Admin */
         .dropzone { border: 2px dashed #444; border-radius: 12px; padding: 40px; text-align: center; background: #0a0a0a; transition: 0.3s; cursor: pointer; margin-bottom: 20px;}
         .dropzone:hover { border-color: var(--volt-green); background: #111; }
         .dropzone p { color: var(--text-muted); margin-top: 10px; }
-        .dropzone h2 { color: var(--text-light); margin: 0; font-size: 18px;}
         
-        /* Área da Bipagem do Operador */
-        .leitor-codigo { background: #000; border: 2px solid var(--border-color); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px;}
-        .leitor-codigo input { font-size: 24px; text-align: center; letter-spacing: 2px; padding: 15px; border: 1px solid var(--volt-green); background: #111; color: white; border-radius: 8px; width: 100%; max-width: 400px;}
-        .item-bipado { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #333; align-items: center;}
+        /* ------------------------------------------- */
+        /* ESTILOS DA TELA DE CONFERÊNCIA (BIPAGEM) */
+        /* ------------------------------------------- */
+        .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.5; pointer-events: none; }
+        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
+        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
+        .fase-section.concluida h3 { color: var(--success-green); }
+        
+        .fase-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; color: var(--volt-green); display: flex; justify-content: space-between;}
+        
+        .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--text-light); border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
+        .input-bip:focus { outline: 1px solid var(--volt-green); }
+        
+        .btn-validar { background-color: transparent; border: 2px solid var(--volt-green); color: var(--volt-green); width: auto; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; display: inline-block;}
+        .btn-validar:hover { background-color: rgba(196, 240, 0, 0.1); }
+        
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
+        .produto-card.ativo { border-color: var(--volt-green); }
+        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
+        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
+
+        .volume-box { background: #0a0a0a; border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; position: relative; }
+        .volume-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .volume-header strong { color: var(--volt-green); font-size: 14px; }
+        .btn-remover { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px; }
+        
+        #erroModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; flex-direction: column; }
+        .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; }
+        .erro-box h2 { color: var(--error-red); font-size: 28px; margin-top: 0; }
+        .erro-box p { color: white; font-size: 18px; line-height: 1.5; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -88,11 +121,21 @@
         <div class="senha-box">
             <h3 id="nomeLogin" style="margin-top: 0;">Login</h3>
             <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
-            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou usuário inativo.</p>
+            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou inativo.</p>
             <div style="margin-top: 20px; display: flex; gap: 10px;">
                 <button class="btn-outline" style="flex: 1;" onclick="fecharSenha()">Cancelar</button>
                 <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">Entrar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ERRO DA BIPAGEM -->
+    <div id="erroModal">
+        <div class="erro-box">
+            <h2 id="tituloErro">⚠️ ATENÇÃO</h2>
+            <p id="msgErro">O produto bipado não faz parte desta etapa.</p>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 20px;">A contagem DESTA etapa foi zerada. Esvazie a caixa e recomece.</p>
+            <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 20px; padding: 15px;" onclick="fecharErro()">Entendido - Recomeçar Etapa</button>
         </div>
     </div>
 
@@ -133,7 +176,6 @@
                 </div>
             </div>
 
-            <!-- TELA DE LANÇAMENTOS DO ADMIN (Onde o arquivo será solto) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -141,34 +183,30 @@
                         <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
                     </div>
                     
-                    <!-- Preparado para receber a biblioteca PDF.js futuramente -->
                     <div class="dropzone" id="dropzoneOV">
-                        <h2 style="color: var(--volt-green);">📤 Arraste o arquivo da OV aqui</h2>
+                        <h2 style="color: var(--volt-green); margin:0;">📤 Arraste o arquivo da OV aqui</h2>
                         <p>PDF ou Excel (A leitura automática será ativada na próxima etapa)</p>
                     </div>
 
-                    <!-- Formulário Manual Temporário (até o leitor ser ativado) -->
                     <div style="background: #0a0a0a; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-bottom: 30px;">
                         <h3 style="margin-top: 0; font-size: 14px; color: #888;">Lançamento Manual Temporário</h3>
                         <div class="grid-4" style="gap: 15px; margin-bottom: 15px;">
                             <div><label style="font-size:11px; color:#888;">Número da OV</label><input type="text" id="ovNumero" class="input-dark"></div>
                             <div><label style="font-size:11px; color:#888;">Cliente</label><input type="text" id="ovCliente" class="input-dark"></div>
                             <div>
-                                <label style="font-size:11px; color:#888;">Categoria Principal</label>
+                                <label style="font-size:11px; color:#888;">Contém RMA?</label>
                                 <select id="ovCategoria" class="input-dark">
-                                    <option value="Cabos">Cabos Diversos</option>
-                                    <option value="Fontes">Fontes de Alimentação</option>
-                                    <option value="Power Banks">Power Banks</option>
+                                    <option value="Sem RMA">Não</option>
+                                    <option value="Com RMA">Sim, contém substituição</option>
                                 </select>
                             </div>
-                            <div><label style="font-size:11px; color:#888;">Volumes</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
+                            <div><label style="font-size:11px; color:#888;">Volumes (Previstos)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
                         </div>
                         <button class="btn-volt" style="width: 200px; padding: 10px;" onclick="salvarNovaOV()">Enviar p/ Conferência</button>
                     </div>
                 </div>
             </div>
 
-            <!-- TELA DE HISTÓRICO -->
             <div id="moduloHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -177,14 +215,13 @@
                     </div>
                     <div style="overflow-x: auto;">
                         <table>
-                            <thead><tr><th>Data de Conclusão</th><th>OV</th><th>Cliente</th><th>Volumes</th><th>Status Final</th></tr></thead>
+                            <thead><tr><th>Data de Conclusão</th><th>OV</th><th>Cliente</th><th>Volumes Logística</th><th>Status Final</th></tr></thead>
                             <tbody id="tabelaHistorico"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TELA DE GESTÃO DE EQUIPE -->
             <div id="adminUsuarios" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -206,11 +243,11 @@
         <!-- ========================================== -->
         <div id="viewOperador" class="view-layer">
             
-            <!-- FILA DE SEPARAÇÃO (Primeira visão do Estoque) -->
+            <!-- FILA DE SEPARAÇÃO -->
             <div id="operadorFila" class="sub-screen active">
                 <div class="modulo-box">
                     <h2 style="color: var(--volt-green); margin-top: 0;">Fila de Separação</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Pedidos lançados pelo escritório aguardando a sua separação.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Pedidos lançados aguardando conferência às cegas.</p>
                     
                     <div style="overflow-x: auto;">
                         <table>
@@ -218,7 +255,7 @@
                                 <tr>
                                     <th>Lançado em</th>
                                     <th>OV / Cliente</th>
-                                    <th>Qtd. Volumes</th>
+                                    <th>Volumes (Previsão)</th>
                                     <th>Status</th>
                                     <th style="text-align: right;">Ações da Conferência</th>
                                 </tr>
@@ -229,40 +266,51 @@
                 </div>
             </div>
 
-            <!-- TELA DE BIPAGEM / CONFERÊNCIA (Abre após confirmar separação) -->
+            <!-- TELA DE BIPAGEM / CONFERÊNCIA -->
             <div id="operadorBipagem" class="sub-screen">
-                <div class="modulo-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <div>
-                            <h2 style="color: var(--volt-green); margin: 0;">Tela de Conferência</h2>
-                            <p style="color: var(--text-muted); margin: 5px 0 0 0;">Verificando itens da <strong id="bipagemTituloOV" style="color: white;">OV-XXXX</strong></p>
-                        </div>
-                        <button class="btn-outline" style="border:none;" onclick="cancelarBipagem()">⟵ Pausar/Voltar</button>
-                    </div>
+                <button class="btn-outline" style="border:none; color: var(--text-muted); margin-bottom:20px; padding:0;" onclick="cancelarBipagem()">⟵ Voltar e Pausar Conferência</button>
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0; color:var(--volt-green);">Conferência às Cegas - OV <span id="numPedidoAtual"></span></h2>
+                    <p style="color: var(--text-muted); font-size: 14px;">Siga as etapas na ordem para liberar o fechamento.</p>
+                </div>
 
-                    <div class="leitor-codigo">
-                        <label style="display: block; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">BiPE OS PRODUTOS AQUI</label>
-                        <input type="text" id="inputCodigoBarras" placeholder="|| ||| || |||" autocomplete="off">
+                <!-- ETAPA 1: ORDEM DE VENDA -->
+                <div id="faseOV" class="fase-section ativa">
+                    <h3>1. Conferência da Ordem de Venda <span id="statusOV" style="font-size:14px;">Em andamento...</span></h3>
+                    <div class="produtos-grid" id="containerOV"></div>
+                    
+                    <div id="areaBipagemOV">
+                        <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Bipar Produtos da Caixa (Principal)</label>
+                        <input type="text" id="bipOV" class="input-bip" placeholder="Código EAN..." onkeypress="if(event.key === 'Enter') registrarBipagem('OV')">
+                        <div style="text-align: right;">
+                            <button class="btn-validar" onclick="validarEtapa('OV')">✔ Validar Ordem de Venda</button>
+                        </div>
                     </div>
+                </div>
 
-                    <div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px;">
-                        <div style="padding: 15px; border-bottom: 1px solid #333; background: #111; font-weight: bold; font-size: 12px; color: #888; text-transform: uppercase;">
-                            Progresso da Separação
-                        </div>
-                        <!-- Lista fictícia temporária para mostrar o layout da bipagem -->
-                        <div class="item-bipado">
-                            <div><strong style="font-size: 16px;">Cabo Tipo-C Fast Charge</strong><br><span style="color: #888; font-size: 12px;">Cód: CAB-01</span></div>
-                            <div style="text-align: right; font-size: 20px; color: var(--warning-yellow);">0 / 5</div>
-                        </div>
-                        <div class="item-bipado">
-                            <div><strong style="font-size: 16px;">Fonte 20W PD</strong><br><span style="color: #888; font-size: 12px;">Cód: FNT-20W</span></div>
-                            <div style="text-align: right; font-size: 20px; color: var(--success-green);">2 / 2 ✔</div>
+                <!-- ETAPA 2: RMA -->
+                <div id="faseRMA" class="fase-section">
+                    <h3>2. Conferência de RMA (Substituição) <span id="statusRMA" style="font-size:14px;">Aguardando OV...</span></h3>
+                    <div class="produtos-grid" id="containerRMA"></div>
+                    
+                    <div id="areaBipagemRMA">
+                        <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Bipar Produtos do RMA</label>
+                        <input type="text" id="bipRMA" class="input-bip" placeholder="Código EAN RMA..." disabled onkeypress="if(event.key === 'Enter') registrarBipagem('RMA')">
+                        <div style="text-align: right;">
+                            <button class="btn-validar" onclick="validarEtapa('RMA')">✔ Validar Remessa RMA</button>
                         </div>
                     </div>
+                </div>
 
-                    <div style="margin-top: 30px; text-align: right;">
-                        <button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="alert('Na próxima etapa, isso finalizará o pedido no banco de dados!')">Finalizar Pedido ✔</button>
-                    </div>
+                <!-- ETAPA 3: LOGÍSTICA -->
+                <div id="faseLogistica" class="fase-section">
+                    <h3>3. Dados de Logística (Volumes) <span id="statusLog" style="font-size:14px;">Bloqueado</span></h3>
+                    
+                    <div id="listaVolumes"></div>
+                    <button class="btn-outline" style="margin-top: 10px;" onclick="adicionarVolume()">+ Adicionar Novo Volume</button>
+
+                    <button class="btn-volt" style="margin-top: 30px; font-size: 16px;" onclick="finalizarExpedicaoNuvem()">Finalizar Expedição ✔</button>
                 </div>
             </div>
         </div>
@@ -322,22 +370,17 @@
             const userObj = bdUsuarios[loginTempData.nome];
 
             if (userObj && digitada === userObj.senha && userObj.status === 'ativo') {
-                currentUser = loginTempData.nome; 
-                currentRole = userObj.role; 
+                currentUser = loginTempData.nome; currentRole = userObj.role; 
                 document.getElementById('headerNomeUser').innerHTML = `<strong style="color:white;">${currentUser}</strong>`;
                 document.getElementById('btnSair').style.display = 'block';
-                fecharSenha();
-                document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
+                fecharSenha(); document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
                 
-                // DIRECIONAMENTO ISOLADO
                 if (currentRole === 'admin') {
                     document.getElementById('viewAdmin').classList.add('active'); 
-                    navegarAdmin('adminDash'); 
-                    renderizarEquipeAdmin(); 
+                    navegarAdmin('adminDash'); renderizarEquipeAdmin(); 
                 } else {
                     document.getElementById('viewOperador').classList.add('active');
-                    navegarOperador('operadorFila');
-                    carregarFilaOperadorDaNuvem();
+                    navegarOperador('operadorFila'); carregarFilaOperadorDaNuvem();
                 }
             } else { document.getElementById('erroSenha').style.display = 'block'; }
         }
@@ -367,16 +410,15 @@
             const dataFormatada = dataAtual.toLocaleDateString('pt-BR') + ' ' + dataAtual.getHours() + ':' + String(dataAtual.getMinutes()).padStart(2, '0');
 
             try {
-                // Envia para o banco de dados com status "Aguardando"
                 await db.collection("estoque_ovs").add({
-                    numero: numero, cliente: cliente, categoria: categoria, volumes: volumes,
+                    numero: numero, cliente: cliente, categoria: categoria, volumesPrevisao: volumes,
                     status: 'Aguardando', data: dataFormatada, autor: currentUser,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp() 
                 });
                 alert(`OV ${numero} enviada para a Fila do Estoque!`);
                 document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = '';
-                navegarAdmin('adminDash'); // Volta pro início após enviar
-            } catch (error) { console.error(error); alert("Erro ao lançar OV na nuvem."); }
+                navegarAdmin('adminDash'); 
+            } catch (error) { alert("Erro ao lançar OV."); }
         }
 
         function abrirModuloHistorico() { navegarAdmin('moduloHistorico'); carregarHistoricoDaNuvem(); }
@@ -396,7 +438,7 @@
                                 <td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}<br><span style="color: #666;">finalizado por ${ov.operadorFinal}</span></td>
                                 <td><strong>${ov.numero}</strong></td>
                                 <td>${ov.cliente}</td>
-                                <td>${ov.volumes} cx(s)</td>
+                                <td>${ov.volumesReais || '-'} cx(s) registradas</td>
                                 <td><span class="status-ativo">✔ ${ov.status}</span></td>
                             </tr>
                         `;
@@ -409,6 +451,8 @@
         // ==========================================
         // OPERADOR DE ESTOQUE: FILA E BIPAGEM
         // ==========================================
+        let idOvEmConferencia = null;
+
         async function carregarFilaOperadorDaNuvem() {
             const tbody = document.getElementById('tabelaOperadorFila');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando fila de separação...</td></tr>';
@@ -419,8 +463,6 @@
                     const ov = doc.data(); const id = doc.id;
                     if (ov.status === 'Aguardando' || ov.status === 'Separando') {
                         contador++;
-                        
-                        // Botões dinâmicos baseado na ação do operador
                         let botoesHTML = '';
                         if (ov.status === 'Aguardando') {
                             botoesHTML = `<button class="btn-outline-2" style="border-color: var(--blue-action); color: var(--blue-action); margin-right: 5px;" onclick="baixarArquivos('${id}')">1. Baixar OV / Remessa</button>
@@ -434,7 +476,7 @@
                             <tr style="background: ${ov.status === 'Separando' ? 'rgba(0, 204, 102, 0.05)' : 'transparent'};">
                                 <td style="font-size: 12px; color: #aaa;">${ov.data}<br><span style="color: #666;">por ${ov.autor}</span></td>
                                 <td><strong style="font-size: 16px;">${ov.numero}</strong><br><span style="color: #888;">${ov.cliente}</span></td>
-                                <td>${ov.volumes} cx(s)</td>
+                                <td>${ov.volumesPrevisao} cx(s)</td>
                                 <td><span class="${ov.status === 'Aguardando' ? 'status-pendente' : 'status-ativo'}">${ov.status}</span></td>
                                 <td style="text-align: right; white-space: nowrap;">${botoesHTML}</td>
                             </tr>
@@ -446,24 +488,185 @@
         }
 
         async function baixarArquivos(id_documento) {
-            // Simulação de download de arquivo (Na próxima etapa plugamos os PDFs reais)
-            alert("Baixando os arquivos da OV e Remessa para impressão...");
-            
+            alert("Gerando e baixando os arquivos para impressão...");
             try {
-                // Atualiza o status para "Separando" habilitando o botão de bipagem
                 await db.collection("estoque_ovs").doc(id_documento).update({ status: 'Separando' });
                 carregarFilaOperadorDaNuvem(); 
-            } catch(error) { console.error(error); alert("Erro ao atualizar status."); }
+            } catch(error) { alert("Erro ao atualizar status."); }
         }
+
+        // --- LÓGICA DA TELA DE CONFERÊNCIA (MOCK DATA) ---
+        let bancoMockOV = {}; let bancoMockRMA = {};
+        let faseAtual = 'OV'; let contadorVolumes = 0; let volumeUnicoID = 0;
 
         function abrirTelaBipagem(id_documento, numero_ov) {
-            document.getElementById('bipagemTituloOV').innerText = numero_ov;
+            idOvEmConferencia = id_documento;
+            document.getElementById('numPedidoAtual').innerText = numero_ov;
+            
+            // Simulação dos dados que futuramente virão do Leitor de PDF
+            bancoMockOV = {
+                '7898996240356': { sku: 'FCL15WH', alvo: 4, bipado: 0 },
+                '7898996240349': { sku: 'FCC15WH', alvo: 2, bipado: 0 }
+            };
+            bancoMockRMA = {
+                '7898974018007': { sku: 'CH65WWH', alvo: 1, bipado: 0 }
+            };
+
+            resetarSistemaConferencia();
             navegarOperador('operadorBipagem');
-            setTimeout(() => document.getElementById('inputCodigoBarras').focus(), 300);
+            setTimeout(() => document.getElementById('bipOV').focus(), 300);
         }
 
-        function cancelarBipagem() {
-            navegarOperador('operadorFila');
+        function cancelarBipagem() { navegarOperador('operadorFila'); }
+
+        function renderizarCards(fase) {
+            const container = document.getElementById(`container${fase}`);
+            const banco = fase === 'OV' ? bancoMockOV : bancoMockRMA;
+            container.innerHTML = '';
+            for (const ean in banco) {
+                const prod = banco[ean];
+                const cardClass = prod.bipado > 0 ? 'produto-card ativo' : 'produto-card';
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="produto-sku">${prod.sku}</div>
+                        <div class="produto-qtd">${prod.bipado}</div>
+                    </div>`;
+            }
+        }
+
+        function resetarSistemaConferencia() {
+            faseAtual = 'OV';
+            document.getElementById('faseOV').className = 'fase-section ativa';
+            document.getElementById('faseRMA').className = 'fase-section';
+            document.getElementById('faseLogistica').className = 'fase-section';
+            
+            document.getElementById('statusOV').innerText = "Em andamento...";
+            document.getElementById('statusRMA').innerText = "Aguardando OV...";
+            document.getElementById('statusLog').innerText = "Bloqueado";
+            
+            document.getElementById('areaBipagemOV').style.display = 'block';
+            document.getElementById('areaBipagemRMA').style.display = 'block';
+            document.getElementById('bipRMA').disabled = true;
+            document.getElementById('bipOV').value = ''; document.getElementById('bipRMA').value = '';
+
+            for (const ean in bancoMockOV) bancoMockOV[ean].bipado = 0;
+            for (const ean in bancoMockRMA) bancoMockRMA[ean].bipado = 0;
+            
+            renderizarCards('OV'); renderizarCards('RMA');
+
+            document.getElementById('listaVolumes').innerHTML = '';
+            contadorVolumes = 0; adicionarVolume();
+        }
+
+        function registrarBipagem(fase) {
+            const inputElement = document.getElementById(fase === 'OV' ? 'bipOV' : 'bipRMA');
+            const codigo = inputElement.value.trim();
+            const banco = fase === 'OV' ? bancoMockOV : bancoMockRMA;
+
+            if (codigo !== '') {
+                if (banco[codigo]) {
+                    banco[codigo].bipado++;
+                    renderizarCards(fase);
+                } else {
+                    mostrarErro("PRODUTO NÃO ENCONTRADO", "O código bipado não faz parte desta etapa da separação.");
+                }
+                inputElement.value = '';
+            }
+        }
+
+        function validarEtapa(etapa) {
+            const banco = etapa === 'OV' ? bancoMockOV : bancoMockRMA;
+            let tudoCerto = true;
+            for (const ean in banco) { if (banco[ean].bipado !== banco[ean].alvo) tudoCerto = false; }
+
+            if (tudoCerto) {
+                document.getElementById(`fase${etapa}`).classList.remove('ativa');
+                document.getElementById(`fase${etapa}`).classList.add('concluida');
+                document.getElementById(`status${etapa}`).innerText = "✅ Concluído";
+                document.getElementById(`areaBipagem${etapa}`).style.display = 'none';
+
+                if (etapa === 'OV') {
+                    faseAtual = 'RMA';
+                    document.getElementById('faseRMA').classList.add('ativa');
+                    document.getElementById('statusRMA').innerText = "Em andamento...";
+                    document.getElementById('bipRMA').disabled = false;
+                    setTimeout(() => document.getElementById('bipRMA').focus(), 100);
+                } else if (etapa === 'RMA') {
+                    faseAtual = 'LOG';
+                    document.getElementById('faseLogistica').classList.add('ativa');
+                    document.getElementById('statusLog').innerText = "Liberado";
+                }
+            } else {
+                mostrarErro("CONFERÊNCIA REPROVADA", "As quantidades bipadas não conferem com a meta oculta do pedido.");
+            }
+        }
+
+        function mostrarErro(titulo, mensagem) {
+            document.getElementById('tituloErro').innerText = "⚠️ " + titulo;
+            document.getElementById('msgErro').innerText = mensagem;
+            document.getElementById('erroModal').style.display = 'flex';
+        }
+
+        function fecharErro() {
+            document.getElementById('erroModal').style.display = 'none';
+            if (faseAtual === 'OV') {
+                for (const ean in bancoMockOV) bancoMockOV[ean].bipado = 0;
+                renderizarCards('OV'); document.getElementById('bipOV').focus();
+            } else if (faseAtual === 'RMA') {
+                for (const ean in bancoMockRMA) bancoMockRMA[ean].bipado = 0;
+                renderizarCards('RMA'); document.getElementById('bipRMA').focus();
+            }
+        }
+
+        function adicionarVolume() {
+            contadorVolumes++; volumeUnicoID++;
+            const divId = `caixa-${volumeUnicoID}`;
+            const html = `
+                <div class="volume-box" id="${divId}">
+                    <div class="volume-header">
+                        <strong>Caixa/Volume ${contadorVolumes}</strong>
+                        ${contadorVolumes > 1 ? `<button class="btn-remover" onclick="removerVolume('${divId}')">✖ Remover</button>` : ''}
+                    </div>
+                    <div class="grid-4">
+                        <div><label>Peso (Kg)</label><input type="number" class="input-dark"></div>
+                        <div><label>Compr. (cm)</label><input type="number" class="input-dark"></div>
+                        <div><label>Largura (cm)</label><input type="number" class="input-dark"></div>
+                        <div><label>Altura (cm)</label><input type="number" class="input-dark"></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('listaVolumes').insertAdjacentHTML('beforeend', html);
+        }
+
+        function removerVolume(idDiv) {
+            document.getElementById(idDiv).remove();
+            contadorVolumes--;
+            const caixas = document.querySelectorAll('.volume-box strong');
+            caixas.forEach((titulo, index) => { titulo.innerText = `Caixa/Volume ${index + 1}`; });
+        }
+
+        // SALVAR A EXPEDIÇÃO FINAL NA NUVEM
+        async function finalizarExpedicaoNuvem() {
+            if(!confirm(`Confirma o fechamento desta expedição com ${contadorVolumes} volume(s)?`)) return;
+
+            const dataAtual = new Date();
+            const dataConclusao = dataAtual.toLocaleDateString('pt-BR') + ' ' + dataAtual.getHours() + ':' + String(dataAtual.getMinutes()).padStart(2, '0');
+
+            try {
+                await db.collection("estoque_ovs").doc(idOvEmConferencia).update({
+                    status: 'Concluído', 
+                    dataConclusao: dataConclusao, 
+                    operadorFinal: currentUser,
+                    volumesReais: contadorVolumes
+                });
+                
+                alert("📦 SUCESSO! Expedição registrada e enviada para o Histórico.");
+                navegarOperador('operadorFila');
+                carregarFilaOperadorDaNuvem(); 
+            } catch(error) { 
+                console.error(error); 
+                alert("Erro ao salvar a conclusão no banco de dados."); 
+            }
         }
 
         // ==========================================
@@ -478,51 +681,27 @@
         }
 
         function renderizarEquipeAdmin() {
-            const tbody = document.getElementById('tabelaEquipe');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('tabelaEquipe'); tbody.innerHTML = '';
             for (let nome in bdUsuarios) {
-                const u = bdUsuarios[nome];
-                const tempo = calcularTempoEmpresa(u.admissao);
-                const isAtivo = u.status === 'ativo';
-                
+                const u = bdUsuarios[nome]; const tempo = calcularTempoEmpresa(u.admissao); const isAtivo = u.status === 'ativo';
                 tbody.innerHTML += `
                     <tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255, 51, 51, 0.05);' : ''}">
                         <td><strong>${nome}</strong><br><span style="font-size: 11px; color: #888;">${u.funcao}</span> <span class="badge-papel" style="margin-left: 5px;">${u.role}</span></td>
-                        <td style="width: 150px;">
-                            <input type="date" id="admissao_${nome}" value="${u.admissao}" class="input-editavel" style="font-size: 12px;">
-                            <br><span style="color: var(--volt-green); font-size: 11px; font-weight: bold;">${tempo}</span>
-                        </td>
-                        <td style="width: 180px;">
-                            <input type="text" id="login_${nome}" value="${u.login}" class="input-editavel" placeholder="Login">
-                            <input type="text" id="senha_${nome}" value="${u.senha}" class="input-editavel" placeholder="Senha">
-                        </td>
+                        <td style="width: 150px;"><input type="date" id="admissao_${nome}" value="${u.admissao}" class="input-editavel" style="font-size: 12px;"><br><span style="color: var(--volt-green); font-size: 11px; font-weight: bold;">${tempo}</span></td>
+                        <td style="width: 180px;"><input type="text" id="login_${nome}" value="${u.login}" class="input-editavel" placeholder="Login"><input type="text" id="senha_${nome}" value="${u.senha}" class="input-editavel" placeholder="Senha"></td>
                         <td><span class="${isAtivo ? 'status-ativo' : 'status-inativo'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
-                        <td style="text-align: right; white-space: nowrap;">
-                            <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarAcessoUsuarioNuvem('${nome}')">Salvar</button>
-                            <button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 5px;" onclick="toggleStatusUsuarioNuvem('${nome}', '${isAtivo}')">${isAtivo ? 'Desligar' : 'Reativar'}</button>
-                        </td>
-                    </tr>
-                `;
+                        <td style="text-align: right; white-space: nowrap;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarAcessoUsuarioNuvem('${nome}')">Salvar</button>
+                        <button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 5px;" onclick="toggleStatusUsuarioNuvem('${nome}', '${isAtivo}')">${isAtivo ? 'Desligar' : 'Reativar'}</button></td>
+                    </tr>`;
             }
         }
-
         async function salvarAcessoUsuarioNuvem(nome) {
-            const login = document.getElementById(`login_${nome}`).value;
-            const senha = document.getElementById(`senha_${nome}`).value;
-            const admissao = document.getElementById(`admissao_${nome}`).value;
-            try {
-                await db.collection("usuarios").doc(nome).update({ login: login, senha: senha, admissao: admissao });
-                alert(`Dados de ${nome} salvos!`); await carregarUsuariosDaNuvem(); renderizarEquipeAdmin();
-            } catch (error) { alert("Erro ao salvar."); }
+            const login = document.getElementById(`login_${nome}`).value; const senha = document.getElementById(`senha_${nome}`).value; const admissao = document.getElementById(`admissao_${nome}`).value;
+            try { await db.collection("usuarios").doc(nome).update({ login: login, senha: senha, admissao: admissao }); alert(`Dados de ${nome} salvos!`); await carregarUsuariosDaNuvem(); renderizarEquipeAdmin(); } catch (error) { alert("Erro ao salvar."); }
         }
-
         async function toggleStatusUsuarioNuvem(nome, isAtivoStr) {
-            const isAtivo = isAtivoStr === 'true';
-            if (isAtivo && !confirm(`Desligar ${nome}?`)) return;
-            try {
-                await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' });
-                await carregarUsuariosDaNuvem(); renderizarEquipeAdmin();
-            } catch (error) { alert("Erro de status."); }
+            const isAtivo = isAtivoStr === 'true'; if (isAtivo && !confirm(`Desligar ${nome}?`)) return;
+            try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarEquipeAdmin(); } catch (error) { alert("Erro de status."); }
         }
     </script>
 </body>
