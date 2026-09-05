@@ -38,7 +38,7 @@
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
         .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-        #modalSenha, #modalNovoUsuario { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        #modalSenha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="header-info">
-            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Conectando ao Firebase...</span>
+            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Conectando...</span>
             <button class="btn-logout" id="btnSair" onclick="fazerLogout()">Sair</button>
         </div>
     </div>
@@ -104,17 +104,18 @@
             <div id="adminDash" class="sub-screen active">
                 <h1 style="margin-bottom: 30px;">Painel de Gestão VOLT</h1>
                 <div class="grid-4">
-                    <div class="hub-card" onclick="abrirModuloEstoque()" style="border-color: var(--volt-green);">
-                        <div><h3 style="color: white;">Estoque & Lançamentos</h3><p>Registro de OVs, separação de cabos, fontes e volumes.</p></div>
-                        <div class="action" style="color: var(--volt-green);">Abrir Módulo ➔</div>
+                    <div class="hub-card" onclick="abrirModuloEstoque()">
+                        <div><h3>Estoque & Lançamentos</h3><p>Registro de OVs e fila de separação.</p></div>
+                        <div class="action">Abrir Módulo ➔</div>
                     </div>
                     <div class="hub-card" onclick="alert('Faturamento em desenvolvimento para a próxima fase.')">
                         <div><h3>Faturamento</h3><p>OVs prontas para NF.</p></div>
                         <div class="action">Em breve ➔</div>
                     </div>
-                    <div class="hub-card" onclick="alert('Histórico em desenvolvimento para a próxima fase.')">
-                        <div><h3>Histórico</h3><p>Pedidos concluídos.</p></div>
-                        <div class="action">Em breve ➔</div>
+                    <!-- NOVO CARD: HISTÓRICO -->
+                    <div class="hub-card" onclick="abrirModuloHistorico()" style="border-color: var(--volt-green);">
+                        <div><h3 style="color: white;">Histórico</h3><p>Relatório de OVs concluídas.</p></div>
+                        <div class="action" style="color: var(--volt-green);">Acessar ➔</div>
                     </div>
                     <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
                         <div><h3>Gestão da Equipe</h3><p>Controle de RH e acessos.</p></div>
@@ -131,7 +132,6 @@
                         <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
                     </div>
                     
-                    <!-- Formulário de Nova OV -->
                     <div style="background: #0a0a0a; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-bottom: 30px;">
                         <h3 style="margin-top: 0; font-size: 16px;">Registrar Nova Separação</h3>
                         <div class="grid-4" style="gap: 15px; margin-bottom: 15px;">
@@ -160,7 +160,6 @@
                         <button class="btn-volt" style="width: 200px; padding: 10px;" onclick="salvarNovaOV()">Lançar Pedido</button>
                     </div>
 
-                    <!-- Fila de Separação -->
                     <h3 style="font-size: 16px; margin-bottom: 15px;">Fila de Separação (Ao Vivo)</h3>
                     <div style="overflow-x: auto;">
                         <table>
@@ -175,15 +174,39 @@
                                     <th style="text-align: right;">Ação</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabelaEstoque">
-                                <!-- Preenchido pelo Firebase -->
-                            </tbody>
+                            <tbody id="tabelaEstoque"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- MÓDULO: RH (Mantido Intacto) -->
+            <!-- NOVO MÓDULO: HISTÓRICO -->
+            <div id="moduloHistorico" class="sub-screen">
+                <div class="modulo-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="color: var(--volt-green); margin: 0;">Histórico de Operações</h2>
+                        <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data de Conclusão</th>
+                                    <th>OV</th>
+                                    <th>Cliente</th>
+                                    <th>Categoria</th>
+                                    <th>Volumes</th>
+                                    <th>Status Final</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaHistorico"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÓDULO: RH -->
             <div id="adminUsuarios" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -217,10 +240,8 @@
 
         let bdUsuarios = {}; 
         let currentUser = null;
-        let currentRole = null;
         let loginTempData = {};
 
-        // INICIALIZAÇÃO
         window.onload = async function() {
             await carregarUsuariosDaNuvem();
             document.getElementById('headerNomeUser').innerText = "Identifique-se";
@@ -243,7 +264,6 @@
             } catch (error) { console.error(error); }
         }
 
-        // LOGIN
         function abrirSenha(nome) {
             loginTempData = { nome: nome };
             document.getElementById('nomeLogin').innerText = `Login: ${nome}`;
@@ -260,7 +280,6 @@
 
             if (userObj && digitada === userObj.senha && userObj.status === 'ativo') {
                 currentUser = loginTempData.nome; 
-                currentRole = userObj.role;
                 document.getElementById('headerNomeUser').innerHTML = `<strong style="color:white;">${currentUser}</strong>`;
                 document.getElementById('btnSair').style.display = 'block';
                 fecharSenha();
@@ -279,11 +298,11 @@
         function navegarAdmin(id) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
         // ==========================================
-        // NOVO: MÓDULO DE ESTOQUE (LANÇAMENTOS)
+        // MÓDULO ESTOQUE E LANÇAMENTOS
         // ==========================================
         function abrirModuloEstoque() {
             navegarAdmin('moduloEstoque');
-            carregarOVsDaNuvem(); // Atualiza a tabela sempre que abrir a tela
+            carregarOVsDaNuvem(); 
         }
 
         async function salvarNovaOV() {
@@ -298,7 +317,6 @@
             const dataFormatada = dataAtual.toLocaleDateString('pt-BR') + ' ' + dataAtual.getHours() + ':' + String(dataAtual.getMinutes()).padStart(2, '0');
 
             try {
-                // Salva na coleção "estoque_ovs" no Firebase
                 await db.collection("estoque_ovs").add({
                     numero: numero,
                     cliente: cliente,
@@ -307,15 +325,14 @@
                     status: 'Separando',
                     data: dataFormatada,
                     operador: currentUser,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Para ordenar corretamente
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() 
                 });
 
-                // Limpa os campos
                 document.getElementById('ovNumero').value = '';
                 document.getElementById('ovCliente').value = '';
                 document.getElementById('ovVolumes').value = '1';
                 
-                carregarOVsDaNuvem(); // Recarrega a tabela
+                carregarOVsDaNuvem(); 
             } catch (error) {
                 console.error("Erro ao salvar OV", error);
                 alert("Erro ao lançar OV na nuvem.");
@@ -327,36 +344,104 @@
             tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando fila...</td></tr>';
             
             try {
-                // Puxa as OVs ordenadas da mais recente para a mais antiga
                 const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get();
                 tbody.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhuma OV na fila no momento.</td></tr>';
-                    return;
-                }
+                let contador = 0;
 
                 snapshot.forEach((doc) => {
                     const ov = doc.data();
                     const id = doc.id;
                     
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-size: 12px; color: #aaa;">${ov.data}<br><span style="color: #666;">por ${ov.operador}</span></td>
-                            <td><strong>${ov.numero}</strong></td>
-                            <td>${ov.cliente}</td>
-                            <td><span class="badge-papel">${ov.categoria}</span></td>
-                            <td>${ov.volumes} cx(s)</td>
-                            <td><span class="status-pendente">🔄 ${ov.status}</span></td>
-                            <td style="text-align: right;">
-                                <button class="btn-outline-2" style="border-color: var(--success-green); color: var(--success-green);" onclick="alert('Função de concluir irá enviar para Faturamento na próxima fase!')">✔ Concluir</button>
-                            </td>
-                        </tr>
-                    `;
+                    // Exibe APENAS as que estão Separando
+                    if (ov.status === 'Separando') {
+                        contador++;
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-size: 12px; color: #aaa;">${ov.data}<br><span style="color: #666;">por ${ov.operador}</span></td>
+                                <td><strong>${ov.numero}</strong></td>
+                                <td>${ov.cliente}</td>
+                                <td><span class="badge-papel">${ov.categoria}</span></td>
+                                <td>${ov.volumes} cx(s)</td>
+                                <td><span class="status-pendente">🔄 ${ov.status}</span></td>
+                                <td style="text-align: right;">
+                                    <button class="btn-outline-2" style="border-color: var(--success-green); color: var(--success-green);" onclick="concluirOV('${id}', '${ov.numero}')">✔ Concluir</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
                 });
+
+                if(contador === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhuma OV na fila no momento.</td></tr>';
+                }
             } catch (error) {
                 console.error("Erro ao ler OVs:", error);
                 tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar dados.</td></tr>';
+            }
+        }
+
+        // FUNÇÃO QUE MOVE A OV PARA O HISTÓRICO
+        async function concluirOV(id_documento, numero_ov) {
+            if(!confirm(`Finalizar a separação da ${numero_ov} e enviar para o histórico?`)) return;
+
+            const dataAtual = new Date();
+            const dataConclusao = dataAtual.toLocaleDateString('pt-BR') + ' ' + dataAtual.getHours() + ':' + String(dataAtual.getMinutes()).padStart(2, '0');
+
+            try {
+                await db.collection("estoque_ovs").doc(id_documento).update({
+                    status: 'Concluído',
+                    dataConclusao: dataConclusao,
+                    operadorFinal: currentUser // Registra quem finalizou
+                });
+                carregarOVsDaNuvem(); // Atualiza a tabela tirando ela da fila
+            } catch(error) {
+                console.error(error);
+                alert("Erro ao concluir a OV.");
+            }
+        }
+
+        // ==========================================
+        // NOVO: MÓDULO DE HISTÓRICO
+        // ==========================================
+        function abrirModuloHistorico() {
+            navegarAdmin('moduloHistorico');
+            carregarHistoricoDaNuvem();
+        }
+
+        async function carregarHistoricoDaNuvem() {
+            const tbody = document.getElementById('tabelaHistorico');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--volt-green);">Buscando histórico...</td></tr>';
+            
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get();
+                tbody.innerHTML = '';
+                let contador = 0;
+
+                snapshot.forEach((doc) => {
+                    const ov = doc.data();
+                    
+                    // Exibe APENAS as que estão Concluídas
+                    if (ov.status === 'Concluído') {
+                        contador++;
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}<br><span style="color: #666;">finalizado por ${ov.operadorFinal || ov.operador}</span></td>
+                                <td><strong>${ov.numero}</strong></td>
+                                <td>${ov.cliente}</td>
+                                <td><span class="badge-papel">${ov.categoria}</span></td>
+                                <td>${ov.volumes} cx(s)</td>
+                                <td><span class="status-ativo">✔ ${ov.status}</span></td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                if(contador === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhuma OV concluída ainda.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Erro ao ler Histórico:", error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>';
             }
         }
 
