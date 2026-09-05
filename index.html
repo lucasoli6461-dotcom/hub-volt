@@ -2,160 +2,102 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>HUB VOLT - Sistema Integrado de Gestão Logística</title>
+    <title>HUB VOLT - Sistema de Expedição</title>
     <link rel="icon" type="image/png" href="image_a87265.png">
     
     <style>
         /* ========================================== */
-        /* 1. VARIÁVEIS E CONFIGURAÇÕES GERAIS        */
+        /* 1. VARIÁVEIS E BASE                        */
         /* ========================================== */
         :root { 
-            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; 
+            --bg-color: #0f0f0f; --card-bg: #161616; --volt-green: #c4f000; 
             --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; 
-            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
+            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; 
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
         
-        /* Navegação entre Telas */
         .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view-layer.active, .sub-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Grids */
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
         /* ========================================== */
         /* 2. CABEÇALHO E BOTÕES                      */
         /* ========================================== */
-        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
+        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #050505; }
         .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
         .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
         .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
-        .header-info { display: flex; align-items: center; gap: 20px; }
         
-        .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
-        .btn-volt:hover { opacity: 0.9; }
-        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.2s;}
+        .btn-volt { padding: 15px 30px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s;}
+        .btn-volt:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.2s;}
         .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
-        .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
-        .btn-voltar { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
-        .btn-voltar:hover { color: white; border-color: white; }
         .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px;}
-        .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
         
-        .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .input-dark { width: 100%; padding: 15px; background-color: #050505; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
         .input-dark:focus { border-color: var(--volt-green); outline: none; }
-        .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
-        .input-bip:focus { outline: 1px solid var(--volt-green); }
-        .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
-        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
-        .input-editavel:focus { border-color: var(--volt-green); outline: none; }
-
-        /* ========================================== */
-        /* 3. COMPONENTES DO ADMIN E LOGIN            */
-        /* ========================================== */
-        .greeting { text-align: center; margin-bottom: 40px; }
-        .greeting h1 { font-size: 32px; font-weight: 600; margin: 0; }
-        .greeting h1 span { color: var(--volt-green); }
-        .greeting p { color: var(--text-muted); margin-top: 10px; }
-
-        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
-        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
-        .modulo-header h2 { margin: 0; color: var(--volt-green); }
-
-        .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
-        .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); }
-        .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
-        .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
-        .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
         
-        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        /* ========================================== */
+        /* 3. ESTRUTURAS DE MÓDULOS                   */
+        /* ========================================== */
+        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 40px; margin-bottom: 20px; }
+        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px; }
+        .modulo-header h2 { margin: 0; color: var(--volt-green); font-size: 24px; }
+        
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
         .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
-
+        
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
-        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-
-        /* DRAG & DROP AREA */
-        .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
-        .upload-area p { color: var(--text-muted); margin: 0; }
-        .upload-area strong { color: var(--volt-green); }
-
-        /* TABELAS E BADGES */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
-        th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
-        td { font-size: 14px; }
-        .status-online { color: var(--success-green); font-weight: bold; }
-        .status-online::before { content: "● "; color: var(--success-green); }
-        .status-offline { color: var(--text-muted); }
-        .status-offline::before { content: "● "; color: #555; }
-        .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
-        .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); }
-        .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer;}
-        .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); transition: 0.2s;}
-        .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
         
-        .grid-equipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
-        .equipe-card { background: #000; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; border-left: 4px solid #444; transition: 0.2s; }
-        .equipe-card:hover { border-color: var(--volt-green); }
-        .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
-        .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
-        .equipe-stats strong { color: var(--text-light); }
-
-        .tabela-senha-box { display: flex; align-items: center; gap: 10px; }
-        .senha-input { background: transparent; border: none; color: white; width: 80px; font-size: 14px; font-family: monospace; }
-        .senha-input:focus { outline: none; }
-        .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0; }
-        .btn-icon:hover { color: var(--volt-green); }
+        /* DRAG & DROP AREA */
+        .upload-area { border: 2px dashed #333; background-color: #0a0a0a; padding: 40px 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 5px;}
+        .upload-area:hover, .upload-area.dragover { border-color: var(--text-muted); background-color: #111; }
+        .upload-area.concluido { border-color: var(--volt-green); border-style: solid; background-color: rgba(196,240,0,0.05); }
 
         /* ========================================== */
-        /* 4. MODAIS CAMADA SUPERIOR                  */
+        /* 4. TELA DE PREPARAÇÃO / DOWNLOADS          */
         /* ========================================== */
+        .prep-box { text-align: center; padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: #111; margin-top: 30px; }
+        .btn-download { background: #222; border: 1px solid #444; color: white; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin: 10px; }
+        .btn-download:hover { background: #333; border-color: var(--volt-green); color: var(--volt-green); }
+
+        /* ========================================== */
+        /* 5. TELA DE CONFERÊNCIA (BIPAGEM FIEIS)     */
+        /* ========================================== */
+        .fase-section { background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
+        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); }
+        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: #333; }
+        
+        .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; font-size: 18px;}
+        .fase-section.concluida h3 { color: var(--success-green); }
+        .fase-section:not(.ativa) h3 { color: var(--text-muted); }
+        
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px;}
+        .produto-card { background: #050505; border: 1px solid #222; border-radius: 8px; padding: 20px 15px; text-align: center; transition: 0.3s; }
+        .produto-card.ativo { border-color: var(--volt-green); }
+        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
+        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 15px; }
+        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
+
+        .bip-container { background: #000; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .input-bip { width: 100%; padding: 15px; font-size: 18px; background-color: #0a0a0a; border: 1px solid var(--volt-green); color: var(--text-light); border-radius: 6px; box-sizing: border-box; }
+        .input-bip:disabled { border-color: #333; background: #050505; }
+        .input-bip:focus { outline: none; box-shadow: 0 0 10px rgba(196, 240, 0, 0.2); }
+
+        /* MODAIS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
-        .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
-        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
-        .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
-        .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
-
-        /* ========================================== */
-        /* 5. TELA DE CONFERÊNCIA (ESTOQUE)           */
-        /* ========================================== */
-        .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
-        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
-        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
-        .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
-        .fase-section.concluida h3 { color: var(--success-green); }
-        
-        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
-        .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.1);}
-        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
-        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
-        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
-        .fase-section.concluida .produto-card { border-color: var(--success-green); box-shadow: none;}
-        .fase-section.concluida .produto-qtd { color: var(--success-green); }
-
-        .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
-        .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
-        .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
-        label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;}
-        .btn-validar { background-color: transparent; border: 2px solid var(--volt-green); color: var(--volt-green); width: auto; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; display: inline-block;}
-        .btn-validar:hover { background-color: rgba(196, 240, 0, 0.1); }
     </style>
 
-    <!-- BIBLIOTECAS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
@@ -163,54 +105,22 @@
 
     <div class="header">
         <div class="logo-container" onclick="voltarLogoHome()">
-            <div class="logo-text">
-                VOLT
-                <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13.3333 0L0 18.6667H10.6667L8 32L24 10.6667H13.3333L16 0Z" />
-                </svg>
-            </div>
+            <div class="logo-text">VOLT<svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 0L0 18.6667H10.6667L8 32L24 10.6667H13.3333L16 0Z" /></svg></div>
         </div>
         <div class="header-info">
-            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Conectando à Nuvem...</span>
-            <button class="btn-logout" id="btnSair" onclick="fazerLogout()">Sair</button>
-        </div>
-    </div>
-
-    <!-- MODAIS GLOBAIS -->
-    <div id="erroModal" class="modal-overlay">
-        <div class="erro-box">
-            <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
-            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido ou quantidade excedente detectada.</p>
-            <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
-                <strong style="color: var(--error-red);">Regra do Sistema:</strong>
-                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem de cards desta etapa específica foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual.</p>
-            </div>
-            <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar Etapa</button>
+            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Identifique-se</span>
+            <button class="btn-logout" id="btnSair" onclick="fazerLogout()">SAIR</button>
         </div>
     </div>
 
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
-            <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acessar Perfil</h3>
-            <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
-            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou perfil inativo.</p>
+            <h3 id="nomeLogin" style="margin-top: 0; color: white;">Login</h3>
+            <input type="password" id="inputSenha" class="input-dark" placeholder="Senha..." autofocus>
+            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta.</p>
             <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button class="btn-outline" style="flex: 1;" onclick="fecharSenhaModal()">Cancelar</button>
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalSenha').style.display='none'">Cancelar</button>
                 <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">Entrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalAuditoria" class="modal-overlay">
-        <div class="auditoria-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
-                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
-                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
-            </div>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades e reinicializações da etapa:</p>
-            <ul class="log-lista" id="listaErrosLogs"></ul>
-            <div style="text-align: right; margin-top: 25px;">
-                <button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button>
             </div>
         </div>
     </div>
@@ -218,430 +128,337 @@
     <div class="container">
         
         <!-- ========================================== -->
-        <!-- VIEW LAYER 1: SELEÇÃO DE PERFIL / LOGIN -->
+        <!-- VIEW: LOGIN -->
         <!-- ========================================== -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;">
-                <h1 style="font-size: 32px; margin: 0;">Quem está acessando?</h1>
-                <p style="color: var(--text-muted); margin-top: 10px;">Selecione seu perfil operacional para entrar no HUB</p>
+                <h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1>
             </div>
-            <div class="login-grid" id="gridUsuariosLogin">
-                <p style="color: var(--volt-green); text-align: center;">Carregando nuvem...</p>
-            </div>
+            <div class="login-grid" id="gridUsuariosLogin"></div>
         </div>
 
         <!-- ========================================== -->
-        <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR -->
+        <!-- VIEW: ADMIN -->
         <!-- ========================================== -->
         <div id="viewAdmin" class="view-layer">
             
             <div id="adminDash" class="sub-screen active">
-                <div class="greeting">
-                    <h1 id="saudacaoAdmin">Boa noite, <span>Usuário</span></h1>
-                    <p>O que você e a equipe de logística vão fazer hoje?</p>
+                <div style="margin-bottom: 40px; text-align: center;">
+                    <h1 style="font-size: 32px; margin: 0;">Painel Administrativo</h1>
                 </div>
                 <div class="grid-3">
-                    <div class="hub-card" onclick="navegarAdmin('adminLancamentos')">
-                        <div><h3>Central de Lançamentos</h3><p>Suba as novas Ordens de Venda, vincule as remessas de RMA e libere os pedidos para a equipe de separação.</p></div>
-                        <div class="action">Abrir ➔</div>
+                    <div class="pedido-item" style="flex-direction: column; text-align: center; padding: 40px 20px;" onclick="navegarAdmin('adminLancamentos')">
+                        <strong style="color: var(--volt-green); font-size: 20px; margin-bottom: 10px;">Lançar Nova OV</strong>
+                        <span style="color: var(--text-muted); font-size: 14px;">Enviar pedido para a fila do estoque.</span>
                     </div>
-                    <div class="hub-card" onclick="abrirModuloHistorico()">
-                        <div><h3>Histórico e Auditoria</h3><p>Acompanhe o desempenho da equipe e rastreie relatórios de expedição faturada.</p></div>
-                        <div class="action">Abrir ➔</div>
-                    </div>
-                    <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
-                        <div><h3>Gestão de Acessos</h3><p>Controle senhas, cadastre novos operadores e desative perfis antigos da sua equipe.</p></div>
-                        <div class="action">Abrir Configurações ➔</div>
-                    </div>
+                    <!-- Outros módulos ocultados para focar no fluxo principal -->
                 </div>
             </div>
 
-            <!-- Subtela Admin: Lançamento de OVs com DROPZONE PDF -->
+            <!-- TELA DE LANÇAMENTOS (Baseada no Print 1) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
                         <h2>Nova Tarefa de Expedição</h2>
-                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-                        <div>
-                            <div class="form-group" style="margin-bottom: 15px;"><label>Número da OV</label><input type="text" id="ovNumero" class="input-dark" placeholder="OV-0000"></div>
-                            <div class="form-group" style="margin-bottom: 15px;"><label>Cliente / Destinatário</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <label>Vincular Remessa de RMA?</label>
-                                <select id="ovCategoria" class="input-dark">
-                                    <option value="Sem RMA">Não</option>
-                                    <option value="Com RMA">Sim, contém substituição</option>
-                                </select>
-                            </div>
-                            <div class="form-group"><label>Volumes (Previsão)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
-                        </div>
-                        <div>
-                            <div class="form-group" style="margin-bottom: 20px;">
-                                <label>1. Arquivo de Ordem de Venda Original (PDF / Excel)</label>
-                                <div class="upload-area" id="dropzoneOV">
-                                    <h3 id="dropTitle" style="margin:0; color:var(--text-light);">📤 Arraste o arquivo aqui</h3>
-                                    <p id="dropSub">O sistema lerá o arquivo para preencher os dados.</p>
-                                    <input type="file" id="fileInput" style="display: none;" accept=".pdf, .xlsx, .xls">
-                                </div>
-                            </div>
-                            <div style="text-align: right; margin-top: 30px;">
-                                <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">Liberar para Separação</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subtela Admin: Relatórios de Histórico Firebase -->
-            <div id="adminHistorico" class="sub-screen">
-                <div class="modulo-box">
-                    <div class="modulo-header">
-                        <h2>Auditoria Operacional e Desempenho</h2>
-                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
+                        <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
                     
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe (Mês Atual)</h3>
-                    <div class="grid-equipe">
-                        <div class="equipe-card" style="border-left-color: var(--volt-green);">
-                            <div class="equipe-nome">Luiz <span style="color: var(--volt-green); font-size: 14px;">Em operação</span></div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>15</strong></span><span>Erros: <strong style="color: var(--error-red);">2</strong></span></div>
-                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">86%</strong></span><span>Volume Geral: <strong>65%</strong></span></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;">
+                        <!-- Coluna Esquerda: Inputs -->
+                        <div>
+                            <div class="form-group"><label>NÚMERO DA OV</label><input type="text" id="ovNumero" class="input-dark" placeholder="OV-0000"></div>
+                            <div class="form-group"><label>CLIENTE / DESTINATÁRIO</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
+                            <div class="form-group">
+                                <label>VINCULAR REMESSA DE RMA?</label>
+                                <select id="ovHasRma" class="input-dark" onchange="toggleDropzoneRMA()">
+                                    <option value="nao">Não</option>
+                                    <option value="sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>VOLUMES (PREVISÃO)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
                         </div>
-                        <div class="equipe-card">
-                            <div class="equipe-nome">João <span style="color: var(--text-muted); font-size: 14px;">Offline</span></div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>8</strong></span><span>Erros: <strong>0</strong></span></div>
-                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span><span>Volume Geral: <strong>35%</strong></span></div>
-                        </div>
-                        <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div class="equipe-nome">Consolidado do Mês</div>
-                            <div class="equipe-stats" style="margin-bottom: 5px;"><span>Total Expedido: <strong>23 Pedidos</strong></span><span>Média de Acerto: <strong style="color: var(--success-green);">91%</strong></span></div>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;">📥 Relatório</button>
-                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;">🗑️ Limpar Mês</button>
+
+                        <!-- Coluna Direita: Dropzones -->
+                        <div style="display: flex; flex-direction: column; justify-content: flex-start;">
+                            <div class="form-group">
+                                <label>1. ARQUIVO DE ORDEM DE VENDA ORIGINAL (PDF / EXCEL)</label>
+                                <div class="upload-area" id="dropzoneOV">
+                                    <h3 style="margin:0; font-size: 18px;">📥 Arraste o arquivo aqui</h3>
+                                    <p style="font-size: 14px;">O sistema lerá o arquivo para preencher os dados.</p>
+                                    <input type="file" id="fileOV" style="display: none;" accept=".pdf, .xlsx">
+                                </div>
+                            </div>
+                            
+                            <!-- Dropzone Secundária para RMA (Escondida por padrão) -->
+                            <div class="form-group" id="containerDropRMA" style="display: none; margin-top: 10px;">
+                                <label>2. ARQUIVO DE SUBSTITUIÇÃO RMA (PDF / EXCEL)</label>
+                                <div class="upload-area" id="dropzoneRMA" style="border-color: #444;">
+                                    <h3 style="margin:0; font-size: 18px; color: #888;">📥 Arraste o RMA aqui</h3>
+                                    <p style="font-size: 14px;">Vincule o arquivo de garantia.</p>
+                                    <input type="file" id="fileRMA" style="display: none;" accept=".pdf, .xlsx">
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; margin-top: auto; padding-top: 20px;">
+                                <button class="btn-volt" style="width: 100%;" onclick="salvarNovaOV()">LIBERAR PARA SEPARAÇÃO</button>
                             </div>
                         </div>
                     </div>
-
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; margin-top: 40px; font-size: 16px;">Registro de Expedição Diária</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data Conclusão</th>
-                                <th>Ordem (OV)</th>
-                                <th>Cliente</th>
-                                <th>Operador</th>
-                                <th>Auditoria (Recomeços)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaHistorico"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Subtela Admin: Controle e Gestão de Usuários Firebase -->
-            <div id="adminUsuarios" class="sub-screen">
-                <div class="modulo-box">
-                    <div class="modulo-header">
-                        <h2>Controle de Equipe e Senhas</h2>
-                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Usuários com acesso ao sistema:</p>
-                        <button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="alert('Cadastro rápido conectando ao Firebase em breve.')">+ Cadastrar Novo Perfil</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome do Usuário</th>
-                                <th>Nível de Acesso</th>
-                                <th>Status de Rede</th>
-                                <th>Senha Cadastrada</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaEquipeUsuarios"></tbody>
-                    </table>
                 </div>
             </div>
         </div>
 
         <!-- ========================================== -->
-        <!-- VIEW LAYER 3: INTERFACE DO OPERADOR (ESTOQUE) -->
+        <!-- VIEW: ESTOQUE E OPERAÇÃO -->
         <!-- ========================================== -->
         <div id="viewEstoque" class="view-layer">
             
+            <!-- Fila de Pedidos -->
             <div id="estoqueDash" class="sub-screen active">
-                <h1 style="margin-bottom: 30px; font-size: 32px;">Pedidos Disponíveis para Separação</h1>
-                <div id="containerFilaEstoque">
-                    <p style="color: var(--volt-green);">Carregando fila ao vivo...</p>
+                <h1 style="margin-bottom: 30px; font-size: 32px;">Fila de Separação</h1>
+                <div id="containerFilaEstoque"></div>
+            </div>
+
+            <!-- TELA DE DOWNLOADS / PREPARAÇÃO FÍSICA -->
+            <div id="estoquePreparacao" class="sub-screen">
+                <div class="modulo-header" style="border:none; margin-bottom: 0;">
+                    <button class="btn-outline" style="border:none; padding-left: 0;" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR À FILA</button>
+                </div>
+                <div class="prep-box">
+                    <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Preparação Físico - <span id="prepOvNumero">OV-0000</span></h2>
+                    <p style="color: var(--text-muted); margin-bottom: 30px;">Baixe os arquivos para imprimir e realizar a separação nas prateleiras antes de bipar.</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <button class="btn-download" onclick="alert('Fazendo download da Ordem de Venda...')">📄 Baixar Ordem de Venda (Principal)</button>
+                        <button class="btn-download" id="btnDownloadRma" style="display:none;" onclick="alert('Fazendo download do RMA...')">🔄 Baixar Remessa (RMA)</button>
+                    </div>
+
+                    <div style="margin-top: 50px; border-top: 1px solid #222; padding-top: 30px;">
+                        <button class="btn-volt" style="width: auto; padding: 20px 40px; font-size: 16px;" onclick="abrirBipagemOficial()">JÁ SEPAREI, INICIAR CONFERÊNCIA ➔</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- TELA DE CONFERÊNCIA (Baseada no Print 2) -->
             <div id="estoqueConferencia" class="sub-screen">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <button class="btn-outline" style="border:none; padding-left: 0;" onclick="navegarEstoque('estoqueDash')">⟵ Voltar à Fila e Pausar</button>
-                    <h2 style="margin: 0;">Conferência às Cegas - <span style="color: var(--volt-green);" id="numPedidoAtual">OV #0000</span></h2>
-                    <div></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR À FILA E PAUSAR</button>
+                    <h2 style="margin: 0; font-size: 24px; color: white;">Conferência às Cegas - <span style="color: var(--volt-green);" id="confOvNumero">OV-0000</span></h2>
+                    <div style="width: 150px;"></div> <!-- Spacer -->
                 </div>
 
+                <!-- ETAPA 1 -->
                 <div id="faseOV" class="fase-section ativa">
-                    <h3>1. Itens da Ordem de Venda (Principal) <span id="statusOV" style="font-size: 14px; color: var(--text-muted);">Aguardando Leitura</span></h3>
+                    <h3>1. Itens da Ordem de Venda (Principal) <span id="statusOV" style="font-size: 14px; color: var(--text-muted); font-weight: normal;">Aguardando Leitura</span></h3>
                     <div class="produtos-grid" id="containerOV"></div>
-                    <div id="areaBipagemOV" style="margin-top: 15px;">
-                        <label>Bipar Código de Barras do Produto (EAN)</label>
-                        <input type="text" id="bipOV" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." autofocus>
-                        <div style="text-align: right; margin-top: 15px;"><button class="btn-validar" onclick="validarEtapaConferência('OV')">✔ Validar Itens de Ordem</button></div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>BIPAR CÓDIGO DE BARRAS DO PRODUTO (EAN)</label>
+                        <input type="text" id="bipOV" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." autofocus onkeypress="if(event.key === 'Enter') processarBipagem('OV')">
+                        <div style="text-align: right; margin-top: 15px;">
+                            <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('OV')">✔ VALIDAR ITENS DE ORDEM</button>
+                        </div>
                     </div>
                 </div>
 
+                <!-- ETAPA 2 -->
                 <div id="faseRMA" class="fase-section">
-                    <h3>2. Itens de Remessa RMA (Substituição) <span id="statusRMA" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
+                    <h3>2. Itens de Remessa RMA (Substituição) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3>
                     <div class="produtos-grid" id="containerRMA"></div>
-                    <div id="areaBipagemRMA" style="margin-top: 15px;">
-                        <label>Bipar Código de Barras do RMA</label>
-                        <input type="text" id="bipRMA" class="input-bip" placeholder="Bloqueado - Conclua a Etapa 1" disabled>
-                        <div style="text-align: right; margin-top: 15px;"><button class="btn-validar" onclick="validarEtapaConferência('RMA')">✔ Validar Remessa RMA</button></div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>BIPAR CÓDIGO DE BARRAS DO RMA</label>
+                        <input type="text" id="bipRMA" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." disabled onkeypress="if(event.key === 'Enter') processarBipagem('RMA')">
+                        <div style="text-align: right; margin-top: 15px;">
+                            <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('RMA')">✔ VALIDAR REMESSA RMA</button>
+                        </div>
                     </div>
                 </div>
 
-                <div id="faseLogistica" class="fase-section">
-                    <h3>3. Logística de Expedição e Fechamento de Volumes <span id="statusLog" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
-                    <div id="listaVolumesCaixas"></div>
-                    <button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Novo Volume (Caixa)</button>
-                    <div style="margin-top: 30px;">
-                        <button class="btn-volt" onclick="finalizarProcessoExpedicao()">Finalizar Expedição e Liberar Pedido</button>
-                    </div>
+                <!-- Fechamento -->
+                <div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;">
+                    <button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicao()">FINALIZAR EXPEDIÇÃO</button>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- SCRIPT PRINCIPAL (LÓGICA E FIREBASE)       -->
-    <!-- ========================================== -->
+    <!-- SCRIPT E LÓGICA -->
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        // CONFIGURAÇÕES GERAIS
+        const db = firebase.firestore(); // Presumindo script injetado globalmente
+        let usuarioLogado = null; 
+        let papelLogado = null;
+        let idOvGlobal = null;
+        let objOvGlobal = null;
 
-        const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
-        
-        let bdUsuariosLogistica = {}; let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
+        // BANCOS FALSOS DE ESTOQUE PARA A BIPAGEM (Fase de Teste)
+        const mockItensOV = { '7898996240356': { sku: 'FCL15WH', alvo: 4, bipado: 0 }, '7898996240349': { sku: 'FCC15WH', alvo: 2, bipado: 0 } };
+        const mockItensRMA = { '7898974018007': { sku: 'CH65WWH', alvo: 1, bipado: 0 } };
 
-        window.onload = async function() { 
-            await carregarUsuariosDaNuvem(); 
-            document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
-            atualizarSaudacao();
-        };
-
-        function atualizarSaudacao() {
-            const hora = new Date().getHours();
-            let texto = "Boa noite";
-            if (hora >= 5 && hora < 12) texto = "Bom dia";
-            else if (hora >= 12 && hora < 18) texto = "Boa tarde";
-            
-            const nomeExibicao = usuarioLogado ? usuarioLogado : "Usuário";
-            document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${nomeExibicao}</span>`;
-        }
-
-        // NAVEGAÇÃO SPA
-        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
-        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
-
-        // SISTEMA DE USUÁRIOS E LOGIN FIREBASE
-        async function carregarUsuariosDaNuvem() {
+        window.onload = function() {
+            // Inicializa perfis na tela (Simulação do seu banco)
             const grid = document.getElementById('gridUsuariosLogin');
-            try {
-                const snapshot = await db.collection("usuarios").get(); bdUsuariosLogistica = {}; grid.innerHTML = ''; 
-                snapshot.forEach((doc) => {
-                    const nome = doc.id; const user = doc.data(); bdUsuariosLogistica[nome] = user; 
-                    if (user.status === 'ativo' || user.status === 'Online' || user.status === 'Offline') {
-                        grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${user.role === 'estoque' ? 'color: white; border-color:#444;' : ''}">${nome.charAt(0)}</div><h3>${nome}</h3><span style="color: ${user.role === 'admin' ? 'var(--volt-green)' : 'var(--text-muted)'}; font-size: 12px; text-transform: uppercase;">${user.funcao}</span></div>`;
-                    }
-                });
-            } catch (error) { console.error(error); }
+            grid.innerHTML = `
+                <div class="user-card" onclick="document.getElementById('modalSenha').style.display='flex'; document.getElementById('inputSenha').focus(); usuarioLogado='Lucas'; papelLogado='admin';"><h3 style="margin:0;">Lucas</h3><span style="font-size:11px; color:var(--volt-green);">ADMIN</span></div>
+                <div class="user-card" onclick="document.getElementById('modalSenha').style.display='flex'; document.getElementById('inputSenha').focus(); usuarioLogado='Luiz'; papelLogado='estoque';"><h3 style="margin:0;">Luiz</h3><span style="font-size:11px; color:#888;">ESTOQUE</span></div>
+            `;
         }
 
-        function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acessar como: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
-        function fecharSenhaModal() { document.getElementById('modalSenha').style.display = 'none'; }
-        
         function confirmarLogin() {
-            const senhaDigitada = document.getElementById('inputSenha').value; const credencial = bdUsuariosLogistica[usuarioSelecionadoTemp];
-            if (credencial && senhaDigitada === credencial.senha) {
-                usuarioLogado = usuarioSelecionadoTemp; papelLogado = credencial.role; 
-                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; document.getElementById('btnSair').style.display = 'block'; fecharSenhaModal();
-                atualizarSaudacao();
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); } else { carregarFilaOperadorDaNuvem(); }
-            } else { document.getElementById('erroSenha').style.display = 'block'; }
+            document.getElementById('modalSenha').style.display='none';
+            document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong>${usuarioLogado}</strong>`;
+            document.getElementById('btnSair').style.display = 'block';
+            document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
+            
+            if(papelLogado === 'admin') {
+                document.getElementById('viewAdmin').classList.add('active');
+                navegarAdmin('adminDash');
+            } else {
+                document.getElementById('viewEstoque').classList.add('active');
+                carregarFilaEstoque();
+            }
         }
-        document.getElementById('inputSenha').addEventListener('keypress', e => { if (e.key === 'Enter') confirmarLogin(); });
         function fazerLogout() { location.reload(); }
 
-        // ADMIN: LANÇAMENTOS COM DROPZONE
-        const dropzone = document.getElementById('dropzoneOV'); const fileInput = document.getElementById('fileInput');
-        dropzone.addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', (e) => { if(e.target.files.length) processarArquivo(e.target.files[0]); });
-        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); }); dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
-        dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]); });
+        // NAVEGAÇÃO
+        function navegarAdmin(tela) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(tela).classList.add('active'); }
+        function navegarEstoque(tela) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(tela).classList.add('active'); }
 
-        async function processarArquivo(file) {
-            document.getElementById('dropTitle').innerText = "⏳ Lendo arquivo..."; document.getElementById('dropTitle').style.color = "var(--warning-yellow)"; document.getElementById('dropSub').innerText = file.name;
-            try {
-                let textoExtraido = "";
-                if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
-                    const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-                    for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const textContent = await page.getTextContent(); textoExtraido += textContent.items.map(item => item.str).join(' ') + " "; }
-                } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
-                    const arrayBuffer = await file.arrayBuffer(); const workbook = XLSX.read(arrayBuffer, {type: 'array'});
-                    workbook.SheetNames.forEach(sheetName => { const roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header:1}); if(roa.length) textoExtraido += roa.join(" "); });
-                } else throw new Error("Formato inválido");
-
-                const textoUpper = textoExtraido.toUpperCase();
-                let matchOV = textoUpper.match(/OV[\s\-]*(\d{3,5})/); let matchArqOV = file.name.toUpperCase().match(/OV[\s\-]*(\d{3,5})/);
-                let numFinal = matchOV ? `OV-${matchOV[1]}` : (matchArqOV ? `OV-${matchArqOV[1]}` : `OV-${Math.floor(Math.random()*9000)+1000}`);
-                let clienteEncontrado = (textoUpper.includes("BOFFICE") || file.name.toUpperCase().includes("BOFFICE")) ? "BofficeBR" : (textoUpper.includes("TECH") ? "TechStore" : "Cliente Genérico");
-                let temRMA = (textoUpper.includes("RMA") || textoUpper.includes("SUBSTITUIÇÃO") || textoUpper.includes("GARANTIA")) ? "Com RMA" : "Sem RMA";
-
-                document.getElementById('ovNumero').value = numFinal; document.getElementById('ovCliente').value = clienteEncontrado; document.getElementById('ovCategoria').value = temRMA;
-                document.getElementById('dropTitle').innerText = "✅ Leitura Concluída!"; document.getElementById('dropTitle').style.color = "var(--success-green)"; document.getElementById('dropSub').innerText = "Dados extraídos com sucesso.";
-                dropzone.style.borderColor = "var(--success-green)";
-            } catch (error) { alert("Erro ao ler o arquivo. Digite manualmente."); document.getElementById('dropTitle').innerText = "📤 Arraste o arquivo aqui"; document.getElementById('dropTitle').style.color = "var(--text-light)"; }
+        // ==========================================
+        // ADMIN: LANÇAMENTOS E UPLOADS DUPLOS
+        // ==========================================
+        function toggleDropzoneRMA() {
+            const select = document.getElementById('ovHasRma').value;
+            document.getElementById('containerDropRMA').style.display = select === 'sim' ? 'block' : 'none';
         }
+
+        // Dropzone Lógica Visual Simples
+        const dzOV = document.getElementById('dropzoneOV'); const fileOV = document.getElementById('fileOV');
+        dzOV.addEventListener('click', () => fileOV.click());
+        fileOV.addEventListener('change', () => { dzOV.classList.add('concluido'); dzOV.innerHTML = `<h3 style="color:var(--volt-green); margin:0;">✅ Arquivo OV Carregado</h3>`; document.getElementById('ovNumero').value = "OV-8015"; document.getElementById('ovCliente').value = "BofficeBR";});
+
+        const dzRMA = document.getElementById('dropzoneRMA'); const fileRMA = document.getElementById('fileRMA');
+        dzRMA.addEventListener('click', () => fileRMA.click());
+        fileRMA.addEventListener('change', () => { dzRMA.classList.add('concluido'); dzRMA.innerHTML = `<h3 style="color:var(--volt-green); margin:0;">✅ Arquivo RMA Carregado</h3>`; });
 
         async function salvarNovaOV() {
-            const numero = document.getElementById('ovNumero').value.trim(); const cliente = document.getElementById('ovCliente').value.trim(); const categoria = document.getElementById('ovCategoria').value; const volumes = document.getElementById('ovVolumes').value;
-            if(!numero || !cliente) return alert("Preencha o número da OV e o Cliente.");
-            const d = new Date(); const dataFormatada = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
-            try { 
-                await db.collection("estoque_ovs").add({ numero: numero, cliente: cliente, categoria: categoria, volumesPrevisao: volumes, status: 'Aguardando Liberação', data: dataFormatada, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                alert(`OV ${numero} enviada para a Fila do Estoque!`); 
-                document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('dropTitle').innerText = "📤 Arraste o arquivo aqui"; document.getElementById('dropTitle').style.color = "var(--text-light)"; document.getElementById('dropSub').innerText = "O sistema lerá o arquivo para preencher os dados."; dropzone.style.borderColor = "#444";
-                navegarAdmin('adminDash'); 
-            } catch (error) { alert("Erro ao lançar OV."); }
-        }
-
-        // ADMIN: HISTÓRICO FIREBASE E AUDITORIA
-        function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
-        async function carregarHistoricoDaNuvem() {
-            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico...</td></tr>';
-            try {
-                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
-                snapshot.forEach((doc) => {
-                    const ov = doc.data();
-                    if (ov.status === 'Concluído') { 
-                        contador++; 
-                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.operadorFinal}</td><td><span class="badge-ok">Concluído (0 Erros)</span></td></tr>`;
-                    }
-                });
-                if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma atividade faturada.</td></tr>';
-            } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>'; }
-        }
-
-        // ADMIN: USUÁRIOS COM VISUALIZAÇÃO DE SENHA
-        function mostrarSenha(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === "password" ? "text" : "password";
-        }
-
-        function renderizarTabelaAcessosAdmin() {
-            const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
-            for (let nome in bdUsuariosLogistica) {
-                const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
-                tbody.innerHTML += `
-                <tr>
-                    <td><strong>${nome}</strong></td>
-                    <td>${user.funcao}</td>
-                    <td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td>
-                    <td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
-                    <td>
-                        <div class="tabela-senha-box">
-                            <input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}">
-                            <button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button>
-                        </div>
-                    </td>
-                </tr>`;
-            }
-        }
-
-        // OPERADOR: FILA DE ESTOQUE
-        let idOvEmConferencia = null;
-        async function carregarFilaOperadorDaNuvem() {
-            const container = document.getElementById('containerFilaEstoque'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila ao vivo...</p>';
-            try {
-                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); container.innerHTML = ''; let contador = 0;
-                snapshot.forEach((doc) => {
-                    const ov = doc.data(); const id = doc.id;
-                    if (ov.status === 'Aguardando Liberação' || ov.status === 'Separando') {
-                        contador++; 
-                        if (ov.status === 'Aguardando Liberação') {
-                            container.innerHTML += `<div class="pedido-item" onclick="iniciarConferenciaOperador('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--volt-green); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes Previstos: <strong style="color: white;">${ov.volumesPrevisao}</strong></span></div><span style="color: var(--volt-green); font-weight: bold;">➔ Iniciar Bipagem Coletora</span></div>`;
-                        } else {
-                            container.innerHTML += `<div class="pedido-item" style="border-color:var(--warning-yellow);" onclick="iniciarConferenciaOperador('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--warning-yellow); display: block;">${ov.numero} (Pausado)</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente}</span></div><span style="color: var(--warning-yellow); font-weight: bold;">➔ Continuar Separação</span></div>`;
-                        }
-                    }
-                });
-                if(contador === 0) container.innerHTML = '<p style="color: #888;">Nenhum pedido aguardando separação.</p>';
-            } catch (error) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar fila.</p>'; }
-        }
-
-        // OPERADOR: BIPAGEM
-        let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
-        const ordemVenda4119 = { '7898996240356': { sku: 'FCL15WH', alvo: 4, bipado: 0 }, '7898996240349': { sku: 'FCC15WH', alvo: 2, bipado: 0 } };
-        const rma4119 = { '7898974018007': { sku: 'CH65WWH', alvo: 1, bipado: 0 } };
-
-        async function iniciarConferenciaOperador(id_doc, numero) {
-            idOvEmConferencia = id_doc; document.getElementById('numPedidoAtual').innerText = numero;
-            await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Separando' });
+            const numero = document.getElementById('ovNumero').value || 'OV-0000';
+            const temRma = document.getElementById('ovHasRma').value === 'sim';
             
-            etapaAtualEstoque = 'OV'; document.getElementById('faseOV').className = 'fase-section ativa'; document.getElementById('faseRMA').className = 'fase-section'; document.getElementById('faseLogistica').className = 'fase-section'; document.getElementById('statusOV').innerText = "Aguardando Leitura"; document.getElementById('statusRMA').innerText = "Bloqueado"; document.getElementById('statusLog').innerText = "Bloqueado"; document.getElementById('areaBipagemOV').style.display = 'block'; document.getElementById('areaBipagemRMA').style.display = 'block'; document.getElementById('bipRMA').disabled = true; document.getElementById('bipOV').disabled = false; document.getElementById('bipOV').value = ''; document.getElementById('bipRMA').value = '';
-            for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0; for (const ean in rma4119) rma4119[ean].bipado = 0;
-            renderizarCardsProdutos('OV'); renderizarCardsProdutos('RMA'); document.getElementById('listaVolumesCaixas').innerHTML = ''; contadorVolumesInterno = 0; adicionarCaixaEmbalagem();
-            navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 200);
+            // Simula salvar no banco e limpa form
+            alert(`A ordem ${numero} foi liberada para a fila de expedição.`);
+            navegarAdmin('adminDash');
         }
 
-        function cancelarBipagem() { navegarEstoque('estoqueDash'); }
-
-        function renderizarCardsProdutos(fase) {
-            const container = document.getElementById(`container${fase}`); const banco = fase === 'OV' ? ordemVenda4119 : rma4119; container.innerHTML = '';
-            for (const ean in banco) { const prod = banco[ean]; const cardClass = prod.bipado > 0 ? 'produto-card ativo' : 'produto-card'; container.innerHTML += `<div class="${cardClass}"><div class="produto-sku">${prod.sku}</div><div class="produto-qtd">${prod.bipado}</div></div>`; }
+        // ==========================================
+        // ESTOQUE: FLUXO DE SEPARAÇÃO E CONFERÊNCIA
+        // ==========================================
+        function carregarFilaEstoque() {
+            // Simula dados vindo do banco
+            document.getElementById('containerFilaEstoque').innerHTML = `
+                <div class="pedido-item" onclick="iniciarPreparacao('OV-8015', true)">
+                    <div>
+                        <strong style="font-size: 20px; color: var(--text-light); display: block;">OV-8015</strong>
+                        <span style="color: var(--text-muted); font-size: 14px;">Cliente: BofficeBR | Volumes: 1 | RMA: Sim</span>
+                    </div>
+                    <span style="color: var(--volt-green); font-weight: bold; font-size: 12px; border: 1px solid var(--volt-green); padding: 8px 15px; border-radius: 4px;">INICIAR SEPARAÇÃO ➔</span>
+                </div>
+            `;
+            navegarEstoque('estoqueDash');
         }
 
-        function processarEntradaLeitor(inputElement, bancoDados, fase) {
-            const eanLido = inputElement.value.trim();
-            if (eanLido !== '') {
-                if (bancoDados[eanLido]) { bancoDados[eanLido].bipado++; renderizarCardsProdutos(fase); } 
-                else { document.getElementById('txtErroEstoque').innerText = "Código do item inválido ou não pertencente a esta etapa da separação."; document.getElementById('erroModal').style.display = 'flex'; }
-                inputElement.value = '';
+        function iniciarPreparacao(numero, hasRma) {
+            idOvGlobal = numero;
+            document.getElementById('prepOvNumero').innerText = numero;
+            document.getElementById('btnDownloadRma').style.display = hasRma ? 'inline-flex' : 'none';
+            navegarEstoque('estoquePreparacao');
+        }
+
+        function abrirBipagemOficial() {
+            document.getElementById('confOvNumero').innerText = idOvGlobal;
+            
+            // Reset das Telas e Falsos Bancos
+            for(let ean in mockItensOV) mockItensOV[ean].bipado = 0;
+            for(let ean in mockItensRMA) mockItensRMA[ean].bipado = 0;
+            
+            document.getElementById('faseOV').className = 'fase-section ativa';
+            document.getElementById('statusOV').innerText = 'Aguardando Leitura';
+            document.getElementById('bipOV').disabled = false;
+            document.getElementById('bipOV').value = '';
+
+            // Se a OV não tem RMA associado, esconde a fase inteira do RMA para não poluir
+            const temRma = document.getElementById('btnDownloadRma').style.display !== 'none';
+            document.getElementById('faseRMA').style.display = temRma ? 'block' : 'none';
+            document.getElementById('faseRMA').className = 'fase-section';
+            document.getElementById('bipRMA').disabled = true;
+
+            desenharCards('OV', mockItensOV);
+            if(temRma) desenharCards('RMA', mockItensRMA);
+
+            navegarEstoque('estoqueConferencia');
+            setTimeout(() => document.getElementById('bipOV').focus(), 100);
+        }
+
+        function desenharCards(faseId, bancoDeDados) {
+            const container = document.getElementById(`container${faseId}`);
+            container.innerHTML = '';
+            for(let ean in bancoDeDados) {
+                const item = bancoDeDados[ean];
+                const bg = item.bipado > 0 ? 'ativo' : '';
+                container.innerHTML += `
+                    <div class="produto-card ${bg}">
+                        <div class="produto-sku">${item.sku}</div>
+                        <div class="produto-qtd">${item.bipado}</div>
+                    </div>
+                `;
             }
         }
-        document.getElementById('bipOV').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarEntradaLeitor(this, ordemVenda4119, 'OV'); });
-        document.getElementById('bipRMA').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarEntradaLeitor(this, rma4119, 'RMA'); });
 
-        function fecharErroModal() { document.getElementById('erroModal').style.display = 'none'; if (etapaAtualEstoque === 'OV') { for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0; renderizarCardsProdutos('OV'); document.getElementById('bipOV').focus(); } else if (etapaAtualEstoque === 'RMA') { for (const ean in rma4119) rma4119[ean].bipado = 0; renderizarCardsProdutos('RMA'); document.getElementById('bipRMA').focus(); } }
+        function processarBipagem(fase) {
+            const input = document.getElementById(`bip${fase}`);
+            const ean = input.value.trim();
+            const banco = fase === 'OV' ? mockItensOV : mockItensRMA;
 
-        function validarEtapaConferência(etapa) {
-            const banco = etapa === 'OV' ? ordemVenda4119 : rma4119; let integridadeEtapa = true;
-            for (const ean in banco) { if (banco[ean].bipado !== banco[ean].alvo) integridadeEtapa = false; }
-            if (integridadeEtapa) {
-                document.getElementById(`fase${etapa}`).classList.remove('ativa'); document.getElementById(`fase${etapa}`).classList.add('concluida'); document.getElementById(`status${etapa}`).innerText = "✅ Conferência Homologada"; document.getElementById(`areaBipagem${etapa}`).style.display = 'none';
-                if (etapa === 'OV') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = "Em andamento..."; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
-                else if (etapa === 'RMA') { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = "Processo Liberado"; }
-            } else { document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a ordem fiscal mapeada."; document.getElementById('erroModal').style.display = 'flex'; }
+            if(ean && banco[ean]) {
+                banco[ean].bipado++;
+                desenharCards(fase, banco);
+                input.value = '';
+            } else if (ean) {
+                alert("⚠️ Código de barras inválido para esta etapa da conferência.");
+                input.value = '';
+            }
         }
 
-        function adicionarCaixaEmbalagem() {
-            contadorVolumesInterno++; volumeUnicoID++; const idVol = volumeUnicoID;
-            const htmlCaixa = `<div class="volume-box" id="caixaVol-${idVol}"><div class="volume-title">Volume / Caixa Nº 0${contadorVolumesInterno}</div>${contadorVolumesInterno > 1 ? `<button class="btn-remover-caixa" onclick="removerCaixaEmbalagem(${idVol})">✖ Excluir Volume</button>` : ''}<div class="grid-4"><div><label>Peso Real (Kg)</label><input type="number" class="input-dark" placeholder="0.00" step="0.01"></div><div><label>Comprimento (cm)</label><input type="number" class="input-dark" placeholder="0"></div><div><label>Largura (cm)</label><input type="number" class="input-dark" placeholder="0"></div><div><label>Altura (cm)</label><input type="number" class="input-dark" placeholder="0"></div></div></div>`;
-            document.getElementById('listaVolumesCaixas').insertAdjacentHTML('beforeend', htmlCaixa);
-        }
-        function removerCaixaEmbalagem(idVol) { document.getElementById(`caixaVol-${idVol}`).remove(); contadorVolumesInterno--; const caixas = document.querySelectorAll('.volume-title'); caixas.forEach((titulo, index) => { titulo.innerText = `Volume / Caixa Nº 0${index + 1}`; }); }
+        function validarFase(fase) {
+            const banco = fase === 'OV' ? mockItensOV : mockItensRMA;
+            let tudoOk = true;
+            for(let ean in banco) { if(banco[ean].bipado !== banco[ean].alvo) tudoOk = false; }
 
-        async function finalizarProcessoExpedicao() {
-            if(!confirm(`Confirma o fechamento desta expedição com ${contadorVolumesInterno} volume(s)?`)) return;
-            const d = new Date(); const dataConclusao = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
-            try { await db.collection("estoque_ovs").doc(idOvEmConferencia).update({ status: 'Concluído', dataConclusao: dataConclusao, operadorFinal: usuarioLogado, volumesReais: contadorVolumesInterno }); alert("📦 SUCESSO! Expedição registrada."); navegarEstoque('estoqueDash'); carregarFilaOperadorDaNuvem(); } catch(error) { alert("Erro ao salvar no banco."); }
+            if(tudoOk) {
+                document.getElementById(`fase${fase}`).classList.remove('ativa');
+                document.getElementById(`fase${fase}`).classList.add('concluida');
+                document.getElementById(`status${fase}`).innerText = 'Concluído';
+                document.getElementById(`bip${fase}`).disabled = true;
+
+                if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') {
+                    document.getElementById('faseRMA').classList.add('ativa');
+                    document.getElementById('bipRMA').disabled = false;
+                    document.getElementById('bipRMA').focus();
+                } else {
+                    alert("✅ Conferência validada. Clique em Finalizar Expedição.");
+                }
+            } else {
+                alert("⚠️ Divergência encontrada! As quantidades bipadas não conferem com a Ordem de Venda. Limpe a caixa e recomece a bipar.");
+                for(let ean in banco) banco[ean].bipado = 0;
+                desenharCards(fase, banco);
+            }
+        }
+
+        function concluirExpedicao() {
+            alert(`Expedição da ${idOvGlobal} finalizada com sucesso! Gravado no Histórico.`);
+            carregarFilaEstoque();
         }
     </script>
 </body>
