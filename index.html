@@ -38,7 +38,7 @@
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
         .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-        #modalSenha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        #modalSenha, #modalNovoUsuario { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -87,21 +87,20 @@
     </div>
 
     <div class="container">
-        
         <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;">
                 <h1 style="font-size: 32px;">Quem está acessando?</h1>
                 <p style="color: var(--text-muted);">Selecione seu perfil para entrar no HUB</p>
             </div>
-            <div class="login-grid" id="gridUsuariosLogin">
-                <p style="color: var(--volt-green);">Carregando dados da nuvem...</p>
-            </div>
+            <div class="login-grid" id="gridUsuariosLogin"></div>
         </div>
 
         <!-- TELA DO SISTEMA -->
         <div id="viewAdmin" class="view-layer">
-            <div id="adminDash" class="sub-screen active">
+            
+            <!-- PAINEL ADMIN -->
+            <div id="adminDash" class="sub-screen">
                 <h1 style="margin-bottom: 30px;">Painel de Gestão VOLT</h1>
                 <div class="grid-4">
                     <div class="hub-card" onclick="abrirModuloEstoque()">
@@ -112,7 +111,6 @@
                         <div><h3>Faturamento</h3><p>OVs prontas para NF.</p></div>
                         <div class="action">Em breve ➔</div>
                     </div>
-                    <!-- NOVO CARD: HISTÓRICO -->
                     <div class="hub-card" onclick="abrirModuloHistorico()" style="border-color: var(--volt-green);">
                         <div><h3 style="color: white;">Histórico</h3><p>Relatório de OVs concluídas.</p></div>
                         <div class="action" style="color: var(--volt-green);">Acessar ➔</div>
@@ -124,12 +122,13 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: ESTOQUE E LANÇAMENTOS -->
+            <!-- MÓDULO ESTOQUE E LANÇAMENTOS -->
             <div id="moduloEstoque" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 style="color: var(--volt-green); margin: 0;">Lançamento de OVs (Estoque)</h2>
-                        <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
+                        <h2 style="color: var(--volt-green); margin: 0;">Estoque / Expedição</h2>
+                        <!-- Esse botão será escondido se o usuário for do Estoque -->
+                        <button class="btn-outline" id="btnVoltarEstoque" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
                     </div>
                     
                     <div style="background: #0a0a0a; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-bottom: 30px;">
@@ -180,14 +179,13 @@
                 </div>
             </div>
 
-            <!-- NOVO MÓDULO: HISTÓRICO -->
+            <!-- MÓDULO HISTÓRICO -->
             <div id="moduloHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h2 style="color: var(--volt-green); margin: 0;">Histórico de Operações</h2>
                         <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar ao Início</button>
                     </div>
-                    
                     <div style="overflow-x: auto;">
                         <table>
                             <thead>
@@ -206,16 +204,26 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: RH -->
+            <!-- MÓDULO RH (RESTAURADO COM EDIÇÃO) -->
             <div id="adminUsuarios" class="sub-screen">
                 <div class="modulo-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 style="color: var(--volt-green); margin: 0;">Gestão da Equipe</h2>
-                        <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar</button>
+                        <h2 style="color: var(--volt-green); margin: 0;">Gestão da Equipe e Acessos</h2>
+                        <div>
+                            <button class="btn-outline" style="border:none;" onclick="navegarAdmin('adminDash')">⟵ Voltar</button>
+                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table>
-                            <thead><tr><th>Colaborador</th><th>Admissão</th><th>Acesso</th><th>Status</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th>Colaborador</th>
+                                    <th>Admissão / Tempo</th>
+                                    <th>Acesso (Login / Senha)</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Ações na Nuvem</th>
+                                </tr>
+                            </thead>
                             <tbody id="tabelaEquipe"></tbody>
                         </table>
                     </div>
@@ -240,6 +248,7 @@
 
         let bdUsuarios = {}; 
         let currentUser = null;
+        let currentRole = null;
         let loginTempData = {};
 
         window.onload = async function() {
@@ -280,21 +289,32 @@
 
             if (userObj && digitada === userObj.senha && userObj.status === 'ativo') {
                 currentUser = loginTempData.nome; 
+                currentRole = userObj.role; // Pega a regra: admin ou estoque
                 document.getElementById('headerNomeUser').innerHTML = `<strong style="color:white;">${currentUser}</strong>`;
                 document.getElementById('btnSair').style.display = 'block';
                 fecharSenha();
                 document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
                 
                 document.getElementById('viewAdmin').classList.add('active'); 
-                navegarAdmin('adminDash');
-                renderizarEquipeAdmin(); 
+                
+                // SEPARAÇÃO DE ACESSOS AQUI:
+                if (currentRole === 'admin') {
+                    navegarAdmin('adminDash'); // Vai pro painel
+                    renderizarEquipeAdmin(); 
+                } else {
+                    // Operador de Estoque
+                    navegarAdmin('moduloEstoque'); // Vai direto pra fila
+                    document.getElementById('btnVoltarEstoque').style.display = 'none'; // Esconde botão voltar
+                    carregarOVsDaNuvem();
+                }
+
             } else { 
                 document.getElementById('erroSenha').style.display = 'block'; 
             }
         }
         document.getElementById('inputSenha').addEventListener('keypress', e => { if (e.key === 'Enter') confirmarLogin(); });
         function fazerLogout() { location.reload(); }
-        function voltarLogo() { if (!currentUser) return; navegarAdmin('adminDash'); }
+        function voltarLogo() { if (currentRole === 'admin') navegarAdmin('adminDash'); } // Estoque não pode voltar pelo logo
         function navegarAdmin(id) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
         // ==========================================
@@ -302,6 +322,7 @@
         // ==========================================
         function abrirModuloEstoque() {
             navegarAdmin('moduloEstoque');
+            document.getElementById('btnVoltarEstoque').style.display = 'inline-block'; // Admin pode voltar
             carregarOVsDaNuvem(); 
         }
 
@@ -310,7 +331,6 @@
             const cliente = document.getElementById('ovCliente').value.trim();
             const categoria = document.getElementById('ovCategoria').value;
             const volumes = document.getElementById('ovVolumes').value;
-
             if(!numero || !cliente) return alert("Preencha o número da OV e o Cliente.");
 
             const dataAtual = new Date();
@@ -318,41 +338,25 @@
 
             try {
                 await db.collection("estoque_ovs").add({
-                    numero: numero,
-                    cliente: cliente,
-                    categoria: categoria,
-                    volumes: volumes,
-                    status: 'Separando',
-                    data: dataFormatada,
-                    operador: currentUser,
+                    numero: numero, cliente: cliente, categoria: categoria, volumes: volumes,
+                    status: 'Separando', data: dataFormatada, operador: currentUser,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp() 
                 });
-
                 document.getElementById('ovNumero').value = '';
                 document.getElementById('ovCliente').value = '';
                 document.getElementById('ovVolumes').value = '1';
-                
                 carregarOVsDaNuvem(); 
-            } catch (error) {
-                console.error("Erro ao salvar OV", error);
-                alert("Erro ao lançar OV na nuvem.");
-            }
+            } catch (error) { console.error(error); alert("Erro ao lançar OV na nuvem."); }
         }
 
         async function carregarOVsDaNuvem() {
             const tbody = document.getElementById('tabelaEstoque');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando fila...</td></tr>';
-            
             try {
                 const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get();
-                tbody.innerHTML = '';
-                let contador = 0;
-
+                tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach((doc) => {
-                    const ov = doc.data();
-                    const id = doc.id;
-                    
-                    // Exibe APENAS as que estão Separando
+                    const ov = doc.data(); const id = doc.id;
                     if (ov.status === 'Separando') {
                         contador++;
                         tbody.innerHTML += `
@@ -370,57 +374,34 @@
                         `;
                     }
                 });
-
-                if(contador === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhuma OV na fila no momento.</td></tr>';
-                }
-            } catch (error) {
-                console.error("Erro ao ler OVs:", error);
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar dados.</td></tr>';
-            }
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhuma OV na fila.</td></tr>';
+            } catch (error) { console.error(error); tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar dados.</td></tr>'; }
         }
 
-        // FUNÇÃO QUE MOVE A OV PARA O HISTÓRICO
         async function concluirOV(id_documento, numero_ov) {
             if(!confirm(`Finalizar a separação da ${numero_ov} e enviar para o histórico?`)) return;
-
             const dataAtual = new Date();
             const dataConclusao = dataAtual.toLocaleDateString('pt-BR') + ' ' + dataAtual.getHours() + ':' + String(dataAtual.getMinutes()).padStart(2, '0');
-
             try {
                 await db.collection("estoque_ovs").doc(id_documento).update({
-                    status: 'Concluído',
-                    dataConclusao: dataConclusao,
-                    operadorFinal: currentUser // Registra quem finalizou
+                    status: 'Concluído', dataConclusao: dataConclusao, operadorFinal: currentUser
                 });
-                carregarOVsDaNuvem(); // Atualiza a tabela tirando ela da fila
-            } catch(error) {
-                console.error(error);
-                alert("Erro ao concluir a OV.");
-            }
+                carregarOVsDaNuvem(); 
+            } catch(error) { console.error(error); alert("Erro ao concluir a OV."); }
         }
 
         // ==========================================
-        // NOVO: MÓDULO DE HISTÓRICO
+        // MÓDULO HISTÓRICO
         // ==========================================
-        function abrirModuloHistorico() {
-            navegarAdmin('moduloHistorico');
-            carregarHistoricoDaNuvem();
-        }
-
+        function abrirModuloHistorico() { navegarAdmin('moduloHistorico'); carregarHistoricoDaNuvem(); }
         async function carregarHistoricoDaNuvem() {
             const tbody = document.getElementById('tabelaHistorico');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--volt-green);">Buscando histórico...</td></tr>';
-            
             try {
                 const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get();
-                tbody.innerHTML = '';
-                let contador = 0;
-
+                tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach((doc) => {
                     const ov = doc.data();
-                    
-                    // Exibe APENAS as que estão Concluídas
                     if (ov.status === 'Concluído') {
                         contador++;
                         tbody.innerHTML += `
@@ -435,34 +416,74 @@
                         `;
                     }
                 });
-
-                if(contador === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhuma OV concluída ainda.</td></tr>';
-                }
-            } catch (error) {
-                console.error("Erro ao ler Histórico:", error);
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>';
-            }
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhuma OV concluída.</td></tr>';
+            } catch (error) { console.error(error); tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>'; }
         }
 
         // ==========================================
-        // RH (Renderização simplificada)
+        // MÓDULO RH - RESTAURADO COM EDIÇÃO E BOTÕES
         // ==========================================
+        function calcularTempoEmpresa(dataIso) {
+            if (!dataIso) return "Data não informada";
+            const inicio = new Date(dataIso);
+            const hoje = new Date(); 
+            let meses = (hoje.getFullYear() - inicio.getFullYear()) * 12;
+            meses -= inicio.getMonth(); meses += hoje.getMonth();
+            if (meses < 0) return "Admissão Futura";
+            if (meses < 12) return `${meses} meses`;
+            const anos = Math.floor(meses / 12);
+            const resto = meses % 12;
+            return `${anos} ano(s) e ${resto} mês(es)`;
+        }
+
         function renderizarEquipeAdmin() {
             const tbody = document.getElementById('tabelaEquipe');
             tbody.innerHTML = '';
             for (let nome in bdUsuarios) {
                 const u = bdUsuarios[nome];
+                const tempo = calcularTempoEmpresa(u.admissao);
                 const isAtivo = u.status === 'ativo';
+                
                 tbody.innerHTML += `
-                    <tr style="${!isAtivo ? 'opacity: 0.5;' : ''}">
-                        <td><strong>${nome}</strong><br><span style="font-size: 11px; color: #888;">${u.funcao}</span></td>
-                        <td>${u.admissao}</td>
-                        <td>${u.login}</td>
+                    <tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255, 51, 51, 0.05);' : ''}">
+                        <td><strong>${nome}</strong><br><span style="font-size: 11px; color: #888;">${u.funcao}</span> <span class="badge-papel" style="margin-left: 5px;">${u.role}</span></td>
+                        <td style="width: 150px;">
+                            <input type="date" id="admissao_${nome}" value="${u.admissao}" class="input-editavel" style="font-size: 12px;">
+                            <br><span style="color: var(--volt-green); font-size: 11px; font-weight: bold;">${tempo}</span>
+                        </td>
+                        <td style="width: 180px;">
+                            <input type="text" id="login_${nome}" value="${u.login}" class="input-editavel" placeholder="Login">
+                            <input type="text" id="senha_${nome}" value="${u.senha}" class="input-editavel" placeholder="Senha">
+                        </td>
                         <td><span class="${isAtivo ? 'status-ativo' : 'status-inativo'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarAcessoUsuarioNuvem('${nome}')">Salvar Nuvem</button>
+                            <button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 5px;" onclick="toggleStatusUsuarioNuvem('${nome}', '${isAtivo}')">${isAtivo ? 'Desligar' : 'Reativar'}</button>
+                        </td>
                     </tr>
                 `;
             }
+        }
+
+        async function salvarAcessoUsuarioNuvem(nome) {
+            const login = document.getElementById(`login_${nome}`).value;
+            const senha = document.getElementById(`senha_${nome}`).value;
+            const admissao = document.getElementById(`admissao_${nome}`).value;
+            try {
+                await db.collection("usuarios").doc(nome).update({ login: login, senha: senha, admissao: admissao });
+                alert(`✅ Dados de ${nome} salvos no Firebase!`);
+                await carregarUsuariosDaNuvem(); renderizarEquipeAdmin();
+            } catch (error) { console.error(error); alert("Erro ao salvar na nuvem."); }
+        }
+
+        async function toggleStatusUsuarioNuvem(nome, isAtivoStr) {
+            const isAtivo = isAtivoStr === 'true';
+            const novoStatus = isAtivo ? 'inativo' : 'ativo';
+            if (isAtivo) if(!confirm(`Desligar ${nome}? O acesso será cortado da nuvem imediatamente.`)) return;
+            try {
+                await db.collection("usuarios").doc(nome).update({ status: novoStatus });
+                await carregarUsuariosDaNuvem(); renderizarEquipeAdmin();
+            } catch (error) { console.error(error); alert("Erro ao alterar status na nuvem."); }
         }
     </script>
 </body>
