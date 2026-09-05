@@ -6,53 +6,63 @@
     <link rel="icon" type="image/png" href="image_a87265.png">
     
     <style>
-        :root {
-            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000;
-            --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a;
-            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00;
+        /* ========================================== */
+        /* 1. VARIÁVEIS E CONFIGURAÇÕES GERAIS        */
+        /* ========================================== */
+        :root { 
+            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; 
+            --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; 
+            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
         }
-
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
         
-        /* CABEÇALHO */
+        /* Navegação entre Telas */
+        .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-layer.active, .sub-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+        /* ========================================== */
+        /* 2. CABEÇALHO E BOTÕES                      */
+        /* ========================================== */
         .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
         .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
         .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
         .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
         .header-info { display: flex; align-items: center; gap: 20px; }
-        .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px;}
-        .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
-
-        .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
         
-        /* GERENCIADOR DE CAMADAS SPA */
-        .view-layer { display: none; animation: fadeIn 0.3s ease-in-out; }
-        .view-layer.active { display: block; }
-        .sub-screen { display: none; }
-        .sub-screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* GRIDS */
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        
-        /* ELEMENTOS DE INTERFACE */
         .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
         .btn-volt:hover { opacity: 0.9; }
-        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;}
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.2s;}
         .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
         .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
         .btn-voltar { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
         .btn-voltar:hover { color: white; border-color: white; }
+        .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px;}
+        .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
         
         .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
         .input-dark:focus { border-color: var(--volt-green); outline: none; }
         .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
         .input-bip:focus { outline: 1px solid var(--volt-green); }
         .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
-        
+        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
+        .input-editavel:focus { border-color: var(--volt-green); outline: none; }
+
+        /* ========================================== */
+        /* 3. COMPONENTES DO ADMIN E LOGIN            */
+        /* ========================================== */
+        .greeting { text-align: center; margin-bottom: 40px; }
+        .greeting h1 { font-size: 32px; font-weight: 600; margin: 0; }
+        .greeting h1 span { color: var(--volt-green); }
+        .greeting p { color: var(--text-muted); margin-top: 10px; }
+
         .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
         .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
         .modulo-header h2 { margin: 0; color: var(--volt-green); }
@@ -70,28 +80,6 @@
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
         .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-
-        /* FASES DE CONFERÊNCIA */
-        .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
-        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
-        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
-        .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
-        .fase-section.concluida h3 { color: var(--success-green); }
-        
-        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
-        .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.1);}
-        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
-        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
-        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
-        .fase-section.concluida .produto-card { border-color: var(--success-green); box-shadow: none;}
-        .fase-section.concluida .produto-qtd { color: var(--success-green); }
-
-        .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
-        .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
-        .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
-        label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;}
 
         /* DRAG & DROP AREA */
         .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
@@ -120,10 +108,16 @@
         .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
         .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
         .equipe-stats strong { color: var(--text-light); }
-        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
-        .input-editavel:focus { border-color: var(--volt-green); outline: none; }
 
-        /* MODAIS CAMADA SUPERIOR */
+        .tabela-senha-box { display: flex; align-items: center; gap: 10px; }
+        .senha-input { background: transparent; border: none; color: white; width: 80px; font-size: 14px; font-family: monospace; }
+        .senha-input:focus { outline: none; }
+        .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0; }
+        .btn-icon:hover { color: var(--volt-green); }
+
+        /* ========================================== */
+        /* 4. MODAIS CAMADA SUPERIOR                  */
+        /* ========================================== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
@@ -131,6 +125,32 @@
         .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
+
+        /* ========================================== */
+        /* 5. TELA DE CONFERÊNCIA (ESTOQUE)           */
+        /* ========================================== */
+        .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
+        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
+        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
+        .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
+        .fase-section.concluida h3 { color: var(--success-green); }
+        
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
+        .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.1);}
+        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
+        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
+        .fase-section.concluida .produto-card { border-color: var(--success-green); box-shadow: none;}
+        .fase-section.concluida .produto-qtd { color: var(--success-green); }
+
+        .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
+        .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
+        .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
+        label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;}
+        .btn-validar { background-color: transparent; border: 2px solid var(--volt-green); color: var(--volt-green); width: auto; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; display: inline-block;}
+        .btn-validar:hover { background-color: rgba(196, 240, 0, 0.1); }
     </style>
 
     <!-- BIBLIOTECAS -->
@@ -156,7 +176,7 @@
         </div>
     </div>
 
-    <!-- MODAL GLOBAL: ERRO OPERACIONAL (TOLERÂNCIA ZERO) -->
+    <!-- MODAIS GLOBAIS -->
     <div id="erroModal" class="modal-overlay">
         <div class="erro-box">
             <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
@@ -169,7 +189,6 @@
         </div>
     </div>
 
-    <!-- MODAL GLOBAL: AUTENTICAÇÃO -->
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
             <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acessar Perfil</h3>
@@ -182,17 +201,14 @@
         </div>
     </div>
 
-    <!-- MODAL GLOBAL: AUDITORIA DE HISTÓRICO -->
     <div id="modalAuditoria" class="modal-overlay">
         <div class="auditoria-box">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
                 <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
-                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Luiz</strong></span>
+                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
             </div>
             <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades e reinicializações da etapa:</p>
-            <ul class="log-lista" id="listaErrosLogs">
-                <li class="log-item"><span class="log-hora">Sep 05, 2026, 4:10 PM</span><strong>Divergência de Código (EAN Inválido):</strong> Operador tentou registrar item incompatível. Contagem zerada.</li>
-            </ul>
+            <ul class="log-lista" id="listaErrosLogs"></ul>
             <div style="text-align: right; margin-top: 25px;">
                 <button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button>
             </div>
@@ -220,22 +236,22 @@
         <div id="viewAdmin" class="view-layer">
             
             <div id="adminDash" class="sub-screen active">
-                <div style="margin-bottom: 40px;">
-                    <h1 style="font-size: 32px; margin: 0;">Painel Administrativo</h1>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Controle de expedição, auditoria de processos e equipe logísitica.</p>
+                <div class="greeting">
+                    <h1 id="saudacaoAdmin">Boa noite, <span>Usuário</span></h1>
+                    <p>O que você e a equipe de logística vão fazer hoje?</p>
                 </div>
                 <div class="grid-3">
                     <div class="hub-card" onclick="navegarAdmin('adminLancamentos')">
-                        <div><h3>Central de Lançamentos</h3><p>Suba novas Ordens de Venda originais e faça a liberação para a equipe de separação.</p></div>
-                        <div class="action">Abrir Módulo ➔</div>
+                        <div><h3>Central de Lançamentos</h3><p>Suba as novas Ordens de Venda, vincule as remessas de RMA e libere os pedidos para a equipe de separação.</p></div>
+                        <div class="action">Abrir ➔</div>
                     </div>
                     <div class="hub-card" onclick="abrirModuloHistorico()">
-                        <div><h3>Histórico e Auditoria</h3><p>Rastreie os relatórios de expedição, produtividade e verifique logs concluídos.</p></div>
-                        <div class="action">Abrir Relatórios ➔</div>
+                        <div><h3>Histórico e Auditoria</h3><p>Acompanhe o desempenho da equipe e rastreie relatórios de expedição faturada.</p></div>
+                        <div class="action">Abrir ➔</div>
                     </div>
                     <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
-                        <div><h3>Gestão de Acessos</h3><p>Cadastre perfis operacionais, gerencie senhas e analise o status da equipe interna.</p></div>
-                        <div class="action">Configurar Equipe ➔</div>
+                        <div><h3>Gestão de Acessos</h3><p>Controle senhas, cadastre novos operadores e desative perfis antigos da sua equipe.</p></div>
+                        <div class="action">Abrir Configurações ➔</div>
                     </div>
                 </div>
             </div>
@@ -270,7 +286,7 @@
                                 </div>
                             </div>
                             <div style="text-align: right; margin-top: 30px;">
-                                <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">Atualizar e Liberar Fila</button>
+                                <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">Liberar para Separação</button>
                             </div>
                         </div>
                     </div>
@@ -284,15 +300,38 @@
                         <h2>Auditoria Operacional e Desempenho</h2>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
                     </div>
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Últimas Atividades Faturadas</h3>
+                    
+                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe (Mês Atual)</h3>
+                    <div class="grid-equipe">
+                        <div class="equipe-card" style="border-left-color: var(--volt-green);">
+                            <div class="equipe-nome">Luiz <span style="color: var(--volt-green); font-size: 14px;">Em operação</span></div>
+                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>15</strong></span><span>Erros: <strong style="color: var(--error-red);">2</strong></span></div>
+                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">86%</strong></span><span>Volume Geral: <strong>65%</strong></span></div>
+                        </div>
+                        <div class="equipe-card">
+                            <div class="equipe-nome">João <span style="color: var(--text-muted); font-size: 14px;">Offline</span></div>
+                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>8</strong></span><span>Erros: <strong>0</strong></span></div>
+                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span><span>Volume Geral: <strong>35%</strong></span></div>
+                        </div>
+                        <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="equipe-nome">Consolidado do Mês</div>
+                            <div class="equipe-stats" style="margin-bottom: 5px;"><span>Total Expedido: <strong>23 Pedidos</strong></span><span>Média de Acerto: <strong style="color: var(--success-green);">91%</strong></span></div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;">📥 Relatório</button>
+                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;">🗑️ Limpar Mês</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: var(--text-light); margin-bottom: 15px; margin-top: 40px; font-size: 16px;">Registro de Expedição Diária</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Data Conclusão</th>
-                                <th>Nº Pedido</th>
+                                <th>Ordem (OV)</th>
                                 <th>Cliente</th>
-                                <th>Operador Final</th>
-                                <th>Ações</th>
+                                <th>Operador</th>
+                                <th>Auditoria (Recomeços)</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaHistorico"></tbody>
@@ -304,17 +343,20 @@
             <div id="adminUsuarios" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
-                        <h2>Controle de Equipe e Permissões de Acesso</h2>
+                        <h2>Controle de Equipe e Senhas</h2>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Usuários com acesso ao sistema:</p>
+                        <button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="alert('Cadastro rápido conectando ao Firebase em breve.')">+ Cadastrar Novo Perfil</button>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Colaborador</th>
-                                <th>Cargo / Função</th>
-                                <th>Nível de Permissão</th>
-                                <th>Status Cadastral</th>
-                                <th>Ações Nuvem</th>
+                                <th>Nome do Usuário</th>
+                                <th>Nível de Acesso</th>
+                                <th>Status de Rede</th>
+                                <th>Senha Cadastrada</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaEquipeUsuarios"></tbody>
@@ -328,7 +370,6 @@
         <!-- ========================================== -->
         <div id="viewEstoque" class="view-layer">
             
-            <!-- Subtela Estoque: Fila de Separação Pendente Firebase -->
             <div id="estoqueDash" class="sub-screen active">
                 <h1 style="margin-bottom: 30px; font-size: 32px;">Pedidos Disponíveis para Separação</h1>
                 <div id="containerFilaEstoque">
@@ -336,7 +377,6 @@
                 </div>
             </div>
 
-            <!-- Subtela Estoque: Área Operacional de Conferência Sequencial às Cegas -->
             <div id="estoqueConferencia" class="sub-screen">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <button class="btn-outline" style="border:none; padding-left: 0;" onclick="navegarEstoque('estoqueDash')">⟵ Voltar à Fila e Pausar</button>
@@ -344,29 +384,26 @@
                     <div></div>
                 </div>
 
-                <!-- ETAPA 1 -->
                 <div id="faseOV" class="fase-section ativa">
                     <h3>1. Itens da Ordem de Venda (Principal) <span id="statusOV" style="font-size: 14px; color: var(--text-muted);">Aguardando Leitura</span></h3>
                     <div class="produtos-grid" id="containerOV"></div>
                     <div id="areaBipagemOV" style="margin-top: 15px;">
                         <label>Bipar Código de Barras do Produto (EAN)</label>
                         <input type="text" id="bipOV" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." autofocus>
-                        <div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('OV')">✔ Validar Itens de Ordem</button></div>
+                        <div style="text-align: right; margin-top: 15px;"><button class="btn-validar" onclick="validarEtapaConferência('OV')">✔ Validar Itens de Ordem</button></div>
                     </div>
                 </div>
 
-                <!-- ETAPA 2 -->
                 <div id="faseRMA" class="fase-section">
                     <h3>2. Itens de Remessa RMA (Substituição) <span id="statusRMA" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
                     <div class="produtos-grid" id="containerRMA"></div>
                     <div id="areaBipagemRMA" style="margin-top: 15px;">
                         <label>Bipar Código de Barras do RMA</label>
                         <input type="text" id="bipRMA" class="input-bip" placeholder="Bloqueado - Conclua a Etapa 1" disabled>
-                        <div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('RMA')">✔ Validar Remessa RMA</button></div>
+                        <div style="text-align: right; margin-top: 15px;"><button class="btn-validar" onclick="validarEtapaConferência('RMA')">✔ Validar Remessa RMA</button></div>
                     </div>
                 </div>
 
-                <!-- ETAPA 3 -->
                 <div id="faseLogistica" class="fase-section">
                     <h3>3. Logística de Expedição e Fechamento de Volumes <span id="statusLog" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
                     <div id="listaVolumesCaixas"></div>
@@ -391,7 +428,21 @@
         
         let bdUsuariosLogistica = {}; let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
 
-        window.onload = async function() { await carregarUsuariosDaNuvem(); document.getElementById('headerNomeUser').innerText = "Identifique-se"; };
+        window.onload = async function() { 
+            await carregarUsuariosDaNuvem(); 
+            document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
+            atualizarSaudacao();
+        };
+
+        function atualizarSaudacao() {
+            const hora = new Date().getHours();
+            let texto = "Boa noite";
+            if (hora >= 5 && hora < 12) texto = "Bom dia";
+            else if (hora >= 12 && hora < 18) texto = "Boa tarde";
+            
+            const nomeExibicao = usuarioLogado ? usuarioLogado : "Usuário";
+            document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${nomeExibicao}</span>`;
+        }
 
         // NAVEGAÇÃO SPA
         function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
@@ -421,6 +472,7 @@
             if (credencial && senhaDigitada === credencial.senha) {
                 usuarioLogado = usuarioSelecionadoTemp; papelLogado = credencial.role; 
                 document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; document.getElementById('btnSair').style.display = 'block'; fecharSenhaModal();
+                atualizarSaudacao();
                 mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); } else { carregarFilaOperadorDaNuvem(); }
             } else { document.getElementById('erroSenha').style.display = 'block'; }
@@ -470,7 +522,7 @@
             } catch (error) { alert("Erro ao lançar OV."); }
         }
 
-        // ADMIN: HISTÓRICO FIREBASE
+        // ADMIN: HISTÓRICO FIREBASE E AUDITORIA
         function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
         async function carregarHistoricoDaNuvem() {
             const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico...</td></tr>';
@@ -480,26 +532,43 @@
                     const ov = doc.data();
                     if (ov.status === 'Concluído') { 
                         contador++; 
-                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'}</td><td><span class="badge-ok">100% CORRETO</span></td></tr>`;
+                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.operadorFinal}</td><td><span class="badge-ok">Concluído (0 Erros)</span></td></tr>`;
                     }
                 });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma atividade faturada.</td></tr>';
             } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>'; }
         }
 
-        // ADMIN: USUÁRIOS
+        // ADMIN: USUÁRIOS COM VISUALIZAÇÃO DE SENHA
+        function mostrarSenha(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
         function renderizarTabelaAcessosAdmin() {
             const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
                 const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
-                tbody.innerHTML += `<tr><td><strong>${nome}</strong></td><td>${user.funcao}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td><td><button class="btn-outline-2" onclick="alert('Edição rápida conectada ao Firebase em breve.')">Editar Perfil</button></td></tr>`;
+                tbody.innerHTML += `
+                <tr>
+                    <td><strong>${nome}</strong></td>
+                    <td>${user.funcao}</td>
+                    <td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td>
+                    <td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
+                    <td>
+                        <div class="tabela-senha-box">
+                            <input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}">
+                            <button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button>
+                        </div>
+                    </td>
+                </tr>`;
             }
         }
 
         // OPERADOR: FILA DE ESTOQUE
         let idOvEmConferencia = null;
         async function carregarFilaOperadorDaNuvem() {
-            const container = document.getElementById('containerFilaEstoque'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila de separação...</p>';
+            const container = document.getElementById('containerFilaEstoque'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila ao vivo...</p>';
             try {
                 const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); container.innerHTML = ''; let contador = 0;
                 snapshot.forEach((doc) => {
@@ -531,6 +600,8 @@
             renderizarCardsProdutos('OV'); renderizarCardsProdutos('RMA'); document.getElementById('listaVolumesCaixas').innerHTML = ''; contadorVolumesInterno = 0; adicionarCaixaEmbalagem();
             navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 200);
         }
+
+        function cancelarBipagem() { navegarEstoque('estoqueDash'); }
 
         function renderizarCardsProdutos(fase) {
             const container = document.getElementById(`container${fase}`); const banco = fase === 'OV' ? ordemVenda4119 : rma4119; container.innerHTML = '';
