@@ -1,761 +1,577 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
- <meta charset="UTF-8">
- <title>HUB VOLT - Sistema Integrado de Gestão Logística</title>
- <link rel="icon" type="image/png" href="icone_volt.png">
- <style>
- :root {
- --bg-color: #0d0d0d;
- --card-bg: #161616;
- --volt-green: #c4f000;
- --text-light: #ffffff;
- --text-muted: #888888;
- --border-color: #2a2a2a;
- --error-red: #ff3333;
- --success-green: #00cc66;
- }
+    <meta charset="UTF-8">
+    <title>HUB VOLT - Sistema Integrado de Gestão Logística</title>
+    <link rel="icon" type="image/png" href="image_a87265.png">
+    
+    <style>
+        :root {
+            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000;
+            --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a;
+            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00;
+        }
 
- body { 
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
- background-color: var(--bg-color); 
- color: var(--text-light); 
- margin: 0; 
- padding: 0; 
- display: flex; 
- flex-direction: column; 
- align-items: center; 
- min-height: 100vh; 
- overflow-x: hidden; 
- }
- 
- /* CABEÇALHO */
- .header { 
- width: 100%; 
- padding: 15px 40px; 
- display: flex; 
- justify-content: space-between; 
- align-items: center; 
- box-sizing: border-box; 
- border-bottom: 1px solid var(--border-color); 
- margin-bottom: 30px; 
- background: #000; 
- }
- .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
- .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
- .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
- .header-info { display: flex; align-items: center; gap: 20px; }
- .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px;}
- .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        
+        /* CABEÇALHO */
+        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
+        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
+        .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
+        .header-info { display: flex; align-items: center; gap: 20px; }
+        .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px;}
+        .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
 
- .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
- 
- /* GERENCIADOR DE CAMADAS SPA */
- .view-layer { display: none; animation: fadeIn 0.3s ease-in-out; }
- .view-layer.active { display: block; }
- .sub-screen { display: none; }
- .sub-screen.active { display: block; }
- @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
+        
+        /* GERENCIADOR DE CAMADAS SPA */
+        .view-layer { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-layer.active { display: block; }
+        .sub-screen { display: none; }
+        .sub-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
- /* GRIDS */
- .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
- .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
- .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
- 
- /* ELEMENTOS DE INTERFACE */
- .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
- .btn-volt:hover { opacity: 0.9; }
- .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;}
- .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
- .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
- .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
- .btn-voltar { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
- .btn-voltar:hover { color: white; border-color: white; }
- 
- .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px;}
- .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
- .input-bip:focus { outline: 1px solid var(--volt-green); }
- .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
- 
- .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
- .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
- .modulo-header h2 { margin: 0; color: var(--volt-green); }
+        /* GRIDS */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
+        /* ELEMENTOS DE INTERFACE */
+        .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
+        .btn-volt:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;}
+        .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
+        .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
+        .btn-voltar { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+        .btn-voltar:hover { color: white; border-color: white; }
+        
+        .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
+        .input-dark:focus { border-color: var(--volt-green); outline: none; }
+        .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
+        .input-bip:focus { outline: 1px solid var(--volt-green); }
+        .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
+        
+        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
+        .modulo-header h2 { margin: 0; color: var(--volt-green); }
 
- .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
- .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); }
- .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
- .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
- .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
- 
- .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
- .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+        .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
+        .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); }
+        .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
+        .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
+        .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
+        
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
 
- .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
- .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
- .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
- .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
+        .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
+        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
+        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
 
- /* FASES DE CONFERÊNCIA */
- .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
- .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
- .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
- .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
- .fase-section.concluida h3 { color: var(--success-green); }
- 
- .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
- .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
- .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.1);}
- .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
- .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
- .produto-card.ativo .produto-qtd { color: var(--volt-green); }
- .fase-section.concluida .produto-card { border-color: var(--success-green); box-shadow: none;}
- .fase-section.concluida .produto-qtd { color: var(--success-green); }
+        /* FASES DE CONFERÊNCIA */
+        .fase-section { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
+        .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
+        .fase-section.concluida { opacity: 1; pointer-events: none; border-color: var(--success-green); }
+        .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
+        .fase-section.concluida h3 { color: var(--success-green); }
+        
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        .produto-card { background: #000; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
+        .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.1);}
+        .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
+        .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+        .produto-card.ativo .produto-qtd { color: var(--volt-green); }
+        .fase-section.concluida .produto-card { border-color: var(--success-green); box-shadow: none;}
+        .fase-section.concluida .produto-qtd { color: var(--success-green); }
 
- .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
- .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
- .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
- .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
- label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;}
+        .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
+        .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
+        .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
+        label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;}
 
- .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
- .upload-area:hover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.02); }
- .upload-area p { color: var(--text-muted); margin: 0; }
- .upload-area strong { color: var(--volt-green); }
+        /* DRAG & DROP AREA */
+        .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
+        .upload-area p { color: var(--text-muted); margin: 0; }
+        .upload-area strong { color: var(--volt-green); }
 
- /* TABELAS */
- table { width: 100%; border-collapse: collapse; margin-top: 15px; }
- th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
- th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
- td { font-size: 14px; }
- .status-online { color: var(--success-green); font-weight: bold; }
- .status-online::before { content: "● "; color: var(--success-green); }
- .status-offline { color: var(--text-muted); }
- .status-offline::before { content: "● "; color: #555; }
- .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
- .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); }
- .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer;}
- .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); transition: 0.2s;}
- .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
- 
- .grid-equipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
- .equipe-card { background: #000; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; border-left: 4px solid #444; transition: 0.2s; }
- .equipe-card:hover { border-color: var(--volt-green); }
- .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
- .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
- .equipe-stats strong { color: var(--text-light); }
+        /* TABELAS E BADGES */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
+        th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
+        td { font-size: 14px; }
+        .status-online { color: var(--success-green); font-weight: bold; }
+        .status-online::before { content: "● "; color: var(--success-green); }
+        .status-offline { color: var(--text-muted); }
+        .status-offline::before { content: "● "; color: #555; }
+        .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
+        .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); }
+        .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer;}
+        .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); transition: 0.2s;}
+        .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
+        
+        .grid-equipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
+        .equipe-card { background: #000; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; border-left: 4px solid #444; transition: 0.2s; }
+        .equipe-card:hover { border-color: var(--volt-green); }
+        .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
+        .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
+        .equipe-stats strong { color: var(--text-light); }
+        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
+        .input-editavel:focus { border-color: var(--volt-green); outline: none; }
 
- /* MODAIS CAMADA SUPERIOR */
- .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
- .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
- .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
- .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
- .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
- .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
- .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
- </style>
+        /* MODAIS CAMADA SUPERIOR */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
+        .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
+        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
+        .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
+        .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
+    </style>
+
+    <!-- BIBLIOTECAS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
- <div class="header">
- <div class="logo-container" onclick="voltarLogoHome()">
- <div class="logo-text">
- VOLT
- <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
- <path d="M13.3333 0L0 18.6
-```667H10.6667L8 32L24 10.6667H13.3333L16 0Z" />
- </svg>
- </div>
- </div>
- <div class="header-info">
- <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Identifique-se</span>
- <button class="btn-logout" id="btnSair" onclick="fazerLogout()">Sair</button>
- </div>
- </div>
+    <div class="header">
+        <div class="logo-container" onclick="voltarLogoHome()">
+            <div class="logo-text">
+                VOLT
+                <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.3333 0L0 18.6667H10.6667L8 32L24 10.6667H13.3333L16 0Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="header-info">
+            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Conectando à Nuvem...</span>
+            <button class="btn-logout" id="btnSair" onclick="fazerLogout()">Sair</button>
+        </div>
+    </div>
 
- <!-- MODAL GLOBAL: ERRO OPERACIONAL (TOLERÂNCIA ZERO) -->
- <div id="erroModal" class="modal-overlay">
- <div class="erro-box">
- <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
- <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido ou quantidade excedente detectada.</p>
- <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
- <strong style="color: var(--error-red);">Regra do Sistema:</strong>
- <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem de cards desta etapa específica foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual.</p>
- </div>
- <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar Etapa</button>
- </div>
- </div>
+    <!-- MODAL GLOBAL: ERRO OPERACIONAL (TOLERÂNCIA ZERO) -->
+    <div id="erroModal" class="modal-overlay">
+        <div class="erro-box">
+            <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
+            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido ou quantidade excedente detectada.</p>
+            <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
+                <strong style="color: var(--error-red);">Regra do Sistema:</strong>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem de cards desta etapa específica foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual.</p>
+            </div>
+            <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar Etapa</button>
+        </div>
+    </div>
 
- <!-- MODAL GLOBAL: AUTENTICAÇÃO -->
- <div id="modalSenha" class="modal-overlay">
- <div class="senha-box">
- <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acessar Perfil</h3>
- <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
- <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou perfil inativo.</p>
- <div style="margin-top: 20px; display: flex; gap: 10px;">
- <button class="btn-outline" style="flex: 1;" onclick="fecharSenhaModal()">Cancelar</button>
- <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">Entrar</button>
- </div>
- </div>
- </div>
+    <!-- MODAL GLOBAL: AUTENTICAÇÃO -->
+    <div id="modalSenha" class="modal-overlay">
+        <div class="senha-box">
+            <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acessar Perfil</h3>
+            <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
+            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou perfil inativo.</p>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn-outline" style="flex: 1;" onclick="fecharSenhaModal()">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">Entrar</button>
+            </div>
+        </div>
+    </div>
 
- <!-- MODAL GLOBAL: AUDITORIA DE HISTÓRICO -->
- <div id="modalAuditoria" class="modal-overlay">
- <div class="auditoria-box">
- <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
- <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
- <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Luiz</strong></span>
- </div>
- <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades e reinicializações da etapa:</p>
- <ul class="log-lista" id="listaErrosLogs">
- <!-- Injetado via JavaScript -->
- </ul>
- <div style="text-align: right; margin-top: 25px;">
-  <button class="btn-volt" style="padding: 10px 20px;" onclick="fecharAuditoriaModal()">Fechar Logs</button>
- </div>
- </div>
- </div>
+    <!-- MODAL GLOBAL: AUDITORIA DE HISTÓRICO -->
+    <div id="modalAuditoria" class="modal-overlay">
+        <div class="auditoria-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
+                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Luiz</strong></span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades e reinicializações da etapa:</p>
+            <ul class="log-lista" id="listaErrosLogs">
+                <li class="log-item"><span class="log-hora">Sep 05, 2026, 4:10 PM</span><strong>Divergência de Código (EAN Inválido):</strong> Operador tentou registrar item incompatível. Contagem zerada.</li>
+            </ul>
+            <div style="text-align: right; margin-top: 25px;">
+                <button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button>
+            </div>
+        </div>
+    </div>
 
- <div class="container">
- 
- <!-- ========================================== -->
- <!-- VIEW LAYER 1: SELEÇÃO DE PERFIL / LOGIN -->
- <!-- ========================================== -->
- <div id="viewLogin" class="view-layer active">
- <div style="text-align: center; margin-bottom: 40px;">
- <h1 style="font-size: 32px; margin: 0;">Quem está acessando?</h1>
- <p style="color: var(--text-muted); margin-top: 10px;">Selecione seu perfil operacional para entrar no HUB</p>
- </div>
- <div class="login-grid" id="gridUsuariosLogin">
- <!-- Injetado via JS dinamicamente -->
- </div>
- </div>
+    <div class="container">
+        
+        <!-- ========================================== -->
+        <!-- VIEW LAYER 1: SELEÇÃO DE PERFIL / LOGIN -->
+        <!-- ========================================== -->
+        <div id="viewLogin" class="view-layer active">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="font-size: 32px; margin: 0;">Quem está acessando?</h1>
+                <p style="color: var(--text-muted); margin-top: 10px;">Selecione seu perfil operacional para entrar no HUB</p>
+            </div>
+            <div class="login-grid" id="gridUsuariosLogin">
+                <p style="color: var(--volt-green); text-align: center;">Carregando nuvem...</p>
+            </div>
+        </div>
 
- <!-- ========================================== -->
- <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR -->
- <!-- ========================================== -->
- <div id="viewAdmin" class="view-layer">
- 
- <!-- Subtela Admin: Dashboard Central -->
- <div id="adminDash" class="sub-screen active">
- <div style="margin-bottom: 40px;">
- <h1 style="font-size: 32px; margin: 0;">Painel Administrativo</h1>
- <p style="color: var(--text-muted); margin-top: 10px;">Controle de expedição, auditoria de processos e equipe logísitica.</p>
- </div>
- <div class="grid-3">
- <div class="hub-card" onclick="navegarAdmin('adminLancamentos')">
- <div>
- <h3>Central de Lançamentos</h3>
- <p>Suba novas Ordens de Venda originais e faça a liberação programada para a equipe de separação.</p>
- </div>
- <div class="action">Abrir Módulo ➔</div>
- </div>
- <div class="hub-card" onclick="navegarAdmin('adminHistorico')">
- <div>
- <h3>Histórico e Auditoria</h3>
- <p>Rastreie os relatórios de acertos, produtividade e verifique os logs de reinício forçado dos operadores.</p>
- </div>
- <div class="action">Abrir Relatórios ➔</div>
- </div>
- <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
- <div>
- <h3>Gestão de Acessos</h3>
- <p>Cadastre perfis operacionais, redefina senhas de segurança e analise o status da equipe interna.</p>
- </div>
- <div class="action">Configurar Equipe ➔</div>
- </div>
- </div>
- </div>
+        <!-- ========================================== -->
+        <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR -->
+        <!-- ========================================== -->
+        <div id="viewAdmin" class="view-layer">
+            
+            <div id="adminDash" class="sub-screen active">
+                <div style="margin-bottom: 40px;">
+                    <h1 style="font-size: 32px; margin: 0;">Painel Administrativo</h1>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Controle de expedição, auditoria de processos e equipe logísitica.</p>
+                </div>
+                <div class="grid-3">
+                    <div class="hub-card" onclick="navegarAdmin('adminLancamentos')">
+                        <div><h3>Central de Lançamentos</h3><p>Suba novas Ordens de Venda originais e faça a liberação para a equipe de separação.</p></div>
+                        <div class="action">Abrir Módulo ➔</div>
+                    </div>
+                    <div class="hub-card" onclick="abrirModuloHistorico()">
+                        <div><h3>Histórico e Auditoria</h3><p>Rastreie os relatórios de expedição, produtividade e verifique logs concluídos.</p></div>
+                        <div class="action">Abrir Relatórios ➔</div>
+                    </div>
+                    <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
+                        <div><h3>Gestão de Acessos</h3><p>Cadastre perfis operacionais, gerencie senhas e analise o status da equipe interna.</p></div>
+                        <div class="action">Configurar Equipe ➔</div>
+                    </div>
+                </div>
+            </div>
 
- <!-- Subtela Admin: Lançamento de OVs -->
- <div id="adminLancamentos" class="sub-screen">
- <div class="modulo-box">
- <div class="modulo-header">
- <h2>Nova Tarefa de Expedição</h2>
- <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
- </div>
- <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
- <div>
- <div class="form-group" style="margin-bottom: 15px;"><label>Número da OV</label><input type="text" class="input-dark" value="4119" disabled></div>
- <div class="form-group" style="margin-bottom: 15px;"><label>Cliente / Destinatário</label><input type="text" class="input-dark" placeholder="BofficeBR" value="BofficeBR" disabled></div>
- <div class="form-group"><label>Vincular Remessa de RMA?</label><input type="text" class="input-dark" value="Sim (EAN: 7898974018007)" disabled></div>
- </div>
- <div>
- <div class="form-group" style="margin-bottom: 20px;">
- <label>1. Arquivo de Ordem de Venda Original (PDF / Excel)</label>
- <div class="upload-area"><p>Arquivo <strong>ov_4119_boffice.pdf</strong> carregado com sucesso.</p></div>
- </div>
- <div class="form-group">
- <label>2. Comprovante de RMA Vinculado (Opcional)</label>
- <div class="upload-area" style="border-color: var(--volt-green);"><p>Arquivo <strong>rma_9872_substituicao.pdf</strong> vinculado.</p></div>
- </div>
- <div style="text-align: right; margin-top: 30px;">
- <button class="btn-volt" style="width: auto;" onclick="alert('Pedido atualizado na fila operacional!')">Atualizar e Liberar Fila</button>
- </div>
- </div>
- </div>
- </div>
- </div>
+            <!-- Subtela Admin: Lançamento de OVs com DROPZONE PDF -->
+            <div id="adminLancamentos" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header">
+                        <h2>Nova Tarefa de Expedição</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                        <div>
+                            <div class="form-group" style="margin-bottom: 15px;"><label>Número da OV</label><input type="text" id="ovNumero" class="input-dark" placeholder="OV-0000"></div>
+                            <div class="form-group" style="margin-bottom: 15px;"><label>Cliente / Destinatário</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label>Vincular Remessa de RMA?</label>
+                                <select id="ovCategoria" class="input-dark">
+                                    <option value="Sem RMA">Não</option>
+                                    <option value="Com RMA">Sim, contém substituição</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Volumes (Previsão)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
+                        </div>
+                        <div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label>1. Arquivo de Ordem de Venda Original (PDF / Excel)</label>
+                                <div class="upload-area" id="dropzoneOV">
+                                    <h3 id="dropTitle" style="margin:0; color:var(--text-light);">📤 Arraste o arquivo aqui</h3>
+                                    <p id="dropSub">O sistema lerá o arquivo para preencher os dados.</p>
+                                    <input type="file" id="fileInput" style="display: none;" accept=".pdf, .xlsx, .xls">
+                                </div>
+                            </div>
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">Atualizar e Liberar Fila</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
- <!-- Subtela Admin: Relatórios de Desempenho e Histórico -->
- <div id="adminHistorico" class="sub-screen">
- <div class="modulo-box">
- <div class="modulo-header">
- <h2>Auditoria Operacional e Desempenho</h2>
- <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
- </div>
- <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe (Mês Atual)</h3>
- <div class="grid-grid-equipe grid-3" style="margin-bottom: 25px;">
- <div class="equipe-card" style="border-left-color: var(--volt-green);">
- <div class="equipe-nome">Luiz <span style="color: var(--volt-green); font-size: 14px;">Em operação</span></div>
- <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>15</strong></span><span>Erros: <strong style="color: var(--error-red);">2</strong></span></div>
- <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">86%</strong></span><span>Geral: <strong>65%</strong></span></div>
- </div>
- <div class="equipe-card">
- <div class="equipe-nome">João <span style="color: var(--text-muted); font-size: 14px;">Offline</span></div>
- <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>8</strong></span><span>Erros: <strong>0</strong></span></div>
- <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span><span>Geral: <strong>35%</strong></span></div>
- </div>
- <div class="equipe-card" style="border-left-color: #444;">
- <div class="equipe-nome">Consolidado do Mês</div>
- <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Total: <strong>23 Pedidos</strong></span><span>Média: <strong style="color: var(--success-green);">91%</strong></span></div>
- <div class="equipe-stats"><span>Expedidos: <strong>100%</strong></span><span>RMA Vinculados: <strong>4</strong></span></div>
- </div>
- </div>
+            <!-- Subtela Admin: Relatórios de Histórico Firebase -->
+            <div id="adminHistorico" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header">
+                        <h2>Auditoria Operacional e Desempenho</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
+                    </div>
+                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Últimas Atividades Faturadas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data Conclusão</th>
+                                <th>Nº Pedido</th>
+                                <th>Cliente</th>
+                                <th>Operador Final</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaHistorico"></tbody>
+                    </table>
+                </div>
+            </div>
 
- <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Últimas Atividades Faturadas</h3>
- <table>
- <thead>
- <tr>
- <th>Nº Pedido</th>
- <th>Cliente</th>
- <th>Operador</th>
- <th>Status Conferência</th>
- <th>Ações</th>
- </tr>
- </thead>
- <tbody>
- <tr>
- <td>#4119</td>
- <td>BofficeBR</td>
- <td>Luiz</td>
- <td><span class="badge-erro" onclick="abrirAuditoriaLogs('4119', 'Luiz')">2 DIVERGÊNCIAS DETECTADAS</span></td>
- <td><button class="btn-outline-2" onclick="abrirAuditoriaLogs('4119', 'Luiz')">Analisar Logs</button></td>
- </tr>
- <tr>
- <td>#4118</td>
- <td>TechStore</td>
- <td>João</td>
- <td><span class="badge-ok">100% CORRETO</span></td>
- <td><button class="btn-outline-2" style="opacity: 0.5; cursor: not-allowed;">Sem Histórico de Falhas</button></td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
+            <!-- Subtela Admin: Controle e Gestão de Usuários Firebase -->
+            <div id="adminUsuarios" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header">
+                        <h2>Controle de Equipe e Permissões de Acesso</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Colaborador</th>
+                                <th>Cargo / Função</th>
+                                <th>Nível de Permissão</th>
+                                <th>Status Cadastral</th>
+                                <th>Ações Nuvem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaEquipeUsuarios"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
- <!-- Subtela Admin: Controle e Gestão de Usuários -->
- <div id="adminUsuarios" class="sub-screen">
- <div class="modulo-box">
- <div class="modulo-header">
- <h2>Controle de Equipe e Permissões de Acesso</h2>
- <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ Voltar ao HUB</button>
- </div>
- <table>
- <thead>
- <tr>
- <th>Colaborador</th>
- <th>Cargo / Função</th>
- <th>Nível de Permissão</th>
- <th>Status Cadastral</th>
- <th>Senha de Entrada</th>
- </tr>
- </thead>
- <tbody id="tabelaEquipeUsuarios">
- <!-- Injetado via JS -->
- </tbody>
- </table>
- </div>
- </div>
- </div>
+        <!-- ========================================== -->
+        <!-- VIEW LAYER 3: INTERFACE DO OPERADOR (ESTOQUE) -->
+        <!-- ========================================== -->
+        <div id="viewEstoque" class="view-layer">
+            
+            <!-- Subtela Estoque: Fila de Separação Pendente Firebase -->
+            <div id="estoqueDash" class="sub-screen active">
+                <h1 style="margin-bottom: 30px; font-size: 32px;">Pedidos Disponíveis para Separação</h1>
+                <div id="containerFilaEstoque">
+                    <p style="color: var(--volt-green);">Carregando fila ao vivo...</p>
+                </div>
+            </div>
 
- <!-- ========================================== -->
- <!-- VIEW LAYER 3: INTERFACE DO OPERADOR (ESTOQUE) -->
- <!-- ========================================== -->
- <div id="viewEstoque" class="view-layer">
- 
- <!-- Subtela Estoque: Fila de Separação Pendente -->
- <div id="estoqueDash" class="sub-screen active">
- <h1 style="margin-bottom: 30px; font-size: 32px;">Pedidos Disponíveis para Separação</h1>
- <div class="pedido-item" onclick="iniciarConferenciaOperador('4119')">
- <div>
- <strong style="font-size: 20px; color: var(--volt-green); display: block;">OV #4119</strong>
- <span style="color: var(--text-muted); font-size: 14px;">Cliente: BofficeBR | Remessa RMA Associada: <strong style="color: white;">Sim</strong></span>
- </div>
- <span style="color: var(--volt-green); font-weight: bold;">➔ Iniciar Bipagem Coletora</span>
- </div>
- <div class="pedido-item" style="opacity: 0.6; cursor: not-allowed;">
- <div>
- <strong style="font-size: 20px; color: #fff; display: block;">OV #4120</strong>
- <span style="color: var(--text-muted); font-size: 14px;">Cliente: TechStore | Remessa RMA Associada: Não</span>
- </div>
- <span style="color: #666; font-weight: bold;">Aguardando Liberação</span>
- </div>
- </div>
+            <!-- Subtela Estoque: Área Operacional de Conferência Sequencial às Cegas -->
+            <div id="estoqueConferencia" class="sub-screen">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <button class="btn-outline" style="border:none; padding-left: 0;" onclick="navegarEstoque('estoqueDash')">⟵ Voltar à Fila e Pausar</button>
+                    <h2 style="margin: 0;">Conferência às Cegas - <span style="color: var(--volt-green);" id="numPedidoAtual">OV #0000</span></h2>
+                    <div></div>
+                </div>
 
- <!-- Subtela Estoque: Área Operacional de Conferência Sequencial às Cegas -->
- <div id="estoqueConferencia" class="sub-screen">
- <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
- <button class="btn-outline" style="border:none; padding-left: 0;" onclick="navegarEstoque('estoqueDash')">⟵ Voltar à Fila</button>
- <h2 style="margin: 0;">Conferência às Cegas - <span style="color: var(--volt-green);">OV #4119</span></h2>
- <div></div>
- </div>
+                <!-- ETAPA 1 -->
+                <div id="faseOV" class="fase-section ativa">
+                    <h3>1. Itens da Ordem de Venda (Principal) <span id="statusOV" style="font-size: 14px; color: var(--text-muted);">Aguardando Leitura</span></h3>
+                    <div class="produtos-grid" id="containerOV"></div>
+                    <div id="areaBipagemOV" style="margin-top: 15px;">
+                        <label>Bipar Código de Barras do Produto (EAN)</label>
+                        <input type="text" id="bipOV" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." autofocus>
+                        <div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('OV')">✔ Validar Itens de Ordem</button></div>
+                    </div>
+                </div>
 
- <!-- ETAPA 1: ORDEM DE VENDA PRINCIPAL -->
- <div id="faseOV" class="fase-section ativa">
- <h3>1. Itens da Ordem de Venda (Principal) <span id="statusOV" style="font-size: 14px; color: var(--text-muted);">Aguardando Leitura</span></h3>
- <div class="produtos-grid" id="containerOV">
- <!-- Injetado dinamicamente -->
- </div>
- <div id="areaBipagemOV" style="margin-top: 15px;">
- <label>Bipar Código de Barras do Produto (EAN)</label>
- <input type="text" id="bipOV" class="input-bip" placeholder="Aguardando bipagem do leitor ótico..." autofocus>
- <div style="text-align: right; margin-top: 15px;">
- <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('OV')">✔ Validar Itens de Ordem</button>
- </div>
- </div>
- </div>
+                <!-- ETAPA 2 -->
+                <div id="faseRMA" class="fase-section">
+                    <h3>2. Itens de Remessa RMA (Substituição) <span id="statusRMA" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
+                    <div class="produtos-grid" id="containerRMA"></div>
+                    <div id="areaBipagemRMA" style="margin-top: 15px;">
+                        <label>Bipar Código de Barras do RMA</label>
+                        <input type="text" id="bipRMA" class="input-bip" placeholder="Bloqueado - Conclua a Etapa 1" disabled>
+                        <div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('RMA')">✔ Validar Remessa RMA</button></div>
+                    </div>
+                </div>
 
- <!-- ETAPA 2: REMESSA RMA SUBSTITUIÇÃO -->
- <div id="faseRMA" class="fase-section">
- <h3>2. Itens de Remessa RMA (Substituição) <span id="statusRMA" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
- <div class="produtos-grid" id="containerRMA">
- <!-- Injetado dinamicamente -->
- </div>
- <div id="areaBipagemRMA" style="margin-top: 15px;">
- <label>Bipar Código de Barras do RMA</label>
- <input type="text" id="bipRMA" class="input-bip" placeholder="Bloqueado - Conclua a Etapa 1" disabled>
- <div style="text-align: right; margin-top: 15px;">
- <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarEtapaConferência('RMA')">✔ Validar Remessa RMA</button>
- </div>
- </div>
- </div>
+                <!-- ETAPA 3 -->
+                <div id="faseLogistica" class="fase-section">
+                    <h3>3. Logística de Expedição e Fechamento de Volumes <span id="statusLog" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
+                    <div id="listaVolumesCaixas"></div>
+                    <button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Novo Volume (Caixa)</button>
+                    <div style="margin-top: 30px;">
+                        <button class="btn-volt" onclick="finalizarProcessoExpedicao()">Finalizar Expedição e Liberar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
- <!-- ETAPA 3: DADOS DE CUBAGEM E LOGÍSTICA DE EMBALAGEM -->
- <div id="faseLogistica" class="fase-section">
- <h3>3. Logística de Expedição e Fechamento de Volumes <span id="statusLog" style="font-size: 14px; color: var(--text-muted);">Bloqueado</span></h3>
- <div id="listaVolumesCaixas">
- <!-- Volumes inseridos aqui -->
- </div>
- <button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Novo Volume (Caixa)</button>
- <div style="margin-top: 30px;">
- <button class="btn-volt" onclick="finalizarProcessoExpedicao()">Finalizar Expedição e Liberar Pedido</button>
- </div>
- </div>
+    </div>
 
- </div>
- </div>
+    <!-- ========================================== -->
+    <!-- SCRIPT PRINCIPAL (LÓGICA E FIREBASE)       -->
+    <!-- ========================================== -->
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
- </div>
+        const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
+        
+        let bdUsuariosLogistica = {}; let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
 
- <script>
- // BANCO DE DADOS DE USUÁRIOS E PERFIS SÍNCRONOS
- const bdUsuariosLogistica = {
- 'Lucas': { role: 'admin', senha: '123', funcao: 'Gestor Logístico', status: 'Online' },
- 'Bruna': { role: 'admin', senha: '123', funcao: 'Supervisora de Operações', status: 'Offline' },
- 'Luiz': { role: 'estoque', senha: '123', funcao: 'Operador I (Separação)', status: 'Online' }
- };
+        window.onload = async function() { await carregarUsuariosDaNuvem(); document.getElementById('headerNomeUser').innerText = "Identifique-se"; };
 
- // BANCO DE DADOS OCULTO DA METAS DA OV #4119
- const ordemVenda4119 = {
- '7898996240356': { sku: 'FCL15WH', alvo: 4, bipado: 0 },
- '7898996240349': { sku: 'FCC15WH', alvo: 2, bipado: 0 }
- };
+        // NAVEGAÇÃO SPA
+        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
+        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
+        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
+        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
 
- const rma4119 = {
- '7898974018007': { sku: 'CH65WWH', alvo: 1, bipado: 0 }
- };
+        // SISTEMA DE USUÁRIOS E LOGIN FIREBASE
+        async function carregarUsuariosDaNuvem() {
+            const grid = document.getElementById('gridUsuariosLogin');
+            try {
+                const snapshot = await db.collection("usuarios").get(); bdUsuariosLogistica = {}; grid.innerHTML = ''; 
+                snapshot.forEach((doc) => {
+                    const nome = doc.id; const user = doc.data(); bdUsuariosLogistica[nome] = user; 
+                    if (user.status === 'ativo' || user.status === 'Online' || user.status === 'Offline') {
+                        grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${user.role === 'estoque' ? 'color: white; border-color:#444;' : ''}">${nome.charAt(0)}</div><h3>${nome}</h3><span style="color: ${user.role === 'admin' ? 'var(--volt-green)' : 'var(--text-muted)'}; font-size: 12px; text-transform: uppercase;">${user.funcao}</span></div>`;
+                    }
+                });
+            } catch (error) { console.error(error); }
+        }
 
- // CONTROLE DE ESTADOS DO SPA
- let usuarioLogado = null;
- let papelLogado = null;
- let usuarioSelecionadoTemp = null;
- let etapaAtualEstoque = 'OV';
- let contadorVolumesInterno = 0;
+        function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acessar como: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
+        function fecharSenhaModal() { document.getElementById('modalSenha').style.display = 'none'; }
+        
+        function confirmarLogin() {
+            const senhaDigitada = document.getElementById('inputSenha').value; const credencial = bdUsuariosLogistica[usuarioSelecionadoTemp];
+            if (credencial && senhaDigitada === credencial.senha) {
+                usuarioLogado = usuarioSelecionadoTemp; papelLogado = credencial.role; 
+                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; document.getElementById('btnSair').style.display = 'block'; fecharSenhaModal();
+                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
+                if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); } else { carregarFilaOperadorDaNuvem(); }
+            } else { document.getElementById('erroSenha').style.display = 'block'; }
+        }
+        document.getElementById('inputSenha').addEventListener('keypress', e => { if (e.key === 'Enter') confirmarLogin(); });
+        function fazerLogout() { location.reload(); }
 
- window.onload = function() {
- renderizarCardsUsuarios();
- renderizarTabelaAcessosAdmin();
- };
+        // ADMIN: LANÇAMENTOS COM DROPZONE
+        const dropzone = document.getElementById('dropzoneOV'); const fileInput = document.getElementById('fileInput');
+        dropzone.addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', (e) => { if(e.target.files.length) processarArquivo(e.target.files[0]); });
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); }); dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+        dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]); });
 
- // RENDERIZADORES DE INTERFACE
- function renderizarCardsUsuarios() {
- const grid = document.getElementById('gridUsuariosLogin');
- grid.innerHTML = '';
- for (let nome in bdUsuariosLogistica) {
- const user = bdUsuariosLogistica[nome];
- grid.innerHTML += `
- <div class="user-card" onclick="abrirModalSenha('${nome}')">
- <div class="user-avatar" style="${user.role === 'estoque' ? 'color: white; border-color:#444;' : ''}">${nome.charAt(0)}</div>
- <h3>${nome}</h3>
- <span style="color: ${user.role === 'admin' ? 'var(--volt-green)' : 'var(--text-muted)'}; font-size: 12px; text-transform: uppercase;">${user.funcao}</span>
- </div>
- `;
- }
- }
+        async function processarArquivo(file) {
+            document.getElementById('dropTitle').innerText = "⏳ Lendo arquivo..."; document.getElementById('dropTitle').style.color = "var(--warning-yellow)"; document.getElementById('dropSub').innerText = file.name;
+            try {
+                let textoExtraido = "";
+                if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+                    const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                    for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const textContent = await page.getTextContent(); textoExtraido += textContent.items.map(item => item.str).join(' ') + " "; }
+                } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
+                    const arrayBuffer = await file.arrayBuffer(); const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+                    workbook.SheetNames.forEach(sheetName => { const roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header:1}); if(roa.length) textoExtraido += roa.join(" "); });
+                } else throw new Error("Formato inválido");
 
- function renderizarTabelaAcessosAdmin() {
- const tbody = document.getElementById('tabelaEquipeUsuarios');
- tbody.innerHTML = '';
- for (let nome in bdUsuariosLogistica) {
- const user = bdUsuariosLogistica[nome];
- tbody.innerHTML += `
- <tr>
- <td><strong>${nome}</strong></td>
- <td>${user.funcao}</td>
- <td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td>
- <td><span class="${user.status === 'Online' ? 'status-online' : 'status-offline'}">${user.status}</span></td>
- <td><input type="password" class="input-dark" value="${user.senha}" style="width: 80px; margin: 0; padding: 5px; text-align: center;" disabled></td>
- </tr>
- `;
- }
- }
+                const textoUpper = textoExtraido.toUpperCase();
+                let matchOV = textoUpper.match(/OV[\s\-]*(\d{3,5})/); let matchArqOV = file.name.toUpperCase().match(/OV[\s\-]*(\d{3,5})/);
+                let numFinal = matchOV ? `OV-${matchOV[1]}` : (matchArqOV ? `OV-${matchArqOV[1]}` : `OV-${Math.floor(Math.random()*9000)+1000}`);
+                let clienteEncontrado = (textoUpper.includes("BOFFICE") || file.name.toUpperCase().includes("BOFFICE")) ? "BofficeBR" : (textoUpper.includes("TECH") ? "TechStore" : "Cliente Genérico");
+                let temRMA = (textoUpper.includes("RMA") || textoUpper.includes("SUBSTITUIÇÃO") || textoUpper.includes("GARANTIA")) ? "Com RMA" : "Sem RMA";
 
- function renderizarCardsProdutos(fase) {
- const container = document.getElementById(`container${fase}`);
- const banco = fase === 'OV' ? ordemVenda4119 : rma4119;
- container.innerHTML = '';
- 
- for (const ean in banco) {
- const prod = banco[ean];
- const cardClass = prod.bipado > 0 ? 'produto-card ativo' : 'produto-card';
- container.innerHTML += `
- <div class="${cardClass}">
- <div class="produto-sku">${prod.sku}</div>
- <div class="produto-qtd">${prod.bipado}</div>
- </div>`;
- }
- }
+                document.getElementById('ovNumero').value = numFinal; document.getElementById('ovCliente').value = clienteEncontrado; document.getElementById('ovCategoria').value = temRMA;
+                document.getElementById('dropTitle').innerText = "✅ Leitura Concluída!"; document.getElementById('dropTitle').style.color = "var(--success-green)"; document.getElementById('dropSub').innerText = "Dados extraídos com sucesso.";
+                dropzone.style.borderColor = "var(--success-green)";
+            } catch (error) { alert("Erro ao ler o arquivo. Digite manualmente."); document.getElementById('dropTitle').innerText = "📤 Arraste o arquivo aqui"; document.getElementById('dropTitle').style.color = "var(--text-light)"; }
+        }
 
- // NAVEGAÇÃO DOS MÓDULOS E VISÕES (SPA)
- function mudarViewLayerGlobal(viewId) {
- document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
- document.getElementById(viewId).classList.add('active');
- }
+        async function salvarNovaOV() {
+            const numero = document.getElementById('ovNumero').value.trim(); const cliente = document.getElementById('ovCliente').value.trim(); const categoria = document.getElementById('ovCategoria').value; const volumes = document.getElementById('ovVolumes').value;
+            if(!numero || !cliente) return alert("Preencha o número da OV e o Cliente.");
+            const d = new Date(); const dataFormatada = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+            try { 
+                await db.collection("estoque_ovs").add({ numero: numero, cliente: cliente, categoria: categoria, volumesPrevisao: volumes, status: 'Aguardando Liberação', data: dataFormatada, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
+                alert(`OV ${numero} enviada para a Fila do Estoque!`); 
+                document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('dropTitle').innerText = "📤 Arraste o arquivo aqui"; document.getElementById('dropTitle').style.color = "var(--text-light)"; document.getElementById('dropSub').innerText = "O sistema lerá o arquivo para preencher os dados."; dropzone.style.borderColor = "#444";
+                navegarAdmin('adminDash'); 
+            } catch (error) { alert("Erro ao lançar OV."); }
+        }
 
- function navegarAdmin(subScreenId) {
- document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active'));
- document.getElementById(subScreenId).classList.add('active');
- }
+        // ADMIN: HISTÓRICO FIREBASE
+        function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
+        async function carregarHistoricoDaNuvem() {
+            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico...</td></tr>';
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
+                snapshot.forEach((doc) => {
+                    const ov = doc.data();
+                    if (ov.status === 'Concluído') { 
+                        contador++; 
+                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'}</td><td><span class="badge-ok">100% CORRETO</span></td></tr>`;
+                    }
+                });
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma atividade faturada.</td></tr>';
+            } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Erro ao carregar histórico.</td></tr>'; }
+        }
 
- function navegarEstoque(subScreenId) {
- document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active'));
- document.getElementById(subScreenId).classList.add('active');
- }
+        // ADMIN: USUÁRIOS
+        function renderizarTabelaAcessosAdmin() {
+            const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
+            for (let nome in bdUsuariosLogistica) {
+                const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
+                tbody.innerHTML += `<tr><td><strong>${nome}</strong></td><td>${user.funcao}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td><td><button class="btn-outline-2" onclick="alert('Edição rápida conectada ao Firebase em breve.')">Editar Perfil</button></td></tr>`;
+            }
+        }
 
- function voltarLogoHome() {
- if (usuarioLogado) {
- mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
- }
- }
+        // OPERADOR: FILA DE ESTOQUE
+        let idOvEmConferencia = null;
+        async function carregarFilaOperadorDaNuvem() {
+            const container = document.getElementById('containerFilaEstoque'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila de separação...</p>';
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); container.innerHTML = ''; let contador = 0;
+                snapshot.forEach((doc) => {
+                    const ov = doc.data(); const id = doc.id;
+                    if (ov.status === 'Aguardando Liberação' || ov.status === 'Separando') {
+                        contador++; 
+                        if (ov.status === 'Aguardando Liberação') {
+                            container.innerHTML += `<div class="pedido-item" onclick="iniciarConferenciaOperador('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--volt-green); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes Previstos: <strong style="color: white;">${ov.volumesPrevisao}</strong></span></div><span style="color: var(--volt-green); font-weight: bold;">➔ Iniciar Bipagem Coletora</span></div>`;
+                        } else {
+                            container.innerHTML += `<div class="pedido-item" style="border-color:var(--warning-yellow);" onclick="iniciarConferenciaOperador('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--warning-yellow); display: block;">${ov.numero} (Pausado)</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente}</span></div><span style="color: var(--warning-yellow); font-weight: bold;">➔ Continuar Separação</span></div>`;
+                        }
+                    }
+                });
+                if(contador === 0) container.innerHTML = '<p style="color: #888;">Nenhum pedido aguardando separação.</p>';
+            } catch (error) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar fila.</p>'; }
+        }
 
- // SISTEMA DE SEGURANÇA E AUTENTICAÇÃO
- function abrirModalSenha(nome) {
- usuarioSelecionadoTemp = nome;
- document.getElementById('nomeLogin').innerText = `Acessar como: ${nome}`;
- document.getElementById('inputSenha').value = '';
- document.getElementById('erroSenha').style.display = 'none';
- document.getElementById('modalSenha').style.display = 'flex';
- setTimeout(() => document.getElementById('inputSenha').focus(), 150);
- }
+        // OPERADOR: BIPAGEM
+        let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
+        const ordemVenda4119 = { '7898996240356': { sku: 'FCL15WH', alvo: 4, bipado: 0 }, '7898996240349': { sku: 'FCC15WH', alvo: 2, bipado: 0 } };
+        const rma4119 = { '7898974018007': { sku: 'CH65WWH', alvo: 1, bipado: 0 } };
 
- function fecharSenhaModal() {
- document.getElementById('modalSenha').style.display = 'none';
- }
+        async function iniciarConferenciaOperador(id_doc, numero) {
+            idOvEmConferencia = id_doc; document.getElementById('numPedidoAtual').innerText = numero;
+            await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Separando' });
+            
+            etapaAtualEstoque = 'OV'; document.getElementById('faseOV').className = 'fase-section ativa'; document.getElementById('faseRMA').className = 'fase-section'; document.getElementById('faseLogistica').className = 'fase-section'; document.getElementById('statusOV').innerText = "Aguardando Leitura"; document.getElementById('statusRMA').innerText = "Bloqueado"; document.getElementById('statusLog').innerText = "Bloqueado"; document.getElementById('areaBipagemOV').style.display = 'block'; document.getElementById('areaBipagemRMA').style.display = 'block'; document.getElementById('bipRMA').disabled = true; document.getElementById('bipOV').disabled = false; document.getElementById('bipOV').value = ''; document.getElementById('bipRMA').value = '';
+            for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0; for (const ean in rma4119) rma4119[ean].bipado = 0;
+            renderizarCardsProdutos('OV'); renderizarCardsProdutos('RMA'); document.getElementById('listaVolumesCaixas').innerHTML = ''; contadorVolumesInterno = 0; adicionarCaixaEmbalagem();
+            navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 200);
+        }
 
- function confirmarLogin() {
- const senhaDigitada = document.getElementById('inputSenha').value;
- const credencial = bdUsuariosLogistica[usuarioSelecionadoTemp];
+        function renderizarCardsProdutos(fase) {
+            const container = document.getElementById(`container${fase}`); const banco = fase === 'OV' ? ordemVenda4119 : rma4119; container.innerHTML = '';
+            for (const ean in banco) { const prod = banco[ean]; const cardClass = prod.bipado > 0 ? 'produto-card ativo' : 'produto-card'; container.innerHTML += `<div class="${cardClass}"><div class="produto-sku">${prod.sku}</div><div class="produto-qtd">${prod.bipado}</div></div>`; }
+        }
 
- if (credencial && senhaDigitada === credencial.senha) {
- usuarioLogado = usuarioSelecionadoTemp;
- papelLogado = credencial.role;
- 
- document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`;
- document.getElementById('btnSair').style.display = 'block';
- fecharSenhaModal();
- 
- mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
- } else {
- document.getElementById('erroSenha').style.display = 'block';
- }
- }
+        function processarEntradaLeitor(inputElement, bancoDados, fase) {
+            const eanLido = inputElement.value.trim();
+            if (eanLido !== '') {
+                if (bancoDados[eanLido]) { bancoDados[eanLido].bipado++; renderizarCardsProdutos(fase); } 
+                else { document.getElementById('txtErroEstoque').innerText = "Código do item inválido ou não pertencente a esta etapa da separação."; document.getElementById('erroModal').style.display = 'flex'; }
+                inputElement.value = '';
+            }
+        }
+        document.getElementById('bipOV').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarEntradaLeitor(this, ordemVenda4119, 'OV'); });
+        document.getElementById('bipRMA').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarEntradaLeitor(this, rma4119, 'RMA'); });
 
- function fazerLogout() {
- usuarioLogado = null;
- papelLogado = null;
- document.getElementById('headerNomeUser').innerText = 'Identifique-se';
- document.getElementById('btnSair').style.display = 'none';
- mudarViewLayerGlobal('viewLogin');
- }
+        function fecharErroModal() { document.getElementById('erroModal').style.display = 'none'; if (etapaAtualEstoque === 'OV') { for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0; renderizarCardsProdutos('OV'); document.getElementById('bipOV').focus(); } else if (etapaAtualEstoque === 'RMA') { for (const ean in rma4119) rma4119[ean].bipado = 0; renderizarCardsProdutos('RMA'); document.getElementById('bipRMA').focus(); } }
 
- // MÓDULO LOGÍSTICO: CONFERÊNCIA E LEITURA DE PRODUTOS
- function iniciarConferenciaOperador(ovNum) {
- resetarEstruturaConferencia();
- navegarEstoque('estoqueConferencia');
- setTimeout(() => document.getElementById('bipOV').focus(), 200);
- }
+        function validarEtapaConferência(etapa) {
+            const banco = etapa === 'OV' ? ordemVenda4119 : rma4119; let integridadeEtapa = true;
+            for (const ean in banco) { if (banco[ean].bipado !== banco[ean].alvo) integridadeEtapa = false; }
+            if (integridadeEtapa) {
+                document.getElementById(`fase${etapa}`).classList.remove('ativa'); document.getElementById(`fase${etapa}`).classList.add('concluida'); document.getElementById(`status${etapa}`).innerText = "✅ Conferência Homologada"; document.getElementById(`areaBipagem${etapa}`).style.display = 'none';
+                if (etapa === 'OV') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = "Em andamento..."; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
+                else if (etapa === 'RMA') { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = "Processo Liberado"; }
+            } else { document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a ordem fiscal mapeada."; document.getElementById('erroModal').style.display = 'flex'; }
+        }
 
- function resetarEstruturaConferencia() {
- etapaAtualEstoque = 'OV';
- document.getElementById('faseOV').className = 'fase-section ativa';
- document.getElementById('faseRMA').className = 'fase-section';
- document.getElementById('faseLogistica').className = 'fase-section';
- 
- document.getElementById('statusOV').innerText = "Em andamento...";
- document.getElementById('statusRMA').innerText = "Bloqueado";
- document.getElementById('statusLog').innerText = "Bloqueado";
- 
- document.getElementById('areaBipagemOV').style.display = 'block';
- document.getElementById('areaBipagemRMA').style.display = 'block';
- document.getElementById('bipRMA').disabled = true;
- document.getElementById('bipOV').disabled = false;
- document.getElementById('bipOV').value = '';
- document.getElementById('bipRMA').value = '';
+        function adicionarCaixaEmbalagem() {
+            contadorVolumesInterno++; volumeUnicoID++; const idVol = volumeUnicoID;
+            const htmlCaixa = `<div class="volume-box" id="caixaVol-${idVol}"><div class="volume-title">Volume / Caixa Nº 0${contadorVolumesInterno}</div>${contadorVolumesInterno > 1 ? `<button class="btn-remover-caixa" onclick="removerCaixaEmbalagem(${idVol})">✖ Excluir Volume</button>` : ''}<div class="grid-4"><div><label>Peso Real (Kg)</label><input type="number" class="input-dark" placeholder="0.00" step="0.01"></div><div><label>Comprimento (cm)</label><input type="number" class="input-dark" placeholder="0"></div><div><label>Largura (cm)</label><input type="number" class="input-dark" placeholder="0"></div><div><label>Altura (cm)</label><input type="number" class="input-dark" placeholder="0"></div></div></div>`;
+            document.getElementById('listaVolumesCaixas').insertAdjacentHTML('beforeend', htmlCaixa);
+        }
+        function removerCaixaEmbalagem(idVol) { document.getElementById(`caixaVol-${idVol}`).remove(); contadorVolumesInterno--; const caixas = document.querySelectorAll('.volume-title'); caixas.forEach((titulo, index) => { titulo.innerText = `Volume / Caixa Nº 0${index + 1}`; }); }
 
- for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0;
- for (const ean in rma4119) rma4119[ean].bipado = 0;
- 
- renderizarCardsProdutos('OV');
- renderizarCardsProdutos('RMA');
-
- document.getElementById('listaVolumesCaixas').innerHTML = '';
- contadorVolumesInterno = 0;
- adicionarCaixaEmbalagem();
- }
-
- // CAPTURA DE EVENTOS DE ENTRADA DO LEITOR ÓTICO (KEYPRESS ENTER)
- function processarEntradaLeitor(inputElement, bancoDados, fase) {
- const eanLido = inputElement.value.trim();
- if (eanLido !== '') {
- if (bancoDados[eanLido]) {
- bancoDados[eanLido].bipado++;
- renderizarCardsProdutos(fase);
- } else {
- acionarDiscrepanciaModal("Código do item inválido ou não pertencente a esta etapa da separação.");
- }
- inputElement.value = '';
- }
- }
-
- document.getElementById('bipOV').addEventListener('keypress', function(e) {
- if (e.key === 'Enter') processarEntradaLeitor(this, ordemVenda4119, 'OV');
- });
-
- document.getElementById('bipRMA').addEventListener('keypress', function(e) {
- if (e.key === 'Enter') processarEntradaLeitor(this, rma4119, 'RMA');
- });
-
- // ENGENHARIA DE TOLERÂNCIA ZERO E MODAIS DE ADVERTÊNCIA
- function acionarDiscrepanciaModal(motivoTxt) {
- document.getElementById('txtErroEstoque').innerText = motivoTxt;
- document.getElementById('erroModal').style.display = 'flex';
- }
-
- function fecharErroModal() {
- document.getElementById('erroModal').style.display = 'none';
- if (etapaAtualEstoque === 'OV') {
- for (const ean in ordemVenda4119) ordemVenda4119[ean].bipado = 0;
- renderizarCardsProdutos('OV');
- document.getElementById('bipOV').focus();
- } else if (etapaAtualEstoque === 'RMA') {
- for (const ean in rma4119) rma4119[ean].bipado = 0;
- renderizarCardsProdutos('RMA');
- document.getElementById('bipRMA').focus();
- }
- }
-
- // VALIDAÇÃO DAS ETAPAS DA FILA DE CONFERÊNCIA
- function validarEtapaConferência(etapa) {
- const banco = etapa === 'OV' ? ordemVenda4119 : rma4119;
- let integridadeEtapa = true;
-
- for (const ean in banco) {
- if (banco[ean].bipado !== banco[ean].alvo) integridadeEtapa = false;
- }
-
- if (integridadeEtapa) {
- document.getElementById(`fase${etapa}`).classList.remove('ativa');
- document.getElementById(`fase${etapa}`).classList.add('concluida');
- document.getElementById(`status${etapa}`).innerText = "✅ Conferência Homologada";
- document.getElementById(`areaBipagem${etapa}`).style.display = 'none';
-
- if (etapa === 'OV') {
- etapaAtualEstoque = 'RMA';
- document.getElementById('faseRMA').classList.add('ativa');
- document.getElementById('statusRMA').innerText = "Em andamento...";
- document.getElementById('bipRMA').disabled = false;
- document.getElementById('bipRMA').focus();
- } else if (etapa === 'RMA') {
- etapaAtualEstoque = 'LOG';
- document.getElementById('faseLogistica').classList.add('ativa');
- document.getElementById('statusLog').innerText = "Processo Liberado";
- }
- } else {
- acionarDiscrepanciaModal("Quantidades divergentes com a ordem fiscal mapeada.");
- }
- }
-
- // GESTÃO DINÂMICA DE VOLUMES E CUBAGEM
- function adicionarCaixaEmbalagem() {
- contadorVolumesInterno++;
- const containerVolumes = document.getElementById('listaVolumesCaixas');
- const htmlCaixa = `
- <div class="volume-box" id="caixaVol-${contadorVolumes}">
- <div class="volume-title">Volume / Caixa Nº 0${contadorVolumes}</div>
- ${contadorVolumes > 1 ? `<button class="btn-remover-caixa" onclick="removerCaixaEmbalagem(${contadorVolumes})">✖ Excluir Volume</button>` : ''}
- <div class="grid-4">
- <div><label>Peso Real (Kg)</label><input type="number" class="input-dark" placeholder="0.00" step="0.01"></div>
- <div><label>Comprimento (cm)</label><input type="number" class="input-dark" placeholder="0"></div>
- <div><label>Largura (cm)</label><input type="number" class="input-dark" placeholder="0"></div>
- <div><label>Altura (cm)</label><input type="number" class="input-dark" placeholder="0"></div>
- </div>
- </div>
- `;
- containerVolumes.insertAdjacentHTML('beforeend', htmlCaixa);
- }
-
- function removerCaixaEmbalagem(idVol) {
- document.getElementById(`caixaVol-${idVol}`).remove();
- }
-
- function finalizarProcessoExpedicao() {
- alert("📦 PROCESSO CONCLUÍDO COM SUCESSO!\nAs informações de conferência da OV e do RMA foram registradas e enviadas para emissão da nota fiscal.");
- resetarEstruturaConferencia();
- navegarEstoque('estoqueDash');
- }
-
- // MÓDULO ADMINISTRATIVO: VISUALIZADOR DE HISTÓRICO DE AUDITORIA
- function abrirAuditoriaLogs(pedidoId, nomeOperador) {
- document.getElementById('modalOV').innerText = `#${pedidoId}`;
- document.getElementById('modalOperador').innerText = nomeOperador;
- 
- const listaLogs = document.getElementById('listaErrosLogs');
- listaLogs.innerHTML = `
- <li class="log-item">
- <span class="log-hora">Sep 05, 2026, 4:10 PM</span>
- <strong>Divergência de Código (EAN Inválido):</strong> Operador tentou registrar item incompatível com a Ordem de Venda principal. Contagem zerada.
- </li>
- <li class="log-item">
- <span class="log-hora">Sep 05, 2026, 4:12 PM</span>
- <strong>Conferência Reprovada por Quantidade:</strong> Tentativa de fechamento de etapa com pendência física na volumetria da caixa.
- </li>
- `;
- document.getElementById('modalAuditoria').style.display = 'flex';
- }
-
- function fecharAuditoriaModal() {
- document.getElementById('modalAuditoria').style.display = 'none';
- }
- </script>
+        async function finalizarProcessoExpedicao() {
+            if(!confirm(`Confirma o fechamento desta expedição com ${contadorVolumesInterno} volume(s)?`)) return;
+            const d = new Date(); const dataConclusao = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+            try { await db.collection("estoque_ovs").doc(idOvEmConferencia).update({ status: 'Concluído', dataConclusao: dataConclusao, operadorFinal: usuarioLogado, volumesReais: contadorVolumesInterno }); alert("📦 SUCESSO! Expedição registrada."); navegarEstoque('estoqueDash'); carregarFilaOperadorDaNuvem(); } catch(error) { alert("Erro ao salvar no banco."); }
+        }
+    </script>
 </body>
 </html>
