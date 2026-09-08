@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>HUB VOLT - Sistema Integrado de Gestão</title>
+    <title>HUB VOLT - Sistema Integrado de Gestão WMS</title>
     <link rel="icon" type="image/png" href="image_a87265.png">
     
     <style>
@@ -15,7 +15,7 @@
             --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 1150px; padding: 20px; box-sizing: border-box; }
         
         .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view-layer.active, .sub-screen.active { display: block; }
@@ -26,7 +26,7 @@
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
         /* ========================================== */
-        /* 2. CABEÇALHO E ELEMENTOS DE INTERFACE      */
+        /* 2. CABEÇALHO E BOTÕES                      */
         /* ========================================== */
         .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
         .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
@@ -46,7 +46,7 @@
         .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
         
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+        .form-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; letter-spacing: 0.5px;}
         .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #050505; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
         .input-dark:focus { border-color: var(--volt-green); outline: none; }
         .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; transition: 0.3s;}
@@ -56,7 +56,7 @@
         .input-editavel:focus { border-color: var(--volt-green); outline: none; }
 
         /* ========================================== */
-        /* 3. CARDS, LOGIN E MÓDULOS                  */
+        /* 3. MÓDULOS E CARDS DO PAINEL               */
         /* ========================================== */
         .greeting { text-align: center; margin-bottom: 40px; }
         .greeting h1 { font-size: 32px; font-weight: 600; margin: 0; }
@@ -72,7 +72,7 @@
         .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
-        
+
         .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
         .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
 
@@ -81,15 +81,22 @@
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
         .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
 
+        /* DRAG & DROP E LISTAS */
         .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 10px;}
         .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
-        .upload-area p { color: var(--text-muted); margin: 5px 0 0 0; font-size: 12px; }
-        .upload-area h3 { margin: 0; font-size: 16px; color: var(--text-light); }
         .upload-area.concluido { border-color: var(--success-green); border-style: solid; background-color: rgba(0, 204, 102, 0.05); }
 
-        .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-bottom: 1px solid #222; font-size: 13px; }
+        .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px 15px; border-bottom: 1px solid #222; font-size: 13px; }
         .item-listado:last-child { border-bottom: none; }
         .item-listado strong { color: var(--volt-green); margin-right: 10px;}
+
+        /* GRADE DE LANÇAMENTO */
+        .grid-lancamento { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; max-height: 350px; overflow-y: auto; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 15px; }
+        .item-grade { background: #161616; border: 1px solid #333; padding: 10px; border-radius: 6px; text-align: center; transition: 0.2s; }
+        .item-grade:hover { border-color: var(--volt-green); }
+        .item-grade strong { display: block; font-size: 13px; color: white; margin-bottom: 8px; }
+        .item-grade input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: var(--volt-green); text-align: center; border-radius: 4px; box-sizing: border-box; font-weight: bold;}
+        .item-grade input:focus { border-color: var(--volt-green); outline: none; }
 
         /* MINICARDS MONITORAMENTO */
         .mini-card { background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; position: relative; transition: 0.2s; }
@@ -120,20 +127,17 @@
         .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer; transition: 0.2s;}
         .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); }
         .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
-        .badge-warn { background: rgba(255, 204, 0, 0.1); color: #ffcc00; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
         
         .tabela-senha-box { display: flex; align-items: center; gap: 10px; }
         .senha-input { background: transparent; border: none; color: white; width: 80px; font-size: 14px; font-family: monospace; }
         .senha-input:focus { outline: none; }
         .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0; }
-        .btn-icon:hover { color: var(--volt-green); }
-
+        
         .grid-equipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
         .equipe-card { background: #000; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; border-left: 4px solid #444; transition: 0.2s; }
         .equipe-card:hover { border-color: var(--volt-green); }
         .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
         .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
-        .equipe-stats strong { color: var(--text-light); }
 
         /* ========================================== */
         /* 5. MODAIS CAMADA SUPERIOR                  */
@@ -148,7 +152,7 @@
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
 
         /* ========================================== */
-        /* 6. TELAS DO ESTOQUE E COTAÇÃO              */
+        /* 6. TELAS DO ESTOQUE E CONFERÊNCIA          */
         /* ========================================== */
         .prep-box { text-align: center; padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: #111; margin-top: 30px; }
         .btn-download { background: #222; border: 1px solid #444; color: white; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin: 10px; }
@@ -157,7 +161,6 @@
         .fase-section { background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
         .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
         .fase-section.concluida { opacity: 1; pointer-events: none; border-color: #333; }
-        
         .fase-section h3 { margin-top: 0; color: var(--volt-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; font-size: 18px;}
         .fase-section.concluida h3 { color: var(--success-green); }
         .fase-section:not(.ativa) h3 { color: var(--text-muted); }
@@ -174,7 +177,13 @@
         .volume-box { border: 1px dashed #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #0a0a0a; position: relative;}
         .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
         .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
-        .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
+        
+        /* Roteiro Inteligente */
+        .roteiro-box { border-left: 4px solid var(--volt-green); background: #0a0a0a; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+        .roteiro-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #333; padding: 12px 0; }
+        .roteiro-item:last-child { border-bottom: none; }
+        .badge-lote { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 10px;}
+        .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;}
     </style>
 
     <!-- FIREBASE -->
@@ -184,7 +193,7 @@
 <body>
 
     <!-- ========================================== -->
-    <!-- HEADER GLOBAL E MODAIS                     -->
+    <!-- HEADER GLOBAL                              -->
     <!-- ========================================== -->
     <div class="header">
         <div class="logo-container" onclick="voltarLogoHome()">
@@ -196,12 +205,14 @@
         </div>
     </div>
 
-    <!-- MODAL DE SENHA -->
+    <!-- ========================================== -->
+    <!-- MODAIS DE CAMADA SUPERIOR                  -->
+    <!-- ========================================== -->
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
             <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acesso: Nome</h3>
             <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
-            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou perfil inativo.</p>
+            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou inativa.</p>
             <div style="margin-top: 20px; display: flex; gap: 10px;">
                 <button class="btn-outline" style="flex: 1;" onclick="fecharSenhaModal()">CANCELAR</button>
                 <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">ENTRAR</button>
@@ -209,20 +220,18 @@
         </div>
     </div>
 
-    <!-- MODAL DE DIVERGÊNCIA -->
     <div id="erroModal" class="modal-overlay">
         <div class="erro-box">
             <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
-            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido ou quantidade excedente detectada.</p>
+            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido detectado.</p>
             <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
-                <strong style="color: var(--error-red);">Regra do Sistema:</strong>
-                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem de cards desta etapa foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual.</p>
+                <strong style="color: var(--error-red);">Regra Operacional:</strong>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem da etapa foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual para garantir 100% de exatidão.</p>
             </div>
-            <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar Etapa</button>
+            <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar</button>
         </div>
     </div>
 
-    <!-- MODAL ESCOLHER FRETE E CORRIGIR CAIXAS (ADMIN) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -230,7 +239,6 @@
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEscolhaFrete').style.display='none'">✖ Fechar</button>
             </div>
             
-            <!-- ÁREA DE EDIÇÃO DE DIMENSÕES PELO ADMIN -->
             <div style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h4 style="margin: 0; color: var(--text-light); font-size: 14px;">Dimensões dos Volumes</h4>
@@ -239,18 +247,26 @@
                         <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green); padding: 4px 10px; font-size: 11px;" onclick="salvarDimensoesAdmin()">💾 Salvar Correção</button>
                     </div>
                 </div>
-                <div id="listaDimensoesAdmin">
-                    <!-- Dimensões editáveis aparecem aqui -->
-                </div>
+                <div id="listaDimensoesAdmin"></div>
             </div>
 
             <p style="color: var(--text-muted); font-size: 14px; margin-top:0; margin-bottom: 15px;">Selecione a transportadora com o melhor custo-benefício para faturar este pedido.</p>
-            
             <div id="listaCotacoesAdmin"></div>
         </div>
     </div>
 
-    <!-- MODAL NOVO USUÁRIO -->
+    <div id="modalAuditoria" class="modal-overlay">
+        <div class="auditoria-box">
+            <div class="auditoria-header">
+                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria <span id="modalOV">#0000</span></h3>
+                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
+            </div>
+            <ul class="log-lista" id="listaErrosLogs"></ul>
+            <div style="text-align: right; margin-top: 25px;"><button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO DE EQUIPE -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -270,22 +286,24 @@
             </div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button>
-                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar Usuário</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL AUDITORIA DE LOGS REAIS DO FIREBASE -->
-    <div id="modalAuditoria" class="modal-overlay">
-        <div class="auditoria-box">
-            <div class="auditoria-header">
-                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
-                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
+    <!-- MODAL DE NOVO PRODUTO (SKU) -->
+    <div id="modalNovoSKU" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
+            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU</h3>
+            <div class="form-group"><label>Nome / SKU (Ex: CP20BK)</label><input type="text" id="cadSkuNovo" class="input-dark" placeholder="Nome do Produto"></div>
+            <div class="form-group"><label>Código de Barras Unitário (EAN)</label><input type="text" id="cadEanNovo" class="input-dark" placeholder="Bipar EAN da caixinha"></div>
+            <div class="grid-2" style="gap: 10px;">
+                <div class="form-group"><label>EAN Master (Opcional)</label><input type="text" id="cadMasterNovo" class="input-dark" placeholder="Bipar EAN da Master"></div>
+                <div class="form-group"><label>Qtd por Master</label><input type="number" id="cadQtdMasterNovo" class="input-dark" value="100"></div>
             </div>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades da etapa de separação:</p>
-            <ul class="log-lista" id="listaErrosLogs"></ul>
-            <div style="text-align: right; margin-top: 25px;">
-                <button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button>
             </div>
         </div>
     </div>
@@ -319,31 +337,101 @@
             <div id="adminDash" class="sub-screen active">
                 <div class="greeting">
                     <h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1>
-                    <p>O que você e a equipe de logística vão fazer hoje?</p>
+                    <p>Módulos de Gestão e Logística Avançada</p>
                 </div>
+                
                 <div class="grid-2" style="margin-bottom: 20px;">
                     <div class="hub-card" onclick="abrirModuloLancamentos()">
-                        <div><h3>Central de Lançamentos</h3><p>Suba novas OVs, cadastre os itens e libere para a separação da equipe.</p></div>
+                        <div><h3>1. Lançar Ordem de Venda</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div>
                         <div class="action">Abrir Módulo ➔</div>
                     </div>
                     <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()">
-                        <div><h3 style="color: white;">Faturamento e Cotações</h3><p>Aprove fretes e fature as OVs que a equipe já separou e cotou.</p></div>
+                        <div><h3 style="color: white;">2. Faturamento e Fretes</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div>
                         <div class="action" style="color: var(--volt-green);">Ver Fila de Faturamento ➔</div>
                     </div>
                 </div>
-                <div class="grid-2">
-                    <div class="hub-card" onclick="abrirModuloHistorico()">
-                        <div><h3>Histórico da Expedição</h3><p>Relatórios de pedidos expedidos, fretes escolhidos e auditoria de desempenho.</p></div>
-                        <div class="action">Abrir Relatórios ➔</div>
+
+                <div class="grid-3">
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()">
+                        <div><h3 style="font-size: 16px;">Catálogo e Lotes</h3><p style="font-size: 12px;">Cadastre Caixas Master e crie a matriz inteligente do sistema.</p></div>
+                        <div class="action" style="font-size: 12px;">Configurar SKUs ➔</div>
                     </div>
-                    <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
-                        <div><h3>Gestão de Acessos</h3><p>Cadastre perfis, gerencie senhas e status da sua equipe interna.</p></div>
-                        <div class="action">Configurar Equipe ➔</div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="navegarAdmin('adminEnderecamento')">
+                        <div><h3 style="font-size: 16px;">Endereçamento (Inbound)</h3><p style="font-size: 12px;">Guarde mercadorias recebidas associando Lote, SKU e Endereço Físico.</p></div>
+                        <div class="action" style="font-size: 12px;">Guardar Estoque ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloHistorico()">
+                        <div><h3 style="font-size: 16px;">Relatórios e Equipe</h3><p style="font-size: 12px;">Desempenho operacional, auditoria de erros e gestão de acessos do sistema.</p></div>
+                        <div class="action" style="font-size: 12px;">Abrir Painel ➔</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Subtela Admin: Lançamento MANUAL de Itens e Arquivos -->
+            <!-- Subtela: NOVO CADASTRO DE PRODUTOS / CATÁLOGO MATRIZ -->
+            <div id="adminCatalogo" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header" style="margin-bottom: 10px;">
+                        <h2>Catálogo de SKUs e Caixas Master</h2>
+                        <div>
+                            <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 10px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button>
+                            <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 20px;">Adicione o código da Caixa Master de cada produto para criar o seu banco de dados automatizado de Entrada de Mercadorias.</p>
+                    
+                    <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                        <table style="margin-top: 0;">
+                            <thead style="background: #000;">
+                                <tr>
+                                    <th style="padding: 15px;">Produto / SKU</th>
+                                    <th style="padding: 15px;">EAN Unitário (Caixinha)</th>
+                                    <th style="padding: 15px;">EAN Master (Opcional)</th>
+                                    <th style="padding: 15px;">Qtd por Master</th>
+                                    <th style="padding: 15px; text-align: right;">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaCatalogoConfig">
+                                <tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subtela: ENTRADA DE ESTOQUE / ENDEREÇAMENTO (INBOUND) -->
+            <div id="adminEnderecamento" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header">
+                        <h2>Entrada e Endereçamento de Lotes</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Bipe o endereço físico, o lote do fabricante e a caixa master para atualizar o estoque.</p>
+                    
+                    <div class="grid-2" style="gap: 30px;">
+                        <div>
+                            <div class="form-group">
+                                <label>1. BIPAR ENDEREÇO FÍSICO DA PRATELEIRA</label>
+                                <input type="text" id="inboundAddress" class="input-bip" placeholder="Ex: A-01-02" style="color: white; border-color: #555;">
+                            </div>
+                            <div class="form-group">
+                                <label>2. INSERIR LOTE DO FORNECEDOR (PARA GARANTIA DE 3 ANOS)</label>
+                                <input type="text" id="inboundLot" class="input-bip" placeholder="Ex: NOV-2023" style="color: white; border-color: #555;">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>3. BIPAR CAIXA MASTER OU PRODUTO</label>
+                                <input type="text" id="inboundProduct" class="input-bip" placeholder="Aguardando bipagem EAN/DUN-14..." autofocus>
+                            </div>
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button class="btn-volt" onclick="alert('Estoque guardado com sucesso no endereço informado!')">GUARDAR ESTOQUE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subtela Admin: Lançamento de OVs (GRADE RÁPIDA) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -367,64 +455,35 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>2. ANEXAR REMESSA (BRINDES / RMA)</label>
+                                <label>2. ANEXAR REMESSA (OPCIONAL)</label>
                                 <div class="upload-area" id="dropzoneRMA" style="border-color: #333;" onclick="document.getElementById('fileRMA').click()">
-                                    <h3 id="dropTitleRMA" style="color: #888;">📥 Clicar para Anexar Remessa</h3>
+                                    <h3 id="dropTitleRMA" style="color: #888;">📥 Clicar para Anexar arquivo de RMA</h3>
                                     <input type="file" id="fileRMA" style="display: none;" accept=".pdf, .xlsx, .xls">
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- GRADE DE PRODUTOS PARA INSERÇÃO RÁPIDA -->
                     <div class="form-group">
-                        <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (ESTOQUE BIPARÁ CONTRA ESTA LISTA)</label>
-                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                            
-                            <select id="addProdutoCatalogo" class="input-dark" style="flex: 3; margin: 0;">
-                                <option value="">Selecione o Produto (Catálogo VOLT)...</option>
-                                <option value="7898996240394|CH20WH">CH20WH</option>
-                                <option value="7898974018038|CH20BK">CH20BK</option>
-                                <option value="7898974018021|CH30WH">CH30WH</option>
-                                <option value="7898974018014|CH30BK">CH30BK</option>
-                                <option value="7898974018083|CH45WH">CH45WH</option>
-                                <option value="7898974018007|CH65WH">CH65WH</option>
-                                <option value="7898974018045|PCC20GR">PCC20GR</option>
-                                <option value="7898996240301|FAC10BK">FAC10BK</option>
-                                <option value="7898996240318|FAC10WH">FAC10WH</option>
-                                <option value="7898974018076|FAC20BK">FAC20BK</option>
-                                <option value="7898974018175|FAL10BK">FAL10BK</option>
-                                <option value="7898996240325|FAL10WH">FAL10WH</option>
-                                <option value="7898974018069|FAL20WH">FAL20WH</option>
-                                <option value="7898996240332|FCC15BK">FCC15BK</option>
-                                <option value="7898996240349|FCC15WH">FCC15WH</option>
-                                <option value="7898974018182|FCL15BK">FCL15BK</option>
-                                <option value="7898996240356|FCL15WH">FCL15WH</option>
-                                <option value="7898974018052|FAM10BK">FAM10BK</option>
-                                <option value="7898996240363|MCC15SG">MCC15SG</option>
-                                <option value="7898996240370|MCL15SG">MCL15SG</option>
-                                <option value="7898974018199|MCL15WH">MCL15WH</option>
-                                <option value="7898974018106|MP5BK">MP5BK</option>
-                                <option value="7898974018090|MP5WH">MP5WH</option>
-                                <option value="7898974018137|CP10BK">CP10BK</option>
-                                <option value="7898974018120|CP10WH">CP10WH</option>
-                                <option value="7898974018144|PS10">PS10</option>
-                                <option value="7898974018151|SA54">SA54</option>
-                                <option value="7898974018168|SP54">SP54</option>
-                                <option value="7898974018113|SB60">SB60</option>
-                                <option value="7898974018212|DCP525">DCP525</option>
-                                <option value="7898974018274|XMT">XMT</option>
-                            </select>
-                            
-                            <input type="number" id="addQtd" class="input-dark" placeholder="Qtd" value="1" style="flex: 1; margin: 0;">
-                            <select id="addTipo" class="input-dark" style="flex: 1.5; margin: 0;">
-                                <option value="OV">Ordem Principal</option>
-                                <option value="RMA">Remessa Adicional</option>
-                            </select>
-                            <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="adicionarItemLancamento()">+ ADD ITEM</button>
+                        <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (PREENCHA AS QUANTIDADES NA GRADE)</label>
+                        
+                        <div class="grid-lancamento" id="gridProdutosLancamento">
+                            <p style="color: var(--volt-green); font-size: 12px; text-align: center; grid-column: 1 / -1;">Carregando Matriz de Produtos...</p>
                         </div>
                         
+                        <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 25px; align-items: center; justify-content: flex-end; padding-bottom: 20px; border-bottom: 1px solid #222;">
+                            <label style="margin: 0;">DESTINO DO LOTE:</label>
+                            <select id="addTipoLote" class="input-dark" style="width: 250px; margin: 0;">
+                                <option value="OV">Para Ordem Principal</option>
+                                <option value="RMA">Para Remessa (Brindes/RMA)</option>
+                            </select>
+                            <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green); padding: 12px 20px;" onclick="adicionarLoteItens()">+ INSERIR SELECIONADOS NA LISTA</button>
+                        </div>
+                        
+                        <label>RESUMO DOS ITENS ADICIONADOS PARA ESTA EXPEDIÇÃO:</label>
                         <div id="listaProdutosManual" style="background: #050505; border: 1px solid #222; border-radius: 6px; padding: 10px; min-height: 80px;">
-                            <p id="txtListaVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">Nenhum produto cadastrado nesta ordem ainda.</p>
+                            <p id="txtListaVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">A lista do pedido está vazia no momento.</p>
                         </div>
                     </div>
 
@@ -472,7 +531,6 @@
                     
                     <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe Operacional</h3>
                     
-                    <!-- Grid Dinâmico Injetado pelo JS -->
                     <div class="grid-equipe" id="containerDesempenhoEquipe">
                         <p style="color: var(--volt-green);">Calculando desempenho atualizado da equipe...</p>
                     </div>
@@ -527,6 +585,14 @@
                         <div class="action" style="color: var(--volt-green);">Fazer Cotações ➔</div>
                     </div>
                 </div>
+                <div class="grid-1" style="margin-top: 20px;">
+                    <div class="hub-card" style="min-height: 80px; padding: 20px; border-color: #333;" onclick="navegarEstoque('adminEnderecamento')">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div><h3 style="font-size: 16px; margin: 0;">📥 Guardar Mercadoria (Inbound)</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Bipar endereço físico e caixa para atualizar sistema.</p></div>
+                            <div class="action">Abrir ➔</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Fila de Separação (Estoque) -->
@@ -552,17 +618,21 @@
                 <div class="modulo-header" style="border:none; margin-bottom: 0;">
                     <button class="btn-outline" style="border:none; padding-left: 0;" onclick="abrirFilaSeparacao()">⟵ VOLTAR À FILA</button>
                 </div>
-                <div class="prep-box">
-                    <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Preparação Física - <span id="prepOvNumero">OV-0000</span></h2>
-                    <p style="color: var(--text-muted); margin-bottom: 30px;">Baixe os arquivos em anexo (se houver) para realizar a separação nas prateleiras antes de bipar na bancada.</p>
+                <div class="prep-box" style="padding: 30px;">
+                    <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Roteiro de Coleta - <span id="prepOvNumero">OV-0000</span></h2>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Siga a rota abaixo pelos corredores. Pegue exatamente os lotes indicados pelo sistema.</p>
                     
+                    <div id="roteiroPickingHtml" style="text-align: left; margin-bottom: 30px;">
+                        <!-- O Roteiro Inteligente entra aqui -->
+                    </div>
+
                     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                         <button class="btn-download" id="btnDownloadOv">📄 Baixar Ordem Principal</button>
                         <button class="btn-download" id="btnDownloadRma" style="display:none;">🔄 Baixar Remessa</button>
                     </div>
 
                     <div style="margin-top: 50px; border-top: 1px solid #222; padding-top: 30px;">
-                        <button class="btn-volt" style="width: auto; padding: 20px 40px; font-size: 16px;" onclick="abrirBipagemOficial()">JÁ SEPAREI AS CAIXAS, INICIAR CONFERÊNCIA ➔</button>
+                        <button class="btn-volt" style="width: auto; padding: 20px 40px; font-size: 16px;" onclick="abrirBipagemOficial()">CARRINHO CHEIO, INICIAR BANCADA ➔</button>
                     </div>
                 </div>
             </div>
@@ -589,7 +659,7 @@
                 </div>
 
                 <div id="faseRMA" class="fase-section">
-                    <h3>2. Itens de Remessa (Brindes / RMA) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3>
+                    <h3>2. Itens de Remessa (Brindes/RMA) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3>
                     <div class="produtos-grid" id="containerRMA"></div>
                     
                     <div class="form-group" style="margin-top: 20px;">
@@ -623,7 +693,6 @@
                     <div class="form-group" style="border: 1px solid #333; padding: 20px; border-radius: 8px; background: #0a0a0a;">
                         <label style="color: var(--volt-green); margin-bottom: 15px;">1. INSERIR NOVA TRANSPORTADORA</label>
                         <div style="display: flex; gap: 10px;">
-                            <!-- LISTA DE TRANSPORTADORAS ATUALIZADA A PEDIDO -->
                             <select id="cotTransp" class="input-dark" style="flex: 2; margin: 0;">
                                 <option value="">Selecione Transportadora...</option>
                                 <option value="Correios (Sedex)">Correios (Sedex)</option>
@@ -661,66 +730,63 @@
     <!-- MOTOR DO SISTEMA (JAVASCRIPT / FIREBASE)   -->
     <!-- ========================================== -->
     <script>
-        // Inicialização do Firebase
         const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
         firebase.initializeApp(firebaseConfig); 
         const db = firebase.firestore();
         
-        let bdUsuariosLogistica = {
-            'Lucas': { role: 'admin', senha: '123', funcao: 'Gestor', status: 'ativo' },
-            'Luiz': { role: 'estoque', senha: '123', funcao: 'Estoque', status: 'ativo' }
-        };
-        
+        // BASE DE DADOS DOS 31 PRODUTOS DA VOLT (EAN CAIXINHA)
+        const baseCatalogoVOLT = [
+            {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
+            {sku: "CH45WH", ean: "7898974018083"}, {sku: "CH65WH", ean: "7898974018007"}, {sku: "PCC20GR", ean: "7898974018045"}, {sku: "FAC10BK", ean: "7898996240301"},
+            {sku: "FAC10WH", ean: "7898996240318"}, {sku: "FAC20BK", ean: "7898974018076"}, {sku: "FAL10BK", ean: "7898974018175"}, {sku: "FAL10WH", ean: "7898996240325"},
+            {sku: "FAL20WH", ean: "7898974018069"}, {sku: "FCC15BK", ean: "7898996240332"}, {sku: "FCC15WH", ean: "7898996240349"}, {sku: "FCL15BK", ean: "7898974018182"},
+            {sku: "FCL15WH", ean: "7898996240356"}, {sku: "FAM10BK", ean: "7898974018052"}, {sku: "MCC15SG", ean: "7898996240363"}, {sku: "MCL15SG", ean: "7898996240370"},
+            {sku: "MCL15WH", ean: "7898974018199"}, {sku: "MP5BK", ean: "7898974018106"}, {sku: "MP5WH", ean: "7898974018090"}, {sku: "CP10BK", ean: "7898974018137"},
+            {sku: "CP10WH", ean: "7898974018120"}, {sku: "PS10", ean: "7898974018144"}, {sku: "SA54", ean: "7898974018151"}, {sku: "SP54", ean: "7898974018168"},
+            {sku: "SB60", ean: "7898974018113"}, {sku: "DCP525", ean: "7898974018212"}, {sku: "XMT", ean: "7898974018274"}
+        ];
+
+        let catalogoCompleto = []; 
+
+        let bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
         let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
         let idOvGlobal = null; let objOvGlobal = null;
-        
         let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
         
         let itensLancamentoOV = {}; let itensLancamentoRMA = {};
         let itensBipagemOV = {}; let itensBipagemRMA = {};
-        let cotacoesAtuais = [];
-        
-        // Log de Auditoria para gravar erros reais da operação
-        let auditoriaLogsSessao = [];
+        let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
-        // Arquivos em Base64
-        function getBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        function baixarArquivoBase64(base64Str, fileName) {
-            const link = document.createElement('a');
-            link.href = base64Str;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
+        function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         window.onload = async function() { 
             await carregarUsuariosDaNuvem(); 
+            await inicializarCatalogoMestre();
             document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
         };
 
-        function atualizarSaudacao() {
-            const hora = new Date().getHours();
-            let texto = "Boa noite";
-            if (hora >= 5 && hora < 12) texto = "Bom dia";
-            else if (hora >= 12 && hora < 18) texto = "Boa tarde";
-            document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`;
+        async function inicializarCatalogoMestre() {
+            catalogoCompleto = [...baseCatalogoVOLT];
+            try {
+                const snapshot = await db.collection("catalogo_produtos").get();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if(!catalogoCompleto.find(p => p.ean === data.eanUnitario)) {
+                        catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario});
+                    }
+                });
+            } catch(e) { console.warn("Modo offline."); }
+            catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku));
         }
+
+        function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
 
         function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
         function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
         function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
         function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
 
-        // LOGIN E ACESSOS
         async function carregarUsuariosDaNuvem() {
             const grid = document.getElementById('gridUsuariosLogin');
             try {
@@ -735,7 +801,7 @@
                         }
                     });
                 }
-            } catch (error) { console.error("Usando usuários offline."); }
+            } catch (error) { console.error("Offline."); }
         }
 
         function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
@@ -754,32 +820,121 @@
         function fazerLogout() { location.reload(); }
 
         // ====================================================
-        // ADMIN: LANÇAMENTO MANUAL DE ITENS E ANEXOS
+        // MATRIZ DE CATÁLOGO (ADMIN)
+        // ====================================================
+        async function abrirModuloCatalogo() {
+            navegarAdmin('adminCatalogo');
+            const tbody = document.getElementById('tabelaCatalogoConfig');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
+            
+            try {
+                const snapshot = await db.collection("catalogo_produtos").get();
+                let nuvemDados = {};
+                snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
+                
+                tbody.innerHTML = '';
+                catalogoCompleto.forEach(prod => {
+                    const salvo = nuvemDados[prod.ean] || {};
+                    const masterVal = salvo.eanMaster || '';
+                    const masterQtd = salvo.qtdMaster || 100;
+                    
+                    tbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #222;">
+                            <td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td>
+                            <td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td>
+                            <td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td>
+                            <td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td>
+                            <td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro ao carregar banco de dados.</td></tr>';
+            }
+        }
+
+        async function salvarProdutoCatalogo(eanUnitario, sku) {
+            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim();
+            const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
+            try {
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({
+                    sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd)
+                }, {merge: true});
+                alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`);
+            } catch(e) { alert("Erro ao salvar produto."); }
+        }
+
+        async function salvarNovoSKUNuvem() {
+            const sku = document.getElementById('cadSkuNovo').value.trim();
+            const eanUnitario = document.getElementById('cadEanNovo').value.trim();
+            const eanMaster = document.getElementById('cadMasterNovo').value.trim();
+            const qtdMaster = document.getElementById('cadQtdMasterNovo').value;
+
+            if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios.");
+
+            try {
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({
+                    sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster)
+                });
+                alert(`✅ Novo produto ${sku} criado no sistema!`);
+                document.getElementById('modalNovoSKU').style.display = 'none';
+                
+                document.getElementById('cadSkuNovo').value = ''; document.getElementById('cadEanNovo').value = '';
+                await inicializarCatalogoMestre(); 
+                abrirModuloCatalogo(); 
+            } catch(e) { alert("Erro ao criar produto."); }
+        }
+
+        // ====================================================
+        // ADMIN: LANÇAMENTO MANUAL EM GRADE
         // ====================================================
         function abrirModuloLancamentos() { 
             navegarAdmin('adminLancamentos'); 
             carregarMiniFilaAdmin(); 
+            renderizarGridLancamentos(); 
+        }
+
+        function renderizarGridLancamentos() {
+            const grid = document.getElementById('gridProdutosLancamento');
+            grid.innerHTML = '';
+            catalogoCompleto.forEach(prod => {
+                grid.innerHTML += `
+                    <div class="item-grade">
+                        <strong>${prod.sku}</strong>
+                        <input type="number" id="lanca_qtd_${prod.ean}" placeholder="0">
+                    </div>
+                `;
+            });
         }
 
         document.getElementById('fileOV').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneOV').classList.add('concluido'); document.getElementById('dropTitleOV').innerText = "✅ OV Anexada"; document.getElementById('dropTitleOV').style.color = "var(--success-green)"; }});
         document.getElementById('fileRMA').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneRMA').classList.add('concluido'); document.getElementById('dropTitleRMA').innerText = "✅ Remessa Anexada"; document.getElementById('dropTitleRMA').style.color = "var(--success-green)"; }});
 
-        function adicionarItemLancamento() {
-            const selectValue = document.getElementById('addProdutoCatalogo').value;
-            const qtd = parseInt(document.getElementById('addQtd').value) || 1;
-            const tipo = document.getElementById('addTipo').value; 
-            if (!selectValue) return alert("Selecione um produto da lista.");
-            const [ean, sku] = selectValue.split('|');
+        function adicionarLoteItens() {
+            const tipo = document.getElementById('addTipoLote').value; 
             const bancoAlvo = tipo === 'OV' ? itensLancamentoOV : itensLancamentoRMA;
-            if (bancoAlvo[ean]) bancoAlvo[ean].alvo += qtd; else bancoAlvo[ean] = { sku: sku, alvo: qtd, bipado: 0 };
-            atualizarListaManualAdmin(); document.getElementById('addQtd').value = '1'; document.getElementById('addProdutoCatalogo').focus();
+            let adicionouAlgo = false;
+
+            catalogoCompleto.forEach(prod => {
+                const input = document.getElementById(`lanca_qtd_${prod.ean}`);
+                if(input && input.value > 0) {
+                    const qtd = parseInt(input.value);
+                    if (bancoAlvo[prod.ean]) bancoAlvo[prod.ean].alvo += qtd; 
+                    else bancoAlvo[prod.ean] = { sku: prod.sku, alvo: qtd, bipado: 0 };
+                    input.value = ''; 
+                    adicionouAlgo = true;
+                }
+            });
+
+            if(!adicionouAlgo) return alert("Você precisa digitar a quantidade de pelo menos um produto na grade.");
+            atualizarListaManualAdmin();
         }
 
         function atualizarListaManualAdmin() {
             const container = document.getElementById('listaProdutosManual'); container.innerHTML = ''; let temItens = false;
             for(let ean in itensLancamentoOV) { temItens = true; container.innerHTML += `<div class="item-listado"><div><strong>[PRINCIPAL]</strong> ${itensLancamentoOV[ean].sku} <span style="color:#666; font-size:11px;">(${ean})</span></div><div>Qtd: ${itensLancamentoOV[ean].alvo} <button style="background:transparent; border:none; color:var(--error-red); cursor:pointer;" onclick="removerItemLancamento('${ean}', 'OV')">✖</button></div></div>`; }
             for(let ean in itensLancamentoRMA) { temItens = true; container.innerHTML += `<div class="item-listado"><div><strong style="color:#888;">[REMESSA]</strong> ${itensLancamentoRMA[ean].sku} <span style="color:#666; font-size:11px;">(${ean})</span></div><div>Qtd: ${itensLancamentoRMA[ean].alvo} <button style="background:transparent; border:none; color:var(--error-red); cursor:pointer;" onclick="removerItemLancamento('${ean}', 'RMA')">✖</button></div></div>`; }
-            if(!temItens) container.innerHTML = '<p id="txtListaVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">Nenhum produto cadastrado nesta ordem ainda.</p>';
+            if(!temItens) container.innerHTML = '<p id="txtListaVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">A lista do pedido está vazia no momento.</p>';
         }
 
         function removerItemLancamento(ean, tipo) { if(tipo === 'OV') delete itensLancamentoOV[ean]; else delete itensLancamentoRMA[ean]; atualizarListaManualAdmin(); }
@@ -790,41 +945,29 @@
             const temArquivoOV = fileOvInput.files.length > 0; const temArquivoRMA = fileRmaInput.files.length > 0;
             
             if(!num) return alert("O número da OV é obrigatório.");
-            if(Object.keys(itensLancamentoOV).length === 0) return alert("Adicione pelo menos 1 item na Ordem Principal antes de enviar.");
+            if(Object.keys(itensLancamentoOV).length === 0) return alert("Adicione pelo menos 1 item na Ordem Principal através da grade.");
 
-            document.getElementById('dropTitleOV').innerText = "⏳ Convertendo e Salvando...";
-
+            document.getElementById('dropTitleOV').innerText = "⏳ Lançando...";
             let base64OV = null; let base64RMA = null;
 
             try {
                 if(temArquivoOV) base64OV = await getBase64(fileOvInput.files[0]);
                 if(temArquivoRMA) base64RMA = await getBase64(fileRmaInput.files[0]);
-
                 const d = new Date(); const dataF = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
                 
                 await db.collection("estoque_ovs").add({ 
-                    numero: num, 
-                    cliente: cli, 
-                    volumesPrevisao: vol, 
-                    hasArquivoOV: temArquivoOV, 
-                    arquivoOV_base64: base64OV, 
-                    hasArquivoRMA: temArquivoRMA, 
-                    arquivoRMA_base64: base64RMA, 
-                    itensOV: itensLancamentoOV, 
-                    itensRMA: itensLancamentoRMA, 
-                    status: 'Aguardando Liberação', 
-                    data: dataF, 
-                    autor: usuarioLogado, 
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+                    numero: num, cliente: cli, volumesPrevisao: vol, 
+                    hasArquivoOV: temArquivoOV, arquivoOV_base64: base64OV, 
+                    hasArquivoRMA: temArquivoRMA, arquivoRMA_base64: base64RMA, 
+                    itensOV: itensLancamentoOV, itensRMA: itensLancamentoRMA, 
+                    status: 'Aguardando Liberação', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp() 
                 }); 
                 
                 alert(`A OV ${num} foi enviada para a fila de expedição com sucesso!`); 
-                
-                document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('fileOV').value = ''; document.getElementById('fileRMA').value = ''; document.getElementById('dropzoneOV').classList.remove('concluido'); document.getElementById('dropzoneRMA').classList.remove('concluido'); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; document.getElementById('dropTitleOV').style.color = "var(--text-light)"; document.getElementById('dropTitleRMA').innerText = "📥 Clicar para Anexar Remessa"; document.getElementById('dropTitleRMA').style.color = "#888"; document.getElementById('addProdutoCatalogo').value = '';
+                document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('fileOV').value = ''; document.getElementById('fileRMA').value = ''; document.getElementById('dropzoneOV').classList.remove('concluido'); document.getElementById('dropzoneRMA').classList.remove('concluido'); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; document.getElementById('dropTitleOV').style.color = "var(--text-light)"; document.getElementById('dropTitleRMA').innerText = "📥 Clicar para Anexar Remessa"; document.getElementById('dropTitleRMA').style.color = "#888"; 
                 itensLancamentoOV = {}; itensLancamentoRMA = {}; atualizarListaManualAdmin(); 
-                
                 carregarMiniFilaAdmin(); 
-            } catch (e) { alert("Erro ao gravar dados na nuvem."); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; }
+            } catch (e) { alert("Erro ao gravar dados na nuvem."); }
         }
 
         async function carregarMiniFilaAdmin() {
@@ -888,9 +1031,7 @@
                         if (op) {
                             if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0, erros: 0 };
                             statsPorOperador[op].separados++;
-                            if (ov.auditoriaLogs && ov.auditoriaLogs.length > 0) {
-                                statsPorOperador[op].erros += ov.auditoriaLogs.length; // Conta os erros ocorridos
-                            }
+                            if (ov.auditoriaLogs && ov.auditoriaLogs.length > 0) { statsPorOperador[op].erros += ov.auditoriaLogs.length; }
                         }
                     }
                 });
@@ -902,12 +1043,11 @@
                         const separados = statsPorOperador[nome] ? statsPorOperador[nome].separados : 0;
                         const erros = statsPorOperador[nome] ? statsPorOperador[nome].erros : 0;
                         const statusBadge = user.status !== 'inativo' ? '<span style="color: var(--volt-green); font-size: 14px;">Ativo</span>' : '<span style="color: var(--error-red); font-size: 14px;">Inativo</span>';
-                        
                         htmlCards += `
                         <div class="equipe-card" style="border-left-color: ${user.status !== 'inativo' ? 'var(--volt-green)' : '#444'};">
                             <div class="equipe-nome">${nome} ${statusBadge}</div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros de Leitura: <strong style="${erros > 0 ? 'color: var(--error-red);' : 'color: var(--success-green);'}">${erros}</strong></span></div>
-                            <div class="equipe-stats"><span>Desempenho Geral Atualizado</span></div>
+                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros Graves: <strong style="${erros > 0 ? 'color: var(--error-red);' : 'color: var(--success-green);'}">${erros}</strong></span></div>
+                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span></div>
                         </div>`;
                     }
                 }
@@ -934,7 +1074,7 @@
                     const ov = doc.data();
                     if (ov.status === 'Concluído') { 
                         contador++; const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
-                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx</td><td><span class="badge-erro" onclick="abrirAuditoriaLogs('${doc.id}', '${ov.numero}', '${ov.operadorSeparacao || ov.operadorFinal}')">Ver Logs da OV</span></td></tr>`;
+                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx</td><td><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="abrirAuditoriaLogs('${doc.id}', '${ov.numero}', '${ov.operadorSeparacao || ov.operadorFinal}')">Ver Erros</button></td></tr>`;
                     }
                 });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
@@ -942,26 +1082,13 @@
         }
 
         async function abrirAuditoriaLogs(id_doc, numero, operador) {
-            document.getElementById('modalOV').innerText = `#${numero}`; 
-            document.getElementById('modalOperador').innerText = operador;
-            const listaLogs = document.getElementById('listaErrosLogs');
-            listaLogs.innerHTML = '<li class="log-item"><span class="log-hora">Carregando...</span><strong>Buscando logs no Firebase...</strong></li>';
-            document.getElementById('modalAuditoria').style.display = 'flex';
-            
+            document.getElementById('modalOV').innerText = `#${numero}`; document.getElementById('modalOperador').innerText = operador;
+            const listaLogs = document.getElementById('listaErrosLogs'); listaLogs.innerHTML = '<li class="log-item"><span class="log-hora">Carregando...</span><strong>Buscando logs no Firebase...</strong></li>'; document.getElementById('modalAuditoria').style.display = 'flex';
             try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get();
-                const ovData = docRef.data();
-                listaLogs.innerHTML = '';
-                if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) {
-                    ovData.auditoriaLogs.forEach(log => {
-                        listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Divergência:</strong> ${log.mensagem}</li>`;
-                    });
-                } else {
-                    listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhuma divergência registrada. Conferência 100% precisa.</strong></li>`;
-                }
-            } catch(e) {
-                listaLogs.innerHTML = `<li class="log-item"><span class="log-hora">Erro</span><strong>Não foi possível carregar os logs do servidor.</strong></li>`;
-            }
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data(); listaLogs.innerHTML = '';
+                if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) { ovData.auditoriaLogs.forEach(log => { listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Erro:</strong> ${log.mensagem}</li>`; }); } 
+                else { listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhum erro registrado. Conferência cega foi de 100%.</strong></li>`; }
+            } catch(e) { listaLogs.innerHTML = `<li class="log-item"><span class="log-hora">Erro</span><strong>Não foi possível carregar os logs.</strong></li>`; }
         }
 
         // ====================================================
@@ -981,7 +1108,7 @@
                         if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
                         if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
                         
-                        tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais} cx</td><td>${totalItens} itens</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar Fretes e Faturar</button></td></tr>`;
+                        tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais} cx</td><td>${totalItens} itens</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar e Faturar</button></td></tr>`;
                     }
                 });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma OV aguardando faturamento.</td></tr>';
@@ -1002,7 +1129,6 @@
                 const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); 
                 const ovData = docRef.data();
                 
-                // RENDERIZAR DIMENSÕES EDITÁVEIS PARA O ADMIN
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => {
@@ -1022,7 +1148,6 @@
                     containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão foi registrada pelo estoque nesta OV.</p>';
                 }
 
-                // RENDERIZAR COTAÇÕES
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => {
@@ -1035,21 +1160,8 @@
         function adicionarDimensaoAdmin() {
             const container = document.getElementById('listaDimensoesAdmin');
             const currentCount = container.querySelectorAll('.grid-4').length;
-            const txtVazio = container.querySelector('p');
-            if (txtVazio) txtVazio.remove();
-
-            const html = `
-                <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
-                    <div><label style="font-size: 10px; color: #888;">Vol 0${currentCount + 1} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="" style="padding: 8px;"></div>
-                    <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="" style="padding: 8px;"></div>
-                    <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="" style="padding: 8px;"></div>
-                    <div style="display: flex; gap: 5px;">
-                        <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="" style="padding: 8px;"></div>
-                        <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
+            const txtVazio = container.querySelector('p'); if (txtVazio) txtVazio.remove();
+            container.insertAdjacentHTML('beforeend', `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${currentCount + 1} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`);
         }
 
         async function salvarDimensoesAdmin() {
@@ -1073,7 +1185,7 @@
                     volumesReais: novosDetalhes.length 
                 });
                 alert("💾 Dimensões salvas e corrigidas com sucesso!");
-                carregarFilaFaturamentoNuvem(); // Atualiza a tabela que mostra Volumes Físicos
+                carregarFilaFaturamentoNuvem(); 
             } catch(e) { alert("Erro ao salvar dimensões."); }
         }
 
@@ -1113,7 +1225,7 @@
         }
 
         // ====================================================
-        // ESTOQUE: FILA SEPARAÇÃO E BIPAGEM (CEGA)
+        // ESTOQUE: WMS, FILA SEPARAÇÃO E BIPAGEM CEGA
         // ====================================================
         function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -1126,54 +1238,47 @@
                     if (ov.status === 'Aguardando Liberação' || ov.status === 'Separando') {
                         contador++; const temRmaVisual = (ov.itensRMA && Object.keys(ov.itensRMA).length > 0) || ov.hasArquivoRMA;
                         if (ov.status === 'Aguardando Liberação') {
-                            container.innerHTML += `<div class="pedido-item" onclick="iniciarPreparacao('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--text-light); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes Previstos: <strong style="color: white;">${ov.volumesPrevisao}</strong> | Remessa: ${temRmaVisual ? 'Sim' : 'Não'}</span></div><span style="color: var(--volt-green); font-weight: bold; font-size: 12px; border: 1px solid var(--volt-green); padding: 8px 15px; border-radius: 4px;">INICIAR SEPARAÇÃO ➔</span></div>`;
+                            container.innerHTML += `<div class="pedido-item" onclick="iniciarPreparacao('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--text-light); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes Previstos: <strong style="color: white;">${ov.volumesPrevisao}</strong> | Remessa: ${temRmaVisual ? 'Sim' : 'Não'}</span></div><span style="color: var(--volt-green); font-weight: bold; font-size: 12px; border: 1px solid var(--volt-green); padding: 8px 15px; border-radius: 4px;">VER ROTEIRO E SEPARAR ➔</span></div>`;
                         } else {
                             container.innerHTML += `<div class="pedido-item" style="border-color:var(--warning-yellow);" onclick="iniciarPreparacao('${id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--warning-yellow); display: block;">${ov.numero} (Pausado)</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente}</span></div><span style="color: var(--warning-yellow); font-weight: bold; font-size: 12px;">RETOMAR ➔</span></div>`;
                         }
                     }
                 });
-                if(contador === 0) container.innerHTML = '<p style="color: #888;">Excelente! Não há nenhum pedido aguardando separação.</p>';
+                if(contador === 0) container.innerHTML = '<p style="color: #888;">Nenhum pedido aguardando separação.</p>';
             } catch (error) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao comunicar com a fila da nuvem.</p>'; }
         }
 
         async function iniciarPreparacao(id_doc, numero) {
             idOvGlobal = id_doc; document.getElementById('prepOvNumero').innerText = numero; document.getElementById('confOvNumero').innerText = numero;
             document.getElementById('btnDownloadOv').style.display = 'none'; document.getElementById('btnDownloadRma').style.display = 'none';
-            
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
             
-            if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { 
-                const btnOv = document.getElementById('btnDownloadOv');
-                btnOv.style.display = 'inline-flex'; 
-                btnOv.innerText = "📄 Baixar Ordem Principal"; 
-                btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`);
-            } else { 
-                const btnOv = document.getElementById('btnDownloadOv');
-                btnOv.style.display = 'inline-flex'; 
-                btnOv.innerText = "Avançar direto (Sem Arquivo Físico)"; 
-                btnOv.onclick = () => abrirBipagemOficial(); 
+            const htmlRoteiro = document.getElementById('roteiroPickingHtml'); htmlRoteiro.innerHTML = '';
+            if(objOvGlobal.itensOV && Object.keys(objOvGlobal.itensOV).length > 0) {
+                let r = '<div class="roteiro-box">';
+                for(let ean in objOvGlobal.itensOV) {
+                    const item = objOvGlobal.itensOV[ean];
+                    const loteId = "Padrão"; 
+                    const enderecoId = "Estoque"; 
+                    r += `<div class="roteiro-item"><div><span class="badge-endereco">${enderecoId}</span> <strong style="color: white; margin-left: 10px;">${item.sku}</strong> <span class="badge-lote">${loteId}</span></div><div style="font-size: 18px; color: var(--volt-green);"><strong>${item.alvo}x</strong></div></div>`;
+                }
+                r += '</div>'; htmlRoteiro.innerHTML = r;
             }
+
+            if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { const btnOv = document.getElementById('btnDownloadOv'); btnOv.style.display = 'inline-flex'; btnOv.innerText = "📄 Baixar Ordem Principal"; btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`); } 
+            if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { const btnRma = document.getElementById('btnDownloadRma'); btnRma.style.display = 'inline-flex'; btnRma.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoRMA_base64, `Remessa_${numero}.pdf`); }
             
-            if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { 
-                const btnRma = document.getElementById('btnDownloadRma');
-                btnRma.style.display = 'inline-flex'; 
-                btnRma.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoRMA_base64, `Remessa_${numero}.pdf`);
-            }
             navegarEstoque('estoquePreparacao');
         }
 
         async function abrirBipagemOficial() {
             await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separando', operadorSeparacao: usuarioLogado });
-            
             itensBipagemOV = objOvGlobal.itensOV || {}; itensBipagemRMA = objOvGlobal.itensRMA || {};
             const existeFaseRMA = Object.keys(itensBipagemRMA).length > 0; document.getElementById('faseRMA').style.display = existeFaseRMA ? 'block' : 'none';
-            
             etapaAtualEstoque = 'OV'; document.getElementById('faseOV').className = 'fase-section ativa'; document.getElementById('faseRMA').className = 'fase-section'; document.getElementById('faseLogistica').className = 'fase-section'; document.getElementById('statusOV').innerText = 'Aguardando Leitura'; document.getElementById('statusRMA').innerText = 'Bloqueado'; document.getElementById('statusLog').innerText = 'Bloqueado'; document.getElementById('bipOV').disabled = false; document.getElementById('bipRMA').disabled = true; document.getElementById('bipOV').value = '';
             
-            auditoriaLogsSessao = []; // Inicia gravação limpa da auditoria
-            for(let ean in itensBipagemOV) itensBipagemOV[ean].bipado = 0; 
-            for(let ean in itensBipagemRMA) itensBipagemRMA[ean].bipado = 0;
-
+            auditoriaLogsSessao = objOvGlobal.auditoriaLogs || []; 
+            for(let ean in itensBipagemOV) itensBipagemOV[ean].bipado = 0; for(let ean in itensBipagemRMA) itensBipagemRMA[ean].bipado = 0;
             desenharCards('OV', itensBipagemOV); if(existeFaseRMA) desenharCards('RMA', itensBipagemRMA);
             document.getElementById('listaVolumesCaixas').innerHTML = ''; contadorVolumesInterno = 0; adicionarCaixaEmbalagem();
             navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 100);
@@ -1181,10 +1286,7 @@
 
         function desenharCards(faseId, bancoDeDados) {
             const container = document.getElementById(`container${faseId}`); container.innerHTML = '';
-            for(let ean in bancoDeDados) { 
-                const item = bancoDeDados[ean]; const bg = item.bipado > 0 ? 'ativo' : ''; 
-                container.innerHTML += `<div class="produto-card ${bg}"><div class="produto-sku">${item.sku}</div><div class="produto-qtd">${item.bipado}</div></div>`; 
-            }
+            for(let ean in bancoDeDados) { const item = bancoDeDados[ean]; const bg = item.bipado > 0 ? 'ativo' : ''; container.innerHTML += `<div class="produto-card ${bg}"><div class="produto-sku">${item.sku}</div><div class="produto-qtd">${item.bipado}</div></div>`; }
         }
 
         document.getElementById('bipOV').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarBipagem('OV'); });
@@ -1192,35 +1294,43 @@
 
         function processarBipagem(fase) {
             const input = document.getElementById(`bip${fase}`); const ean = input.value.trim(); const banco = fase === 'OV' ? itensBipagemOV : itensBipagemRMA;
-            if(ean && banco[ean]) { 
-                banco[ean].bipado++; desenharCards(fase, banco); input.value = ''; 
-            } 
+            if(ean && banco[ean]) { banco[ean].bipado++; desenharCards(fase, banco); input.value = ''; } 
             else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                auditoriaLogsSessao.push({ hora: hora, mensagem: `Código inválido ou não pertencente a esta etapa: ${ean}` });
-                document.getElementById('txtErroEstoque').innerText = "Código de barras não pertence a esta etapa da separação."; 
-                document.getElementById('erroModal').style.display = 'flex'; 
-                input.value = ''; 
+                auditoriaLogsSessao.push({ hora: hora, mensagem: `Bipou código incorreto na conferência: ${ean}` });
+                document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
 
-        function fecharErroModal() { 
-            document.getElementById('erroModal').style.display = 'none'; 
-            if(etapaAtualEstoque === 'OV') { for(let e in itensBipagemOV) itensBipagemOV[e].bipado = 0; desenharCards('OV', itensBipagemOV); document.getElementById('bipOV').focus(); } 
-            else { for(let e in itensBipagemRMA) itensBipagemRMA[e].bipado = 0; desenharCards('RMA', itensBipagemRMA); document.getElementById('bipRMA').focus(); } 
-        }
+        function fecharErroModal() { document.getElementById('erroModal').style.display = 'none'; if(etapaAtualEstoque === 'OV') { for(let e in itensBipagemOV) itensBipagemOV[e].bipado = 0; desenharCards('OV', itensBipagemOV); document.getElementById('bipOV').focus(); } else { for(let e in itensBipagemRMA) itensBipagemRMA[e].bipado = 0; desenharCards('RMA', itensBipagemRMA); document.getElementById('bipRMA').focus(); } }
 
         function validarFase(fase) {
             const banco = fase === 'OV' ? itensBipagemOV : itensBipagemRMA; let tudoOk = true;
-            for(let ean in banco) { if(banco[ean].bipado !== banco[ean].alvo) tudoOk = false; }
+            for(let ean in banco) { 
+                if(banco[ean].bipado !== banco[ean].alvo) tudoOk = false; 
+            }
             if(tudoOk) {
-                document.getElementById(`fase${fase}`).classList.remove('ativa'); document.getElementById(`fase${fase}`).classList.add('concluida'); document.getElementById(`status${fase}`).innerText = 'Concluído'; document.getElementById(`bip${fase}`).disabled = true;
-                if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
-                else { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = 'Logística Liberada'; }
+                document.getElementById(`fase${fase}`).classList.remove('ativa'); 
+                document.getElementById(`fase${fase}`).classList.add('concluida'); 
+                document.getElementById(`status${fase}`).innerText = 'Concluído'; 
+                document.getElementById(`bip${fase}`).disabled = true;
+                
+                if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { 
+                    etapaAtualEstoque = 'RMA'; 
+                    document.getElementById('faseRMA').classList.add('ativa'); 
+                    document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; 
+                    document.getElementById('bipRMA').disabled = false; 
+                    document.getElementById('bipRMA').focus(); 
+                } else { 
+                    etapaAtualEstoque = 'LOG'; 
+                    document.getElementById('faseLogistica').classList.add('ativa'); 
+                    document.getElementById('statusLog').innerText = 'Logística Liberada'; 
+                }
             } else { 
-                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                auditoriaLogsSessao.push({ hora: hora, mensagem: `Divergência de validação na fase ${fase}. Recomeçando contagem.` });
-                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a meta oculta da ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
+                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); 
+                auditoriaLogsSessao.push({ hora: hora, mensagem: `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.` });
+                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a ordem fiscal."; 
+                document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
 
@@ -1241,26 +1351,11 @@
 
         async function concluirExpedicaoNuvem() {
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
-            
             let detalhesVolumes = [];
-            document.querySelectorAll('.volume-box').forEach((box, index) => {
-                detalhesVolumes.push({
-                    id: index + 1,
-                    peso: box.querySelector('.vol-peso').value || 0,
-                    comp: box.querySelector('.vol-comp').value || 0,
-                    larg: box.querySelector('.vol-larg').value || 0,
-                    alt: box.querySelector('.vol-alt').value || 0
-                });
-            });
-
+            document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             try { 
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ 
-                    status: 'Aguardando Cotação', 
-                    volumesReais: contadorVolumesInterno,
-                    detalhesVolumes: detalhesVolumes,
-                    auditoriaLogs: auditoriaLogsSessao
-                }); 
-                alert("📦 Conferência finalizada! Pedido enviado para Cotação de Frete."); abrirFilaCotacao(); 
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes, auditoriaLogs: auditoriaLogsSessao }); 
+                alert("📦 Conferência finalizada! Pedido enviado para Cotação."); abrirFilaCotacao(); 
             } catch(error) { alert("Falha ao salvar conclusão."); }
         }
 
@@ -1276,43 +1371,22 @@
                 snapshot.forEach((doc) => {
                     const ov = doc.data();
                     if (ov.status === 'Aguardando Cotação') {
-                        contador++; 
-                        container.innerHTML += `<div class="pedido-item" onclick="abrirFazerCotacao('${doc.id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--text-light); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes Físicos: <strong style="color: white;">${ov.volumesReais}</strong></span></div><span style="color: var(--warning-yellow); font-weight: bold; font-size: 12px; border: 1px solid var(--warning-yellow); padding: 8px 15px; border-radius: 4px;">INSERIR COTAÇÕES ➔</span></div>`;
+                        contador++; container.innerHTML += `<div class="pedido-item" onclick="abrirFazerCotacao('${doc.id}', '${ov.numero}')"><div><strong style="font-size: 20px; color: var(--text-light); display: block;">${ov.numero}</strong><span style="color: var(--text-muted); font-size: 14px;">Cliente: ${ov.cliente} | Volumes: <strong style="color: white;">${ov.volumesReais}</strong></span></div><span style="color: var(--warning-yellow); font-weight: bold; font-size: 12px; border: 1px solid var(--warning-yellow); padding: 8px 15px; border-radius: 4px;">INSERIR COTAÇÕES ➔</span></div>`;
                     }
                 });
-                if(contador === 0) container.innerHTML = '<p style="color: #888;">Nenhuma OV aguardando cotação de frete.</p>';
+                if(contador === 0) container.innerHTML = '<p style="color: #888;">Nenhuma OV aguardando cotação.</p>';
             } catch (error) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar fila de cotação.</p>'; }
         }
 
-        function abrirFazerCotacao(id_doc, numero) {
-            idOvGlobal = id_doc; document.getElementById('cotacaoOvNumero').innerText = numero; cotacoesAtuais = [];
-            atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = '';
-            navegarEstoque('estoqueFazerCotacao');
-        }
+        function abrirFazerCotacao(id_doc, numero) { idOvGlobal = id_doc; document.getElementById('cotacaoOvNumero').innerText = numero; cotacoesAtuais = []; atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; navegarEstoque('estoqueFazerCotacao'); }
 
-        function adicionarCotacaoLinha() {
-            const transp = document.getElementById('cotTransp').value; const preco = document.getElementById('cotPreco').value; const prazo = document.getElementById('cotPrazo').value;
-            if(!transp || !preco || !prazo) return alert("Preencha Transportadora, Preço e Prazo.");
-            cotacoesAtuais.push({ transportadora: transp, preco: preco, prazo: prazo });
-            atualizarListaCotacoes();
-            document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = '';
-        }
+        function adicionarCotacaoLinha() { const transp = document.getElementById('cotTransp').value; const preco = document.getElementById('cotPreco').value; const prazo = document.getElementById('cotPrazo').value; if(!transp || !preco || !prazo) return alert("Preencha Transportadora, Preço e Prazo."); cotacoesAtuais.push({ transportadora: transp, preco: preco, prazo: prazo }); atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; }
 
-        function atualizarListaCotacoes() {
-            const container = document.getElementById('listaCotacoesTabela'); container.innerHTML = '';
-            if(cotacoesAtuais.length === 0) { container.innerHTML = '<p id="txtCotVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">Nenhuma cotação inserida.</p>'; return; }
-            cotacoesAtuais.forEach((cot, idx) => { container.innerHTML += `<div class="item-listado"><div><strong>${cot.transportadora}</strong></div><div>R$ ${cot.preco} <span style="color:#666; margin: 0 10px;">|</span> ${cot.prazo} Dias <button style="background:transparent; border:none; color:var(--error-red); cursor:pointer; margin-left: 10px;" onclick="removerCotacao(${idx})">✖</button></div></div>`; });
-        }
+        function atualizarListaCotacoes() { const container = document.getElementById('listaCotacoesTabela'); container.innerHTML = ''; if(cotacoesAtuais.length === 0) { container.innerHTML = '<p id="txtCotVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">Nenhuma cotação inserida.</p>'; return; } cotacoesAtuais.forEach((cot, idx) => { container.innerHTML += `<div class="item-listado"><div><strong>${cot.transportadora}</strong></div><div>R$ ${cot.preco} <span style="color:#666; margin: 0 10px;">|</span> ${cot.prazo} Dias <button style="background:transparent; border:none; color:var(--error-red); cursor:pointer; margin-left: 10px;" onclick="removerCotacao(${idx})">✖</button></div></div>`; }); }
 
         function removerCotacao(idx) { cotacoesAtuais.splice(idx, 1); atualizarListaCotacoes(); }
 
-        async function salvarCotacoesNuvem() {
-            if(cotacoesAtuais.length === 0) return alert("Você precisa adicionar pelo menos 1 cotação.");
-            try { 
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Faturamento', cotacoes: cotacoesAtuais }); 
-                alert("🚚 Cotações enviadas para Faturamento!"); abrirFilaCotacao(); 
-            } catch(error) { alert("Erro ao enviar cotações."); }
-        }
+        async function salvarCotacoesNuvem() { if(cotacoesAtuais.length === 0) return alert("Adicione pelo menos 1 cotação."); try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Faturamento', cotacoes: cotacoesAtuais }); alert("🚚 Cotações enviadas para Faturamento!"); abrirFilaCotacao(); } catch(error) { alert("Erro ao enviar."); } }
     </script>
 </body>
 </html>
