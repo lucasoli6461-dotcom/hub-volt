@@ -7,33 +7,56 @@
     
     <style>
         /* ========================================== */
-        /* 1. VARIÁVEIS E BASE GERAL                  */
+        /* 1. VARIÁVEIS E BASE                        */
         /* ========================================== */
         :root { 
-            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; 
-            --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; 
-            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
+            --bg-color: #0d0d0d; 
+            --card-bg: #161616; 
+            --volt-green: #c4f000; 
+            --text-light: #ffffff; 
+            --text-muted: #888888; 
+            --border-color: #2a2a2a; 
+            --error-red: #ff3333; 
+            --success-green: #00cc66; 
+            --warning-yellow: #ffcc00; 
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-light); 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
+
         .container { width: 100%; max-width: 1100px; padding: 20px; box-sizing: border-box; }
         
         .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view-layer.active, .sub-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
         /* ========================================== */
-        /* 2. CABEÇALHO E ELEMENTOS DE INTERFACE      */
+        /* 2. CABEÇALHO E ELEMENTOS GERAIS            */
         /* ========================================== */
-        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
+        .header { 
+            width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; 
+            align-items: center; box-sizing: border-box; border-bottom: 1px solid var(--border-color); 
+            margin-bottom: 30px; background: #000; 
+        }
         .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
         .logo-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: white; display: flex; align-items: center; }
         .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
         .header-info { display: flex; align-items: center; gap: 20px; }
-        
+
         .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; width: 100%;}
         .btn-volt:hover { opacity: 0.9; transform: scale(1.02); }
         .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.2s;}
@@ -44,53 +67,52 @@
         .btn-voltar:hover { color: white; border-color: white; }
         .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; text-transform: uppercase; font-size: 11px; transition: 0.2s;}
         .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
-        
+
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-        .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #050505; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
+        .input-dark { width: 100%; padding: 15px; margin-top: 5px; background-color: #050505; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s;}
         .input-dark:focus { border-color: var(--volt-green); outline: none; }
         .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px; transition: 0.3s;}
         .input-bip:focus { outline: 1px solid var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.2); }
         .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
 
         /* ========================================== */
-        /* 3. CARDS, LOGIN E MÓDULOS                  */
+        /* 3. LOGIN E CARDS DO PAINEL                 */
         /* ========================================== */
+        .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
+        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
+        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid var(--border-color);}
+
         .greeting { text-align: center; margin-bottom: 40px; }
         .greeting h1 { font-size: 32px; font-weight: 600; margin: 0; }
         .greeting h1 span { color: var(--volt-green); }
         .greeting p { color: var(--text-muted); margin-top: 10px; }
 
-        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
-        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
-        .modulo-header h2 { margin: 0; color: var(--volt-green); font-size: 24px;}
-
-        .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
+        .hub-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 180px;}
         .hub-card:hover { border-color: var(--volt-green); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); }
         .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
-        
-        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
-        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
 
-        .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
-        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
-        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-
-        .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 10px;}
-        .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
-        .upload-area p { color: var(--text-muted); margin: 5px 0 0 0; font-size: 12px; }
-        .upload-area h3 { margin: 0; font-size: 16px; color: var(--text-light); }
-        .upload-area.concluido { border-color: var(--success-green); border-style: solid; background-color: rgba(0, 204, 102, 0.05); }
-
-        .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-bottom: 1px solid #222; font-size: 13px; }
-        .item-listado:last-child { border-bottom: none; }
-        .item-listado strong { color: var(--volt-green); margin-right: 10px;}
+        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
+        .modulo-header h2 { margin: 0; color: var(--volt-green); font-size: 24px;}
 
         /* ========================================== */
-        /* 4. TABELAS E BADGES                        */
+        /* 4. MODAIS DE CAMADA SUPERIOR               */
+        /* ========================================== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
+        .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
+        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .auditoria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
+        .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
+        .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
+
+        /* ========================================== */
+        /* 5. TABELAS E BADGES                        */
         /* ========================================== */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
@@ -123,23 +145,42 @@
         .equipe-stats strong { color: var(--text-light); }
 
         /* ========================================== */
-        /* 5. MODAIS CAMADA SUPERIOR                  */
+        /* 6. ADMIN Lançamentos - Upload & Itens      */
         /* ========================================== */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
-        .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
-        .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
-        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
-        .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
-        .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
+        .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
+        .upload-area:hover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
+        .upload-area p { color: var(--text-muted); margin: 5px 0 0 0; font-size: 12px; }
+        .upload-area h3 { margin: 0; font-size: 16px; color: var(--text-light); }
+        .upload-area.concluido { border-color: var(--success-green); border-style: solid; background-color: rgba(0, 204, 102, 0.05); }
+
+        .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-bottom: 1px solid #222; font-size: 13px; }
+        .item-listado:last-child { border-bottom: none; }
+        .item-listado strong { color: var(--volt-green); margin-right: 10px;}
+
+        /* ESTILOS DOS MINI CARDS DE MONITORAMENTO DA FILA */
+        .mini-card { background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; position: relative; transition: 0.2s; }
+        .mini-card:hover { border-color: var(--volt-green); }
+        .mini-card h4 { margin: 0 0 5px 0; color: white; font-size: 16px; }
+        .mini-card p { margin: 0; color: #888; font-size: 12px; line-height: 1.4;}
+        .badge-mini-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .status-aguardando { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); }
+        .status-separando { background: rgba(0, 204, 102, 0.1); color: var(--success-green); border: 1px solid rgba(0, 204, 102, 0.3); }
+        .btn-del-mini { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: var(--error-red); cursor: pointer; font-size: 14px; padding: 5px; transition: 0.2s;}
+        .btn-del-mini:hover { transform: scale(1.3); }
 
         /* ========================================== */
-        /* 6. TELAS DO ESTOQUE E COTAÇÃO              */
+        /* 7. ESTOQUE - Preparação e Fila             */
         /* ========================================== */
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+        
         .prep-box { text-align: center; padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: #111; margin-top: 30px; }
         .btn-download { background: #222; border: 1px solid #444; color: white; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin: 10px; }
         .btn-download:hover { background: #333; border-color: var(--volt-green); color: var(--volt-green); }
 
+        /* ========================================== */
+        /* 8. ESTOQUE - Conferência às Cegas          */
+        /* ========================================== */
         .fase-section { background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
         .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
         .fase-section.concluida { opacity: 1; pointer-events: none; border-color: #333; }
@@ -163,6 +204,7 @@
         .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
     </style>
 
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
@@ -181,6 +223,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE SENHA -->
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
             <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acesso: Nome</h3>
@@ -193,6 +236,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE DIVERGÊNCIA -->
     <div id="erroModal" class="modal-overlay">
         <div class="erro-box">
             <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
@@ -205,6 +249,7 @@
         </div>
     </div>
 
+    <!-- MODAL ESCOLHER FRETE (ADMIN) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 600px; border-color: var(--volt-green);">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -212,11 +257,11 @@
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEscolhaFrete').style.display='none'">✖ Fechar</button>
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin-top:0; margin-bottom: 20px;">Selecione a transportadora com o melhor custo-benefício para faturar este pedido.</p>
-            
             <div id="listaCotacoesAdmin"></div>
         </div>
     </div>
 
+    <!-- MODAL NOVO USUÁRIO -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -241,6 +286,7 @@
         </div>
     </div>
 
+    <!-- MODAL AUDITORIA DE LOGS -->
     <div id="modalAuditoria" class="modal-overlay">
         <div class="auditoria-box">
             <div class="auditoria-header">
@@ -287,7 +333,7 @@
                     <p>O que você e a equipe de logística vão fazer hoje?</p>
                 </div>
                 <div class="grid-2" style="margin-bottom: 20px;">
-                    <div class="hub-card" onclick="navegarAdmin('adminLancamentos')">
+                    <div class="hub-card" onclick="abrirModuloLancamentos()">
                         <div><h3>Central de Lançamentos</h3><p>Suba novas OVs, cadastre os itens e libere para a separação da equipe.</p></div>
                         <div class="action">Abrir Módulo ➔</div>
                     </div>
@@ -396,6 +442,17 @@
                     <div style="text-align: right; margin-top: 30px;">
                         <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">LIBERAR PARA A FILA DE SEPARAÇÃO</button>
                     </div>
+
+                    <!-- NOVO: MONITORAMENTO DA FILA AO VIVO COM OPÇÃO DE EXCLUIR -->
+                    <hr style="border-color: #222; margin: 40px 0;">
+                    <div>
+                        <h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Monitoramento da Fila (Ao Vivo)</h3>
+                        <p style="font-size: 12px; color: #888; margin-top: -10px; margin-bottom: 20px;">Acompanhe o que o estoque está separando ou cancele OVs travadas.</p>
+                        <div class="grid-4" id="miniFilaAdmin">
+                            <p style="color: var(--text-muted); font-size: 12px;">Carregando status...</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -417,7 +474,7 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Histórico e Desempenho (AGORA 100% DINÂMICO) -->
+            <!-- Subtela Admin: Histórico e Desempenho (DINÂMICO) -->
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -525,7 +582,7 @@
             <!-- Conferência às Cegas -->
             <div id="estoqueConferencia" class="sub-screen">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="abrirFilaSeparacao()">⟵ PAUSAR CONFERÊNCIA</button>
+                    <button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="abrirFilaSeparacao()">⟵ VOLTAR À FILA E PAUSAR</button>
                     <h2 style="margin: 0; font-size: 24px; color: white;">Conferência às Cegas - <span style="color: var(--volt-green);" id="confOvNumero">OV-0000</span></h2>
                     <div style="width: 150px;"></div>
                 </div>
@@ -630,7 +687,6 @@
         
         let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
         
-        // Memória temporária para Lançamento, Bipagem e Cotação
         let itensLancamentoOV = {}; let itensLancamentoRMA = {};
         let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = [];
@@ -687,8 +743,13 @@
         function fazerLogout() { location.reload(); }
 
         // ====================================================
-        // ADMIN: LANÇAMENTO MANUAL DE ITENS P/ O BANCO
+        // ADMIN: LANÇAMENTO MANUAL DE ITENS E MONITORAMENTO
         // ====================================================
+        function abrirModuloLancamentos() { 
+            navegarAdmin('adminLancamentos'); 
+            carregarMiniFilaAdmin(); // Carrega o monitoramento ao vivo na hora que abre a tela!
+        }
+
         document.getElementById('fileOV').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneOV').classList.add('concluido'); document.getElementById('dropTitleOV').innerText = "✅ OV Anexada"; document.getElementById('dropTitleOV').style.color = "var(--success-green)"; }});
         document.getElementById('fileRMA').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneRMA').classList.add('concluido'); document.getElementById('dropTitleRMA').innerText = "✅ RMA Anexado"; document.getElementById('dropTitleRMA').style.color = "var(--success-green)"; }});
 
@@ -724,8 +785,63 @@
                 await db.collection("estoque_ovs").add({ numero: num, cliente: cli, volumesPrevisao: vol, hasArquivoOV: temArquivoOV, hasArquivoRMA: temArquivoRMA, itensOV: itensLancamentoOV, itensRMA: itensLancamentoRMA, status: 'Aguardando Liberação', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
                 alert(`A OV ${num} foi enviada para a fila de expedição!`); 
                 document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('fileOV').value = ''; document.getElementById('fileRMA').value = ''; document.getElementById('dropzoneOV').classList.remove('concluido'); document.getElementById('dropzoneRMA').classList.remove('concluido'); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; document.getElementById('dropTitleOV').style.color = "var(--text-light)"; document.getElementById('dropTitleRMA').innerText = "📥 Clicar para Anexar arquivo de RMA"; document.getElementById('dropTitleRMA').style.color = "#888"; document.getElementById('addProdutoCatalogo').value = '';
-                itensLancamentoOV = {}; itensLancamentoRMA = {}; atualizarListaManualAdmin(); navegarAdmin('adminDash'); 
+                itensLancamentoOV = {}; itensLancamentoRMA = {}; atualizarListaManualAdmin(); 
+                
+                carregarMiniFilaAdmin(); // Atualiza os quadradinhos em baixo!
             } catch (e) { alert("Erro ao gravar dados na nuvem."); }
+        }
+
+        // ====================================================
+        // NOVO: ADMIN - MONITORAMENTO E EXCLUSÃO DA FILA
+        // ====================================================
+        async function carregarMiniFilaAdmin() {
+            const container = document.getElementById('miniFilaAdmin');
+            container.innerHTML = '<p style="color: var(--volt-green); font-size: 12px; grid-column: span 4;">Buscando dados ao vivo da nuvem...</p>';
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get();
+                container.innerHTML = '';
+                let contador = 0;
+                
+                snapshot.forEach((doc) => {
+                    const ov = doc.data();
+                    const id = doc.id;
+                    
+                    // Exibe apenas as que estão na etapa de Separação (Limpando testes travados)
+                    if (ov.status === 'Aguardando Liberação' || ov.status === 'Separando') {
+                        contador++;
+                        const isSeparando = ov.status === 'Separando';
+                        const badgeClass = isSeparando ? 'status-separando' : 'status-aguardando';
+                        const operadorTexto = isSeparando ? `<br><span style="color: white;">Por: ${ov.operadorSeparacao || 'Equipe'}</span>` : '';
+
+                        container.innerHTML += `
+                            <div class="mini-card">
+                                <button class="btn-del-mini" title="Excluir Definitivamente" onclick="deletarOVAdmin('${id}', '${ov.numero}')">✖</button>
+                                <h4>${ov.numero}</h4>
+                                <p>${ov.cliente}${operadorTexto}</p>
+                                <span class="badge-mini-status ${badgeClass}">${ov.status}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (contador === 0) {
+                    container.innerHTML = '<p style="color: #666; font-size: 12px; grid-column: span 4;">A fila do estoque está vazia no momento.</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p style="color: var(--error-red); font-size: 12px; grid-column: span 4;">Erro ao carregar monitoramento.</p>';
+            }
+        }
+
+        async function deletarOVAdmin(id, numero) {
+            if(confirm(`Tem certeza que deseja EXCLUIR a ordem ${numero}? Isso apagará do banco de dados e tirará da fila do estoque.`)) {
+                try {
+                    await db.collection("estoque_ovs").doc(id).delete();
+                    carregarMiniFilaAdmin(); // Recarrega os quadradinhos
+                    alert(`Ordem ${numero} apagada com sucesso!`);
+                } catch (error) {
+                    alert("Erro ao excluir ordem no banco.");
+                }
+            }
         }
 
         // ====================================================
@@ -739,7 +855,7 @@
 
         async function carregarEstatisticasEquipe() {
             const container = document.getElementById('containerDesempenhoEquipe');
-            container.innerHTML = '<p style="color: var(--volt-green);">Calculando desempenho atualizado...</p>';
+            container.innerHTML = '<p style="color: var(--volt-green); grid-column: span 3;">Calculando desempenho atualizado da equipe...</p>';
 
             try {
                 const snapshotOVs = await db.collection("estoque_ovs").get();
@@ -748,11 +864,13 @@
 
                 snapshotOVs.forEach(doc => {
                     const ov = doc.data();
+                    // Conta tudo que já passou da separação
                     if (ov.status === 'Concluído' || ov.status === 'Aguardando Cotação' || ov.status === 'Aguardando Faturamento') {
                         totalExpedidos++;
-                        const op = ov.operadorFinal || ov.operadorSeparacao || ov.operador; // Garante que pega quem fez
+                        // Quem separou?
+                        const op = ov.operadorSeparacao || ov.operadorFinal || ov.autor; 
                         if (op) {
-                            if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0, erros: 0 };
+                            if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0 };
                             statsPorOperador[op].separados++;
                         }
                     }
@@ -761,7 +879,7 @@
                 container.innerHTML = '';
                 let htmlCards = '';
 
-                // Varre quem é do Estoque na lista de RH
+                // Varre a base do RH e exibe quem for do 'estoque'
                 for (let nome in bdUsuariosLogistica) {
                     const user = bdUsuariosLogistica[nome];
                     if (user.role === 'estoque') {
@@ -771,13 +889,13 @@
                         htmlCards += `
                         <div class="equipe-card" style="border-left-color: ${user.status !== 'inativo' ? 'var(--volt-green)' : '#444'};">
                             <div class="equipe-nome">${nome} ${statusBadge}</div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros: <strong style="color: var(--success-green);">0</strong></span></div>
+                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros Graves: <strong style="color: var(--success-green);">0</strong></span></div>
                             <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span></div>
                         </div>`;
                     }
                 }
 
-                // Cria o Card Geral no final
+                // Card Consolidado
                 htmlCards += `
                 <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="equipe-nome">Mês Geral</div>
@@ -791,7 +909,7 @@
                 container.innerHTML = htmlCards;
 
             } catch (error) {
-                container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar estatísticas do Firebase.</p>';
+                container.innerHTML = '<p style="color: var(--error-red); grid-column: span 3;">Erro ao carregar estatísticas.</p>';
             }
         }
 
@@ -811,7 +929,53 @@
         }
 
         // ====================================================
-        // ADMIN: RH E GESTÃO DE ACESSOS (DINÂMICO)
+        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE)
+        // ====================================================
+        function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
+
+        async function carregarFilaFaturamentoNuvem() {
+            const tbody = document.getElementById('tabelaFaturamento'); tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--volt-green);">Buscando fila de faturamento...</td></tr>';
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
+                snapshot.forEach((doc) => {
+                    const ov = doc.data(); const id = doc.id;
+                    if (ov.status === 'Aguardando Faturamento') {
+                        contador++; 
+                        tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais}</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar Fretes e Faturar</button></td></tr>`;
+                    }
+                });
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">Nenhuma OV aguardando faturamento.</td></tr>';
+            } catch (error) { tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--error-red);">Erro ao carregar fila.</td></tr>'; }
+        }
+
+        async function abrirModalEscolhaFrete(id_doc, numero) {
+            idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero;
+            const container = document.getElementById('listaCotacoesAdmin'); container.innerHTML = '<p style="color: var(--volt-green);">Carregando opções...</p>';
+            document.getElementById('modalEscolhaFrete').style.display = 'flex';
+            try {
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data();
+                container.innerHTML = '';
+                if(ovData.cotacoes && ovData.cotacoes.length > 0) {
+                    ovData.cotacoes.forEach((cot, idx) => {
+                        container.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button></div></div>`;
+                    });
+                } else { container.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação foi registrada pela equipe.</p>'; }
+            } catch(e) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar opções.</p>'; }
+        }
+
+        async function confirmarFreteFaturamento(idxCotacao) {
+            if(!confirm(`Confirma a escolha deste frete e o faturamento da OV?`)) return;
+            const d = new Date(); const dataFaturamento = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+            try {
+                const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
+                const freteEscolhido = ovData.cotacoes[idxCotacao];
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Concluído', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido, operadorFinal: usuarioLogado });
+                alert("✅ OV Faturada e Concluída com Sucesso!"); document.getElementById('modalEscolhaFrete').style.display = 'none'; carregarFilaFaturamentoNuvem();
+            } catch(e) { alert("Erro ao concluir faturamento."); }
+        }
+
+        // ====================================================
+        // ADMIN: GESTÃO DE EQUIPE (RH)
         // ====================================================
         function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
@@ -819,7 +983,11 @@
             const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
                 const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
-                tbody.innerHTML += `<tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255,51,51,0.05);' : ''}"><td><strong>${nome}</strong></td><td>${user.funcao || 'Equipe'}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td><td style="text-align: right;"><div class="tabela-senha-box" style="justify-content: flex-end;"><input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}"><button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button><button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 10px;" onclick="toggleStatusUsuarioNuvem('${nome}', ${isAtivo})">${isAtivo ? 'Desligar' : 'Reativar'}</button></div></td></tr>`;
+                tbody.innerHTML += `
+                <tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255,51,51,0.05);' : ''}">
+                    <td><strong>${nome}</strong></td><td>${user.funcao || 'Equipe'}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td>
+                    <td style="text-align: right;"><div class="tabela-senha-box" style="justify-content: flex-end;"><input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}"><button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button><button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 10px;" onclick="toggleStatusUsuarioNuvem('${nome}', ${isAtivo})">${isAtivo ? 'Desligar' : 'Reativar'}</button></div></td>
+                </tr>`;
             }
         }
 
@@ -831,7 +999,7 @@
         async function salvarNovoUsuario() {
             const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim();
             if(!nome || !senha) return alert("Preencha Nome e Senha.");
-            try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado! Ele já fará parte do Painel de Desempenho.`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro ao gravar usuário."); }
+            try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado!`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro ao gravar usuário."); }
         }
 
         // ====================================================
@@ -868,7 +1036,9 @@
         }
 
         async function abrirBipagemOficial() {
-            await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separando' });
+            // Marca no banco quem puxou essa OV pra separar
+            await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separando', operadorSeparacao: usuarioLogado });
+            
             itensBipagemOV = objOvGlobal.itensOV || {}; itensBipagemRMA = objOvGlobal.itensRMA || {};
             const existeFaseRMA = Object.keys(itensBipagemRMA).length > 0; document.getElementById('faseRMA').style.display = existeFaseRMA ? 'block' : 'none';
             etapaAtualEstoque = 'OV'; document.getElementById('faseOV').className = 'fase-section ativa'; document.getElementById('faseRMA').className = 'fase-section'; document.getElementById('faseLogistica').className = 'fase-section'; document.getElementById('statusOV').innerText = 'Aguardando Leitura'; document.getElementById('statusRMA').innerText = 'Bloqueado'; document.getElementById('statusLog').innerText = 'Bloqueado'; document.getElementById('bipOV').disabled = false; document.getElementById('bipRMA').disabled = true; document.getElementById('bipOV').value = '';
@@ -908,7 +1078,7 @@
         async function concluirExpedicaoNuvem() {
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             try { 
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', operadorFinal: usuarioLogado, volumesReais: contadorVolumesInterno }); 
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', volumesReais: contadorVolumesInterno }); 
                 alert("📦 Conferência finalizada! Pedido enviado para Cotação de Frete."); abrirFilaCotacao(); 
             } catch(error) { alert("Falha ao salvar conclusão."); }
         }
@@ -961,52 +1131,6 @@
                 await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Faturamento', cotacoes: cotacoesAtuais }); 
                 alert("🚚 Cotações enviadas para Faturamento!"); abrirFilaCotacao(); 
             } catch(error) { alert("Erro ao enviar cotações."); }
-        }
-
-        // ====================================================
-        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE) E HISTÓRICO
-        // ====================================================
-        function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
-
-        async function carregarFilaFaturamentoNuvem() {
-            const tbody = document.getElementById('tabelaFaturamento'); tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--volt-green);">Buscando fila de faturamento...</td></tr>';
-            try {
-                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
-                snapshot.forEach((doc) => {
-                    const ov = doc.data(); const id = doc.id;
-                    if (ov.status === 'Aguardando Faturamento') {
-                        contador++; 
-                        tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais}</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar Fretes e Faturar</button></td></tr>`;
-                    }
-                });
-                if(contador === 0) tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">Nenhuma OV aguardando faturamento.</td></tr>';
-            } catch (error) { tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--error-red);">Erro ao carregar fila.</td></tr>'; }
-        }
-
-        async function abrirModalEscolhaFrete(id_doc, numero) {
-            idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero;
-            const container = document.getElementById('listaCotacoesAdmin'); container.innerHTML = '<p style="color: var(--volt-green);">Carregando opções...</p>';
-            document.getElementById('modalEscolhaFrete').style.display = 'flex';
-            try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data();
-                container.innerHTML = '';
-                if(ovData.cotacoes && ovData.cotacoes.length > 0) {
-                    ovData.cotacoes.forEach((cot, idx) => {
-                        container.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button></div></div>`;
-                    });
-                } else { container.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação foi registrada pela equipe.</p>'; }
-            } catch(e) { container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar opções.</p>'; }
-        }
-
-        async function confirmarFreteFaturamento(idxCotacao) {
-            if(!confirm(`Confirma a escolha deste frete e o faturamento da OV?`)) return;
-            const d = new Date(); const dataFaturamento = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
-            try {
-                const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
-                const freteEscolhido = ovData.cotacoes[idxCotacao];
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Concluído', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido });
-                alert("✅ OV Faturada e Concluída com Sucesso!"); document.getElementById('modalEscolhaFrete').style.display = 'none'; carregarFilaFaturamentoNuvem();
-            } catch(e) { alert("Erro ao concluir faturamento."); }
         }
     </script>
 </body>
