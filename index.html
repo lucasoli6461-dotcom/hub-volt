@@ -127,6 +127,8 @@
         .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer; transition: 0.2s;}
         .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); }
         .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
+        .badge-lote { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;}
+        .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;}
         
         .tabela-senha-box { display: flex; align-items: center; gap: 10px; }
         .senha-input { background: transparent; border: none; color: white; width: 80px; font-size: 14px; font-family: monospace; }
@@ -145,9 +147,9 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
-        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .auditoria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
-        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left; max-height: 300px; overflow-y: auto;}
+        
+        /* Lista de logs de auditoria no Dossiê */
+        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left; max-height: 200px; overflow-y: auto;}
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
 
@@ -182,8 +184,6 @@
         .roteiro-box { border-left: 4px solid var(--volt-green); background: #0a0a0a; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
         .roteiro-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #333; padding: 12px 0; }
         .roteiro-item:last-child { border-bottom: none; }
-        .badge-lote { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 10px;}
-        .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;}
     </style>
 
     <!-- FIREBASE -->
@@ -232,6 +232,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE CORREÇÃO E ESCOLHA DE FRETE (FATURAMENTO) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -255,18 +256,43 @@
         </div>
     </div>
 
-    <div id="modalAuditoria" class="modal-overlay">
-        <div class="auditoria-box">
-            <div class="auditoria-header">
-                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria <span id="modalOV">#0000</span></h3>
-                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
+    <!-- NOVO: MODAL DOSSIÊ COMPLETO (HISTÓRICO) -->
+    <div id="modalResumoOV" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 800px; border-color: #00aaff; max-height: 90vh; overflow-y: auto; padding: 40px;">
+            <div class="modulo-header" style="border-bottom-color: #333; margin-bottom: 20px;">
+                <div>
+                    <h2 style="font-size: 24px; color: #00aaff; margin:0;">Dossiê da Expedição</h2>
+                    <p style="color: white; font-size: 18px; margin: 5px 0 0 0;" id="resumoOvNum">OV-0000</p>
+                </div>
+                <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalResumoOV').style.display='none'">✖ Fechar Dossiê</button>
             </div>
-            <ul class="log-lista" id="listaErrosLogs"></ul>
-            <div style="text-align: right; margin-top: 25px;"><button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button></div>
+            
+            <div class="grid-3" style="background: #0a0a0a; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <div><p style="margin:0; color:#888; font-size:11px;">CLIENTE DESTINATÁRIO</p><strong id="resumoCliente" style="font-size: 16px; color:white;">-</strong></div>
+                <div><p style="margin:0; color:#888; font-size:11px;">DATAS (LANÇAMENTO / FATURAMENTO)</p><span id="resumoData" style="font-size: 13px; color:white; white-space: pre-line;">-</span></div>
+                <div><p style="margin:0; color:#888; font-size:11px;">EQUIPE OPERACIONAL</p><span id="resumoOps" style="font-size: 13px; color:white; white-space: pre-line;">-</span></div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Itens Separados</h4>
+                    <table style="margin-top: 0;"><tbody id="resumoItensList"></tbody></table>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Volumes Físicos</h4>
+                    <table style="margin-top: 0;"><tbody id="resumoVolList"></tbody></table>
+                </div>
+            </div>
+
+            <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Transportadora Escolhida</h4>
+            <div id="resumoFreteInfo" style="font-size: 16px; color: white;">-</div>
+
+            <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Auditoria de Erros (Bancada)</h4>
+            <div id="resumoLogsList"></div>
         </div>
     </div>
 
-    <!-- MODAL DE CADASTRO DE EQUIPE -->
+    <!-- MODAL DE CADASTRO DE EQUIPE (RH) -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -340,14 +366,18 @@
                     <p>Módulos de Gestão e Logística Avançada</p>
                 </div>
                 
-                <div class="grid-2" style="margin-bottom: 20px;">
+                <div class="grid-3" style="margin-bottom: 20px;">
                     <div class="hub-card" onclick="abrirModuloLancamentos()">
-                        <div><h3>1. Lançar Ordem de Venda</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div>
+                        <div><h3>1. Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div>
                         <div class="action">Abrir Módulo ➔</div>
                     </div>
                     <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()">
-                        <div><h3 style="color: white;">2. Faturamento e Fretes</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div>
-                        <div class="action" style="color: var(--volt-green);">Ver Fila de Faturamento ➔</div>
+                        <div><h3 style="color: white;">2. Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div>
+                        <div class="action" style="color: var(--volt-green);">Ver Fila ➔</div>
+                    </div>
+                    <div class="hub-card" style="border-color: #00aaff;" onclick="abrirModuloHistorico()">
+                        <div><h3 style="color: white;">3. Histórico de OVs</h3><p>Consulte o Dossiê completo de todas as OVs concluídas.</p></div>
+                        <div class="action" style="color: #00aaff;">Ver Faturadas ➔</div>
                     </div>
                 </div>
 
@@ -357,11 +387,11 @@
                         <div class="action" style="font-size: 12px;">Configurar SKUs ➔</div>
                     </div>
                     <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="navegarAdmin('adminEnderecamento')">
-                        <div><h3 style="font-size: 16px;">Endereçamento (Inbound)</h3><p style="font-size: 12px;">Guarde mercadorias recebidas associando Lote, SKU e Endereço Físico.</p></div>
+                        <div><h3 style="font-size: 16px;">Endereçamento</h3><p style="font-size: 12px;">Guarde mercadorias associando Lote, SKU e Endereço Físico.</p></div>
                         <div class="action" style="font-size: 12px;">Guardar Estoque ➔</div>
                     </div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloHistorico()">
-                        <div><h3 style="font-size: 16px;">Relatórios e Equipe</h3><p style="font-size: 12px;">Desempenho operacional, auditoria de erros e gestão de acessos do sistema.</p></div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()">
+                        <div><h3 style="font-size: 16px;">Gestão e Desempenho</h3><p style="font-size: 12px;">Relatórios de produtividade da equipe e controle de acessos (RH).</p></div>
                         <div class="action" style="font-size: 12px;">Abrir Painel ➔</div>
                     </div>
                 </div>
@@ -414,18 +444,42 @@
                                 <input type="text" id="inboundAddress" class="input-bip" placeholder="Ex: A-01-02" style="color: white; border-color: #555;">
                             </div>
                             <div class="form-group">
-                                <label>2. INSERIR LOTE DO FORNECEDOR (PARA GARANTIA DE 3 ANOS)</label>
+                                <label>2. INSERIR LOTE DO FORNECEDOR (GARANTIA)</label>
                                 <input type="text" id="inboundLot" class="input-bip" placeholder="Ex: NOV-2023" style="color: white; border-color: #555;">
                             </div>
                         </div>
                         <div>
                             <div class="form-group">
                                 <label>3. BIPAR CAIXA MASTER OU PRODUTO</label>
-                                <input type="text" id="inboundProduct" class="input-bip" placeholder="Aguardando bipagem EAN/DUN-14..." autofocus>
+                                <input type="text" id="inboundProduct" class="input-bip" placeholder="Aguardando bipagem EAN/DUN-14..." onkeypress="if(event.key === 'Enter') guardarEstoqueNuvem()" autofocus>
                             </div>
                             <div style="text-align: right; margin-top: 30px;">
-                                <button class="btn-volt" onclick="alert('Estoque guardado com sucesso no endereço informado!')">GUARDAR ESTOQUE</button>
+                                <button class="btn-volt" onclick="guardarEstoqueNuvem()">GUARDAR ESTOQUE</button>
                             </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: #222; margin: 40px 0;">
+                    <div>
+                        <h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3>
+                        <p style="font-size: 12px; color: #888; margin-top: -10px; margin-bottom: 20px;">Visão geral de todos os produtos alocados em seus respectivos endereços e lotes.</p>
+                        
+                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                            <table style="margin-top: 0;">
+                                <thead style="background: #000;">
+                                    <tr>
+                                        <th>Endereço</th>
+                                        <th>Produto / SKU</th>
+                                        <th>Lote</th>
+                                        <th>Caixas Master</th>
+                                        <th>Total (Unidades)</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaMapaEstoque">
+                                    <tr><td colspan="6" style="text-align: center; color: var(--volt-green);">Carregando mapa do estoque...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -447,17 +501,17 @@
                         </div>
                         <div>
                             <div class="form-group">
-                                <label>1. ANEXAR ORDEM DE VENDA FÍSICA (PARA DOWNLOAD DO ESTOQUE)</label>
+                                <label>1. ANEXAR ORDEM DE VENDA FÍSICA (P/ DOWNLOAD)</label>
                                 <div class="upload-area" id="dropzoneOV" onclick="document.getElementById('fileOV').click()">
                                     <h3 id="dropTitleOV">📥 Clicar para Anexar arquivo OV</h3>
-                                    <p>O arquivo ficará disponível para download da equipe de separação.</p>
+                                    <p>O arquivo ficará disponível para a equipe de separação.</p>
                                     <input type="file" id="fileOV" style="display: none;" accept=".pdf, .xlsx, .xls">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>2. ANEXAR REMESSA (OPCIONAL)</label>
                                 <div class="upload-area" id="dropzoneRMA" style="border-color: #333;" onclick="document.getElementById('fileRMA').click()">
-                                    <h3 id="dropTitleRMA" style="color: #888;">📥 Clicar para Anexar arquivo de RMA</h3>
+                                    <h3 id="dropTitleRMA" style="color: #888;">📥 Clicar para Anexar arquivo de Remessa</h3>
                                     <input type="file" id="fileRMA" style="display: none;" accept=".pdf, .xlsx, .xls">
                                 </div>
                             </div>
@@ -466,14 +520,14 @@
 
                     <!-- GRADE DE PRODUTOS PARA INSERÇÃO RÁPIDA -->
                     <div class="form-group">
-                        <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (PREENCHA AS QUANTIDADES NA GRADE)</label>
+                        <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (PREENCHA AS QUANTIDADES NA GRADE E CLIQUE EM INSERIR)</label>
                         
                         <div class="grid-lancamento" id="gridProdutosLancamento">
                             <p style="color: var(--volt-green); font-size: 12px; text-align: center; grid-column: 1 / -1;">Carregando Matriz de Produtos...</p>
                         </div>
                         
                         <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 25px; align-items: center; justify-content: flex-end; padding-bottom: 20px; border-bottom: 1px solid #222;">
-                            <label style="margin: 0;">DESTINO DO LOTE:</label>
+                            <label style="margin: 0;">DESTINO DESTES ITENS:</label>
                             <select id="addTipoLote" class="input-dark" style="width: 250px; margin: 0;">
                                 <option value="OV">Para Ordem Principal</option>
                                 <option value="RMA">Para Remessa (Brindes/RMA)</option>
@@ -521,39 +575,39 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Histórico e Desempenho (DINÂMICO) -->
+            <!-- NOVO Subtela Admin: HISTÓRICO DE OVS FATURADAS -->
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
-                        <h2>Auditoria Operacional e Desempenho</h2>
+                        <h2>Histórico de OVs Faturadas</h2>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Consulte o dossiê completo de cada pedido expedido (Itens, Volumes, Frete e Auditoria).</p>
                     
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe Operacional</h3>
-                    
-                    <div class="grid-equipe" id="containerDesempenhoEquipe">
-                        <p style="color: var(--volt-green);">Calculando desempenho atualizado da equipe...</p>
-                    </div>
-
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; margin-top: 40px; font-size: 16px;">Registro de Expedição Concluída (Firebase)</h3>
                     <table>
                         <thead>
-                            <tr><th>Data</th><th>OV</th><th>Cliente</th><th>Volumes</th><th>Transportadora (Frete)</th></tr>
+                            <tr><th>Data Faturamento</th><th>OV</th><th>Cliente</th><th>Volumes / Itens</th><th>Frete Escolhido</th><th>Ação</th></tr>
                         </thead>
                         <tbody id="tabelaHistorico"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Subtela Admin: Gestão de Acessos (RH) -->
-            <div id="adminUsuarios" class="sub-screen">
+            <!-- Subtela Admin: Gestão de Equipe e RH (Agrupado) -->
+            <div id="adminEquipe" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
-                        <h2>Controle de Equipe e Senhas</h2>
+                        <h2>Gestão de Equipe e Desempenho</h2>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
+                    
+                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Produtividade da Equipe Operacional</h3>
+                    <div class="grid-equipe" id="containerDesempenhoEquipe" style="margin-bottom: 40px;">
+                        <p style="color: var(--volt-green);">Calculando desempenho atualizado da equipe...</p>
+                    </div>
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Usuários com acesso ao sistema integrado na nuvem:</p>
+                        <h3 style="color: var(--text-light); font-size: 16px; margin:0;">Usuários Cadastrados</h3>
                         <button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="document.getElementById('modalNovoUsuario').style.display = 'flex'">+ Cadastrar Novo Perfil</button>
                     </div>
                     <table>
@@ -586,7 +640,7 @@
                     </div>
                 </div>
                 <div class="grid-1" style="margin-top: 20px;">
-                    <div class="hub-card" style="min-height: 80px; padding: 20px; border-color: #333;" onclick="navegarEstoque('adminEnderecamento')">
+                    <div class="hub-card" style="min-height: 80px; padding: 20px; border-color: #333;" onclick="abrirModuloEnderecamentoEstoque()">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div><h3 style="font-size: 16px; margin: 0;">📥 Guardar Mercadoria (Inbound)</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Bipar endereço físico e caixa para atualizar sistema.</p></div>
                             <div class="action">Abrir ➔</div>
@@ -595,7 +649,6 @@
                 </div>
             </div>
 
-            <!-- Fila de Separação (Estoque) -->
             <div id="estoqueFila" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 10px;">
                     <h2 style="font-size: 24px;">Fila de Separação</h2>
@@ -604,7 +657,6 @@
                 <div id="containerFilaEstoque"></div>
             </div>
 
-            <!-- Fila de Cotação (Estoque) -->
             <div id="estoqueFilaCotacao" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 10px;">
                     <h2 style="font-size: 24px;">Pedidos Aguardando Cotação</h2>
@@ -613,7 +665,6 @@
                 <div id="containerFilaCotacao"></div>
             </div>
 
-            <!-- Preparação Física / Download -->
             <div id="estoquePreparacao" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 0;">
                     <button class="btn-outline" style="border:none; padding-left: 0;" onclick="abrirFilaSeparacao()">⟵ VOLTAR À FILA</button>
@@ -637,7 +688,6 @@
                 </div>
             </div>
 
-            <!-- Conferência às Cegas -->
             <div id="estoqueConferencia" class="sub-screen">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                     <button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR À FILA E PAUSAR</button>
@@ -682,7 +732,6 @@
                 </div>
             </div>
 
-            <!-- Tela de Inserir Cotações (Estoque) -->
             <div id="estoqueFazerCotacao" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -722,6 +771,62 @@
                 </div>
             </div>
 
+            <div id="estoqueEnderecamento" class="sub-screen">
+                <div class="modulo-box">
+                    <div class="modulo-header">
+                        <h2>Guardar Mercadoria (Inbound)</h2>
+                        <button class="btn-voltar" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Bipe o endereço físico, o lote do fabricante e a caixa master para atualizar o estoque.</p>
+                    
+                    <div class="grid-2" style="gap: 30px;">
+                        <div>
+                            <div class="form-group">
+                                <label>1. BIPAR ENDEREÇO FÍSICO DA PRATELEIRA</label>
+                                <input type="text" id="inboundAddressEstoque" class="input-bip" placeholder="Ex: A-01-02" style="color: white; border-color: #555;">
+                            </div>
+                            <div class="form-group">
+                                <label>2. INSERIR LOTE DO FORNECEDOR</label>
+                                <input type="text" id="inboundLotEstoque" class="input-bip" placeholder="Ex: NOV-2023" style="color: white; border-color: #555;">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>3. BIPAR CAIXA MASTER OU PRODUTO</label>
+                                <input type="text" id="inboundProductEstoque" class="input-bip" placeholder="Aguardando bipagem EAN/DUN-14..." onkeypress="if(event.key === 'Enter') guardarEstoqueNuvem('Op')" autofocus>
+                            </div>
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button class="btn-volt" onclick="guardarEstoqueNuvem('Op')">GUARDAR ESTOQUE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: #222; margin: 40px 0;">
+                    <div>
+                        <h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3>
+                        <p style="font-size: 12px; color: #888; margin-top: -10px; margin-bottom: 20px;">Visão geral de todos os produtos alocados em seus respectivos endereços e lotes.</p>
+                        
+                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                            <table style="margin-top: 0;">
+                                <thead style="background: #000;">
+                                    <tr>
+                                        <th>Endereço</th>
+                                        <th>Produto / SKU</th>
+                                        <th>Lote</th>
+                                        <th>Caixas Master</th>
+                                        <th>Total (Unidades)</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaMapaEstoqueOp">
+                                    <tr><td colspan="6" style="text-align: center; color: var(--volt-green);">Carregando mapa do estoque...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -730,6 +835,7 @@
     <!-- MOTOR DO SISTEMA (JAVASCRIPT / FIREBASE)   -->
     <!-- ========================================== -->
     <script>
+        // Inicialização do Firebase
         const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
         firebase.initializeApp(firebaseConfig); 
         const db = firebase.firestore();
@@ -768,12 +874,18 @@
 
         async function inicializarCatalogoMestre() {
             catalogoCompleto = [...baseCatalogoVOLT];
+            catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
+
             try {
                 const snapshot = await db.collection("catalogo_produtos").get();
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    if(!catalogoCompleto.find(p => p.ean === data.eanUnitario)) {
-                        catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario});
+                    let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario);
+                    if(prod) {
+                        prod.masterEan = data.eanMaster || '';
+                        prod.qtdMaster = data.qtdMaster || 100;
+                    } else {
+                        catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100});
                     }
                 });
             } catch(e) { console.warn("Modo offline."); }
@@ -860,6 +972,10 @@
                 await db.collection("catalogo_produtos").doc(eanUnitario).set({
                     sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd)
                 }, {merge: true});
+                
+                let p = catalogoCompleto.find(x => x.ean === eanUnitario);
+                if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); }
+
                 alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`);
             } catch(e) { alert("Erro ao salvar produto."); }
         }
@@ -884,6 +1000,97 @@
                 abrirModuloCatalogo(); 
             } catch(e) { alert("Erro ao criar produto."); }
         }
+
+        // ====================================================
+        // ENDEREÇAMENTO DE ESTOQUE (INBOUND / MAPA)
+        // ====================================================
+        function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
+        function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
+
+        async function carregarMapaEstoque(perfil) {
+            const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
+            try {
+                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get();
+                tbody.innerHTML = '';
+                let contador = 0;
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    if(item.quantidade > 0) {
+                        contador++;
+                        tbody.innerHTML += `
+                            <tr style="border-bottom: 1px solid #222;">
+                                <td><span class="badge-endereco">${item.endereco}</span></td>
+                                <td><strong>${item.sku}</strong></td>
+                                <td><span class="badge-lote">${item.lote}</span></td>
+                                <td>${item.caixas} cx</td>
+                                <td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td>
+                                <td><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">Zerar</button></td>
+                            </tr>
+                        `;
+                    }
+                });
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhum produto alocado nos endereços ainda.</td></tr>';
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Erro ao carregar mapa.</td></tr>'; }
+        }
+
+        async function guardarEstoqueNuvem(perfil = 'Admin') {
+            const fieldAddress = perfil === 'Admin' ? 'inboundAddress' : 'inboundAddressEstoque';
+            const fieldLot = perfil === 'Admin' ? 'inboundLot' : 'inboundLotEstoque';
+            const fieldProduct = perfil === 'Admin' ? 'inboundProduct' : 'inboundProductEstoque';
+
+            const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase();
+            const lote = document.getElementById(fieldLot).value.trim().toUpperCase();
+            const eanBipado = document.getElementById(fieldProduct).value.trim();
+
+            if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto.");
+
+            let produtoEncontrado = null;
+            let isMaster = false;
+
+            for(let prod of catalogoCompleto) {
+                if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; }
+                if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; }
+            }
+
+            if(!produtoEncontrado) {
+                document.getElementById(fieldProduct).value = '';
+                return alert("Código não encontrado no Catálogo da Volt. Cadastre-o primeiro.");
+            }
+
+            const qtdAdicionar = isMaster ? produtoEncontrado.qtdMaster : 1;
+            const caixasAdicionar = isMaster ? 1 : 0; 
+
+            document.getElementById(fieldProduct).value = ''; 
+            document.getElementById(fieldProduct).focus();
+
+            try {
+                const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`;
+                const docRef = db.collection("estoque_posicoes").doc(docId);
+                const docSnap = await docRef.get();
+
+                if (docSnap.exists) {
+                    await docRef.update({
+                        quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar),
+                        caixas: firebase.firestore.FieldValue.increment(caixasAdicionar)
+                    });
+                } else {
+                    await docRef.set({
+                        endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku,
+                        quantidade: qtdAdicionar, caixas: caixasAdicionar, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                carregarMapaEstoque(perfil);
+            } catch(e) { alert("Erro ao guardar estoque."); }
+        }
+
+        async function zerarPosicaoEstoque(id, perfil) {
+            if(confirm("Tem certeza que deseja apagar este saldo do mapa?")) {
+                await db.collection("estoque_posicoes").doc(id).delete();
+                carregarMapaEstoque(perfil);
+            }
+        }
+
 
         // ====================================================
         // ADMIN: LANÇAMENTO MANUAL EM GRADE
@@ -1009,10 +1216,18 @@
         }
 
         // ====================================================
-        // ADMIN: HISTÓRICO DINÂMICO DE DESEMPENHO E AUDITORIA
+        // ADMIN: HISTÓRICO FATURADO, DESEMPENHO E AUDITORIA
         // ====================================================
+        
+        function abrirModuloEquipe() {
+            navegarAdmin('adminEquipe');
+            carregarEstatisticasEquipe();
+            renderizarTabelaAcessosAdmin();
+        }
+
         function abrirModuloHistorico() { 
-            navegarAdmin('adminHistorico'); carregarEstatisticasEquipe(); carregarHistoricoDaNuvem(); 
+            navegarAdmin('adminHistorico'); 
+            carregarHistoricoDaNuvem(); 
         }
 
         async function carregarEstatisticasEquipe() {
@@ -1067,32 +1282,91 @@
         }
 
         async function carregarHistoricoDaNuvem() {
-            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico na nuvem...</td></tr>';
+            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--volt-green);">Buscando histórico na nuvem...</td></tr>';
             try {
                 const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach((doc) => {
                     const ov = doc.data();
                     if (ov.status === 'Concluído') { 
-                        contador++; const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
-                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx</td><td><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="abrirAuditoriaLogs('${doc.id}', '${ov.numero}', '${ov.operadorSeparacao || ov.operadorFinal}')">Ver Erros</button></td></tr>`;
+                        contador++; 
+                        let totalItens = 0;
+                        if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
+                        if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
+                        
+                        const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
+                        
+                        tbody.innerHTML += `
+                        <tr>
+                            <td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td>
+                            <td><strong>${ov.numero}</strong></td>
+                            <td>${ov.cliente}</td>
+                            <td>${ov.volumesReais || '-'} cx / ${totalItens} itens</td>
+                            <td><span class="badge-ok">${freteInfo}</span></td>
+                            <td><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff;" onclick="abrirResumoCompleto('${doc.id}')">Dossiê Completo</button></td>
+                        </tr>`;
                     }
                 });
-                if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
-            } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Falha ao carregar histórico.</td></tr>'; }
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
+            } catch (error) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Falha ao carregar histórico.</td></tr>'; }
         }
 
-        async function abrirAuditoriaLogs(id_doc, numero, operador) {
-            document.getElementById('modalOV').innerText = `#${numero}`; document.getElementById('modalOperador').innerText = operador;
-            const listaLogs = document.getElementById('listaErrosLogs'); listaLogs.innerHTML = '<li class="log-item"><span class="log-hora">Carregando...</span><strong>Buscando logs no Firebase...</strong></li>'; document.getElementById('modalAuditoria').style.display = 'flex';
+        async function abrirResumoCompleto(id_doc) {
+            const modal = document.getElementById('modalResumoOV');
+            modal.style.display = 'flex';
+            
+            document.getElementById('resumoOvNum').innerText = "Carregando...";
+            document.getElementById('resumoCliente').innerText = "-";
+            document.getElementById('resumoData').innerText = "-";
+            document.getElementById('resumoOps').innerText = "-";
+            document.getElementById('resumoItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
+            document.getElementById('resumoVolList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
+            document.getElementById('resumoFreteInfo').innerHTML = "-";
+            document.getElementById('resumoLogsList').innerHTML = "-";
+
             try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data(); listaLogs.innerHTML = '';
-                if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) { ovData.auditoriaLogs.forEach(log => { listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Erro:</strong> ${log.mensagem}</li>`; }); } 
-                else { listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhum erro registrado. Conferência cega foi de 100%.</strong></li>`; }
-            } catch(e) { listaLogs.innerHTML = `<li class="log-item"><span class="log-hora">Erro</span><strong>Não foi possível carregar os logs.</strong></li>`; }
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get();
+                const ov = docRef.data();
+                
+                document.getElementById('resumoOvNum').innerText = ov.numero;
+                document.getElementById('resumoCliente').innerText = ov.cliente;
+                document.getElementById('resumoData').innerText = `Lançada: ${ov.data}\nFaturada: ${ov.dataConclusao || '-'}`;
+                document.getElementById('resumoOps').innerText = `Separada por: ${ov.operadorSeparacao || '-'}\nFaturada por: ${ov.operadorFinal || '-'}`;
+                
+                let itensHtml = '';
+                if(ov.itensOV) Object.values(ov.itensOV).forEach(i => itensHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 8px; border-bottom: 1px solid #222; color:#888; font-size:12px;">Principal</td><td style="padding: 8px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
+                if(ov.itensRMA) Object.values(ov.itensRMA).forEach(i => itensHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 8px; border-bottom: 1px solid #222; color:var(--warning-yellow); font-size:12px;">RMA</td><td style="padding: 8px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
+                document.getElementById('resumoItensList').innerHTML = itensHtml || '<tr><td colspan="3" style="padding: 10px;">Nenhum item registrado.</td></tr>';
+                
+                let volHtml = '';
+                if(ov.detalhesVolumes && ov.detalhesVolumes.length > 0) {
+                    ov.detalhesVolumes.forEach(v => volHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">Vol 0${v.id}</td><td style="padding: 8px; border-bottom: 1px solid #222;">${v.peso} kg</td><td style="padding: 8px; border-bottom: 1px solid #222; color:#aaa;">${v.comp}x${v.larg}x${v.alt} cm</td></tr>`);
+                } else {
+                    volHtml = '<tr><td colspan="3" style="padding: 10px;">Sem volumes registrados.</td></tr>';
+                }
+                document.getElementById('resumoVolList').innerHTML = volHtml;
+                
+                if(ov.freteEscolhido) {
+                    document.getElementById('resumoFreteInfo').innerHTML = `<strong style="color:var(--volt-green);">${ov.freteEscolhido.transportadora}</strong> - R$ ${ov.freteEscolhido.preco} (${ov.freteEscolhido.prazo} Dias)`;
+                } else {
+                    document.getElementById('resumoFreteInfo').innerHTML = 'Frete não registrado.';
+                }
+                
+                let logsHtml = '';
+                if(ov.auditoriaLogs && ov.auditoriaLogs.length > 0) {
+                    ov.auditoriaLogs.forEach(l => logsHtml += `<li style="font-size:13px; color:#aaa; margin-bottom:8px; border-left: 2px solid var(--error-red); padding-left: 10px;">[${l.hora}] ${l.mensagem}</li>`);
+                } else {
+                    logsHtml = '<li style="font-size:13px; color:var(--success-green);">Sem divergências. A equipe teve 100% de precisão na bancada.</li>';
+                }
+                document.getElementById('resumoLogsList').innerHTML = `<ul style="padding: 0; margin:0; list-style: none;">${logsHtml}</ul>`;
+                
+            } catch(e) {
+                alert("Erro ao carregar detalhes do Dossiê.");
+                modal.style.display = 'none';
+            }
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO DE DIMENSÕES)
+        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO)
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -1129,6 +1403,7 @@
                 const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); 
                 const ovData = docRef.data();
                 
+                // RENDERIZAR DIMENSÕES EDITÁVEIS PARA O ADMIN
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => {
@@ -1148,6 +1423,7 @@
                     containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão foi registrada pelo estoque nesta OV.</p>';
                 }
 
+                // RENDERIZAR COTAÇÕES
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => {
@@ -1165,36 +1441,16 @@
         }
 
         async function salvarDimensoesAdmin() {
-            const containerDimensoes = document.getElementById('listaDimensoesAdmin');
-            const linhas = containerDimensoes.querySelectorAll('.grid-4');
-            let novosDetalhes = [];
-            
-            linhas.forEach((linha, index) => {
-                novosDetalhes.push({
-                    id: index + 1,
-                    peso: linha.querySelector('.edit-peso').value,
-                    comp: linha.querySelector('.edit-comp').value,
-                    larg: linha.querySelector('.edit-larg').value,
-                    alt:  linha.querySelector('.edit-alt').value
-                });
-            });
-            
-            try {
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ 
-                    detalhesVolumes: novosDetalhes,
-                    volumesReais: novosDetalhes.length 
-                });
-                alert("💾 Dimensões salvas e corrigidas com sucesso!");
-                carregarFilaFaturamentoNuvem(); 
-            } catch(e) { alert("Erro ao salvar dimensões."); }
+            const containerDimensoes = document.getElementById('listaDimensoesAdmin'); const linhas = containerDimensoes.querySelectorAll('.grid-4'); let novosDetalhes = [];
+            linhas.forEach((linha, index) => { novosDetalhes.push({ id: index + 1, peso: linha.querySelector('.edit-peso').value, comp: linha.querySelector('.edit-comp').value, larg: linha.querySelector('.edit-larg').value, alt:  linha.querySelector('.edit-alt').value }); });
+            try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ detalhesVolumes: novosDetalhes, volumesReais: novosDetalhes.length }); alert("💾 Dimensões salvas e corrigidas com sucesso!"); carregarFilaFaturamentoNuvem(); } catch(e) { alert("Erro ao salvar dimensões."); }
         }
 
         async function confirmarFreteFaturamento(idxCotacao) {
             if(!confirm(`Confirma a escolha deste frete e o faturamento da OV?`)) return;
             const d = new Date(); const dataFaturamento = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
             try {
-                const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
-                const freteEscolhido = ovData.cotacoes[idxCotacao];
+                const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data(); const freteEscolhido = ovData.cotacoes[idxCotacao];
                 await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Concluído', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido, operadorFinal: usuarioLogado });
                 alert("✅ OV Faturada e Concluída com Sucesso!"); document.getElementById('modalEscolhaFrete').style.display = 'none'; carregarFilaFaturamentoNuvem();
             } catch(e) { alert("Erro ao concluir faturamento."); }
@@ -1203,8 +1459,6 @@
         // ====================================================
         // ADMIN: GESTÃO DE ACESSOS (RH)
         // ====================================================
-        function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
-
         function renderizarTabelaAcessosAdmin() {
             const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
@@ -1223,6 +1477,7 @@
             if(!nome || !senha) return alert("Preencha Nome e Senha.");
             try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado! Ele já fará parte do Painel de Desempenho.`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro ao gravar usuário."); }
         }
+        function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
         // ====================================================
         // ESTOQUE: WMS, FILA SEPARAÇÃO E BIPAGEM CEGA
@@ -1265,7 +1520,7 @@
                 r += '</div>'; htmlRoteiro.innerHTML = r;
             }
 
-            if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { const btnOv = document.getElementById('btnDownloadOv'); btnOv.style.display = 'inline-flex'; btnOv.innerText = "📄 Baixar Ordem Principal"; btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`); } 
+            if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { const btnOv = document.getElementById('btnDownloadOv'); btnOv.style.display = 'inline-flex'; btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`); } 
             if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { const btnRma = document.getElementById('btnDownloadRma'); btnRma.style.display = 'inline-flex'; btnRma.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoRMA_base64, `Remessa_${numero}.pdf`); }
             
             navegarEstoque('estoquePreparacao');
@@ -1306,31 +1561,14 @@
 
         function validarFase(fase) {
             const banco = fase === 'OV' ? itensBipagemOV : itensBipagemRMA; let tudoOk = true;
-            for(let ean in banco) { 
-                if(banco[ean].bipado !== banco[ean].alvo) tudoOk = false; 
-            }
+            for(let ean in banco) { if(banco[ean].bipado !== banco[ean].alvo) tudoOk = false; }
             if(tudoOk) {
-                document.getElementById(`fase${fase}`).classList.remove('ativa'); 
-                document.getElementById(`fase${fase}`).classList.add('concluida'); 
-                document.getElementById(`status${fase}`).innerText = 'Concluído'; 
-                document.getElementById(`bip${fase}`).disabled = true;
-                
-                if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { 
-                    etapaAtualEstoque = 'RMA'; 
-                    document.getElementById('faseRMA').classList.add('ativa'); 
-                    document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; 
-                    document.getElementById('bipRMA').disabled = false; 
-                    document.getElementById('bipRMA').focus(); 
-                } else { 
-                    etapaAtualEstoque = 'LOG'; 
-                    document.getElementById('faseLogistica').classList.add('ativa'); 
-                    document.getElementById('statusLog').innerText = 'Logística Liberada'; 
-                }
+                document.getElementById(`fase${fase}`).classList.remove('ativa'); document.getElementById(`fase${fase}`).classList.add('concluida'); document.getElementById(`status${fase}`).innerText = 'Concluído'; document.getElementById(`bip${fase}`).disabled = true;
+                if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
+                else { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = 'Logística Liberada'; }
             } else { 
-                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); 
-                auditoriaLogsSessao.push({ hora: hora, mensagem: `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.` });
-                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a ordem fiscal."; 
-                document.getElementById('erroModal').style.display = 'flex'; 
+                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); auditoriaLogsSessao.push({ hora: hora, mensagem: `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.` });
+                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a meta oculta da ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
 
