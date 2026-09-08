@@ -142,7 +142,6 @@
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
         .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .auditoria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
         .log-lista { list-style: none; padding: 0; margin: 0; text-align: left;}
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
@@ -230,11 +229,14 @@
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEscolhaFrete').style.display='none'">✖ Fechar</button>
             </div>
             
-            <!-- NOVA ÁREA: EDIÇÃO DE DIMENSÕES PELO ADMIN -->
+            <!-- ÁREA DE EDIÇÃO DE DIMENSÕES PELO ADMIN -->
             <div style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h4 style="margin: 0; color: var(--text-light); font-size: 14px;">Dimensões dos Volumes</h4>
-                    <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green); padding: 4px 10px; font-size: 11px;" onclick="salvarDimensoesAdmin()">💾 Salvar Correção</button>
+                    <div>
+                        <button class="btn-outline-2" style="border-color: #888; color: #888; padding: 4px 10px; font-size: 11px; margin-right: 5px;" onclick="adicionarDimensaoAdmin()">+ Caixa</button>
+                        <button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green); padding: 4px 10px; font-size: 11px;" onclick="salvarDimensoesAdmin()">💾 Salvar Correção</button>
+                    </div>
                 </div>
                 <div id="listaDimensoesAdmin">
                     <!-- Dimensões editáveis aparecem aqui -->
@@ -556,7 +558,7 @@
                     <p style="color: var(--text-muted); margin-bottom: 30px;">Baixe os arquivos em anexo (se houver) para realizar a separação nas prateleiras antes de bipar na bancada.</p>
                     
                     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                        <button class="btn-download" id="btnDownloadOv">📄 Baixar Ordem de Venda Principal</button>
+                        <button class="btn-download" id="btnDownloadOv">📄 Baixar Ordem Principal</button>
                         <button class="btn-download" id="btnDownloadRma" style="display:none;">🔄 Baixar Remessa RMA</button>
                     </div>
 
@@ -602,7 +604,7 @@
                     </div>
                 </div>
 
-                <!-- ETAPA 3: Caixas (COM CAPTURA DE DIMENSÕES) -->
+                <!-- ETAPA 3: Caixas -->
                 <div id="faseLogistica" class="fase-section">
                     <h3>3. Logística de Expedição e Fechamento de Volumes <span id="statusLog" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3>
                     <div id="listaVolumesCaixas"></div>
@@ -676,6 +678,7 @@
         
         let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
         
+        // Memória temporária para Lançamento, Bipagem e Cotação
         let itensLancamentoOV = {}; let itensLancamentoRMA = {};
         let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = [];
@@ -756,7 +759,7 @@
         // ====================================================
         function abrirModuloLancamentos() { 
             navegarAdmin('adminLancamentos'); 
-            carregarMiniFilaAdmin(); // Carrega o monitoramento ao vivo na hora que abre a tela!
+            carregarMiniFilaAdmin(); 
         }
 
         document.getElementById('fileOV').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneOV').classList.add('concluido'); document.getElementById('dropTitleOV').innerText = "✅ OV Anexada"; document.getElementById('dropTitleOV').style.color = "var(--success-green)"; }});
@@ -800,7 +803,6 @@
             let base64RMA = null;
 
             try {
-                // Converte os PDFs para texto Base64 para salvar direto no Firebase 
                 if(temArquivoOV) base64OV = await getBase64(fileOvInput.files[0]);
                 if(temArquivoRMA) base64RMA = await getBase64(fileRmaInput.files[0]);
 
@@ -944,7 +946,7 @@
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO DE MEDIDAS)
+        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO DE DIMENSÕES)
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -982,11 +984,14 @@
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => {
                         containerDimensoes.innerHTML += `
-                            <div class="grid-4" style="margin-bottom: 10px;">
+                            <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
                                 <div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div>
                                 <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div>
                                 <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div>
-                                <div><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
+                                    <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
+                                </div>
                             </div>
                         `;
                     });
@@ -1004,6 +1009,27 @@
             } catch(e) { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar opções.</p>'; }
         }
 
+        function adicionarDimensaoAdmin() {
+            const container = document.getElementById('listaDimensoesAdmin');
+            const currentCount = container.querySelectorAll('.grid-4').length;
+            
+            const txtVazio = container.querySelector('p');
+            if (txtVazio) txtVazio.remove();
+
+            const html = `
+                <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
+                    <div><label style="font-size: 10px; color: #888;">Vol 0${currentCount + 1} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="" style="padding: 8px;"></div>
+                    <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="" style="padding: 8px;"></div>
+                    <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="" style="padding: 8px;"></div>
+                    <div style="display: flex; gap: 5px;">
+                        <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="" style="padding: 8px;"></div>
+                        <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
         async function salvarDimensoesAdmin() {
             const containerDimensoes = document.getElementById('listaDimensoesAdmin');
             const linhas = containerDimensoes.querySelectorAll('.grid-4');
@@ -1019,11 +1045,13 @@
                 });
             });
             
-            if(novosDetalhes.length === 0) return;
-            
             try {
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ detalhesVolumes: novosDetalhes });
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ 
+                    detalhesVolumes: novosDetalhes,
+                    volumesReais: novosDetalhes.length 
+                });
                 alert("💾 Dimensões salvas e corrigidas com sucesso!");
+                carregarFilaFaturamentoNuvem(); // Atualiza a tabela que mostra Volumes Físicos
             } catch(e) { alert("Erro ao salvar dimensões."); }
         }
 
@@ -1092,7 +1120,6 @@
             
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
             
-            // DOWNLOAD DOS ARQUIVOS (Base64 reconstruído)
             if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { 
                 const btnOv = document.getElementById('btnDownloadOv');
                 btnOv.style.display = 'inline-flex'; 
@@ -1102,7 +1129,7 @@
                 const btnOv = document.getElementById('btnDownloadOv');
                 btnOv.style.display = 'inline-flex'; 
                 btnOv.innerText = "Avançar direto (Sem Arquivo Físico)"; 
-                btnOv.onclick = () => abrirBipagemOficial(); // Apenas ignora o botão
+                btnOv.onclick = () => abrirBipagemOficial(); 
             }
             
             if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { 
@@ -1121,7 +1148,6 @@
             
             etapaAtualEstoque = 'OV'; document.getElementById('faseOV').className = 'fase-section ativa'; document.getElementById('faseRMA').className = 'fase-section'; document.getElementById('faseLogistica').className = 'fase-section'; document.getElementById('statusOV').innerText = 'Aguardando Leitura'; document.getElementById('statusRMA').innerText = 'Bloqueado'; document.getElementById('statusLog').innerText = 'Bloqueado'; document.getElementById('bipOV').disabled = false; document.getElementById('bipRMA').disabled = true; document.getElementById('bipOV').value = '';
             
-            // Reseta a contagem para a sessão local atual
             for(let ean in itensBipagemOV) itensBipagemOV[ean].bipado = 0; 
             for(let ean in itensBipagemRMA) itensBipagemRMA[ean].bipado = 0;
 
@@ -1130,12 +1156,10 @@
             navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 100);
         }
 
-        // CARDS CEGOS: Exibe apenas o que foi bipado (não exibe o "Alvo")
         function desenharCards(faseId, bancoDeDados) {
             const container = document.getElementById(`container${faseId}`); container.innerHTML = '';
             for(let ean in bancoDeDados) { 
                 const item = bancoDeDados[ean]; const bg = item.bipado > 0 ? 'ativo' : ''; 
-                // Apenas exibe o numero de "bipados", não o total alvo
                 container.innerHTML += `<div class="produto-card ${bg}"><div class="produto-sku">${item.sku}</div><div class="produto-qtd">${item.bipado}</div></div>`; 
             }
         }
@@ -1179,7 +1203,7 @@
         async function concluirExpedicaoNuvem() {
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             
-            // LÓGICA DE CAPTURA DE DIMENSÕES
+            // LÓGICA DE CAPTURA DE DIMENSÕES PELO ESTOQUE
             let detalhesVolumes = [];
             document.querySelectorAll('.volume-box').forEach((box, index) => {
                 detalhesVolumes.push({
@@ -1195,7 +1219,7 @@
                 await db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     status: 'Aguardando Cotação', 
                     volumesReais: contadorVolumesInterno,
-                    detalhesVolumes: detalhesVolumes // Salvando as dimensões!
+                    detalhesVolumes: detalhesVolumes 
                 }); 
                 alert("📦 Conferência finalizada! Pedido enviado para Cotação de Frete."); abrirFilaCotacao(); 
             } catch(error) { alert("Falha ao salvar conclusão."); }
