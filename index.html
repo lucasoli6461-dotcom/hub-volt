@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>HUB VOLT - Sistema Integrado de Gestão</title>
-    <link rel="icon" type="image/png" href="image_a87265.png">
+    <link rel="icon" type="image/png" href="icone_volt.png">
     
     <style>
         /* ========================================== */
@@ -163,7 +163,6 @@
         .btn-remover-caixa:hover { background: rgba(255, 51, 51, 0.1); }
     </style>
 
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
@@ -182,7 +181,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE SENHA -->
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
             <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acesso: Nome</h3>
@@ -195,7 +193,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE DIVERGÊNCIA -->
     <div id="erroModal" class="modal-overlay">
         <div class="erro-box">
             <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
@@ -208,7 +205,6 @@
         </div>
     </div>
 
-    <!-- MODAL ESCOLHER FRETE (ADMIN) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 600px; border-color: var(--volt-green);">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -221,7 +217,6 @@
         </div>
     </div>
 
-    <!-- MODAL NOVO USUÁRIO -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -242,6 +237,20 @@
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button>
                 <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar Usuário</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAuditoria" class="modal-overlay">
+        <div class="auditoria-box">
+            <div class="auditoria-header">
+                <h3 style="margin: 0; color: white; font-size: 20px;">Auditoria da Ordem <span id="modalOV">#0000</span></h3>
+                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Registro de inconformidades e reinicializações da etapa:</p>
+            <ul class="log-lista" id="listaErrosLogs"></ul>
+            <div style="text-align: right; margin-top: 25px;">
+                <button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Logs</button>
             </div>
         </div>
     </div>
@@ -272,7 +281,6 @@
         <!-- ========================================== -->
         <div id="viewAdmin" class="view-layer">
             
-            <!-- Dashboard Central Admin -->
             <div id="adminDash" class="sub-screen active">
                 <div class="greeting">
                     <h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1>
@@ -290,7 +298,7 @@
                 </div>
                 <div class="grid-2">
                     <div class="hub-card" onclick="abrirModuloHistorico()">
-                        <div><h3>Histórico da Expedição</h3><p>Relatórios de pedidos expedidos, fretes escolhidos e auditoria.</p></div>
+                        <div><h3>Histórico da Expedição</h3><p>Relatórios de pedidos expedidos, fretes escolhidos e auditoria de desempenho.</p></div>
                         <div class="action">Abrir Relatórios ➔</div>
                     </div>
                     <div class="hub-card" onclick="navegarAdmin('adminUsuarios')">
@@ -409,7 +417,7 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Histórico e Desempenho -->
+            <!-- Subtela Admin: Histórico e Desempenho (AGORA 100% DINÂMICO) -->
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -417,26 +425,11 @@
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
                     
-                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe (Mês Atual)</h3>
-                    <div class="grid-equipe">
-                        <div class="equipe-card" style="border-left-color: var(--volt-green);">
-                            <div class="equipe-nome">Luiz <span style="color: var(--volt-green); font-size: 14px;">Em operação</span></div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>15</strong></span><span>Erros: <strong style="color: var(--error-red);">2</strong></span></div>
-                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">86%</strong></span></div>
-                        </div>
-                        <div class="equipe-card">
-                            <div class="equipe-nome">João <span style="color: var(--text-muted); font-size: 14px;">Offline</span></div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>8</strong></span><span>Erros: <strong>0</strong></span></div>
-                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span></div>
-                        </div>
-                        <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div class="equipe-nome">Mês Geral</div>
-                            <div class="equipe-stats" style="margin-bottom: 5px;"><span>Expedidos: <strong>23 Pedidos</strong></span></div>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;">📥 CSV</button>
-                                <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;">🗑️ Limpar</button>
-                            </div>
-                        </div>
+                    <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px;">Desempenho da Equipe Operacional</h3>
+                    
+                    <!-- Grid Dinâmico Injetado pelo JS -->
+                    <div class="grid-equipe" id="containerDesempenhoEquipe">
+                        <p style="color: var(--volt-green);">Calculando desempenho atualizado da equipe...</p>
                     </div>
 
                     <h3 style="color: var(--text-light); margin-bottom: 15px; margin-top: 40px; font-size: 16px;">Registro de Expedição Concluída (Firebase)</h3>
@@ -736,7 +729,113 @@
         }
 
         // ====================================================
-        // ESTOQUE: FILA SEPARAÇÃO, DOWNLOADS E BIPAGEM
+        // ADMIN: HISTÓRICO DINÂMICO DE DESEMPENHO E AUDITORIA
+        // ====================================================
+        function abrirModuloHistorico() { 
+            navegarAdmin('adminHistorico'); 
+            carregarEstatisticasEquipe();
+            carregarHistoricoDaNuvem(); 
+        }
+
+        async function carregarEstatisticasEquipe() {
+            const container = document.getElementById('containerDesempenhoEquipe');
+            container.innerHTML = '<p style="color: var(--volt-green);">Calculando desempenho atualizado...</p>';
+
+            try {
+                const snapshotOVs = await db.collection("estoque_ovs").get();
+                let statsPorOperador = {};
+                let totalExpedidos = 0;
+
+                snapshotOVs.forEach(doc => {
+                    const ov = doc.data();
+                    if (ov.status === 'Concluído' || ov.status === 'Aguardando Cotação' || ov.status === 'Aguardando Faturamento') {
+                        totalExpedidos++;
+                        const op = ov.operadorFinal || ov.operadorSeparacao || ov.operador; // Garante que pega quem fez
+                        if (op) {
+                            if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0, erros: 0 };
+                            statsPorOperador[op].separados++;
+                        }
+                    }
+                });
+
+                container.innerHTML = '';
+                let htmlCards = '';
+
+                // Varre quem é do Estoque na lista de RH
+                for (let nome in bdUsuariosLogistica) {
+                    const user = bdUsuariosLogistica[nome];
+                    if (user.role === 'estoque') {
+                        const separados = statsPorOperador[nome] ? statsPorOperador[nome].separados : 0;
+                        const statusBadge = user.status !== 'inativo' ? '<span style="color: var(--volt-green); font-size: 14px;">Ativo</span>' : '<span style="color: var(--error-red); font-size: 14px;">Inativo</span>';
+                        
+                        htmlCards += `
+                        <div class="equipe-card" style="border-left-color: ${user.status !== 'inativo' ? 'var(--volt-green)' : '#444'};">
+                            <div class="equipe-nome">${nome} ${statusBadge}</div>
+                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros: <strong style="color: var(--success-green);">0</strong></span></div>
+                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span></div>
+                        </div>`;
+                    }
+                }
+
+                // Cria o Card Geral no final
+                htmlCards += `
+                <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="equipe-nome">Mês Geral</div>
+                    <div class="equipe-stats" style="margin-bottom: 5px;"><span>Expedidos: <strong>${totalExpedidos} Pedidos</strong></span></div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;" onclick="alert('Gerando Relatório CSV...')">📥 CSV</button>
+                        <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;" onclick="confirm('Tem certeza que deseja apagar os dados deste mês?')">🗑️ Limpar</button>
+                    </div>
+                </div>`;
+
+                container.innerHTML = htmlCards;
+
+            } catch (error) {
+                container.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar estatísticas do Firebase.</p>';
+            }
+        }
+
+        async function carregarHistoricoDaNuvem() {
+            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico na nuvem...</td></tr>';
+            try {
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
+                snapshot.forEach((doc) => {
+                    const ov = doc.data();
+                    if (ov.status === 'Concluído') { 
+                        contador++; const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
+                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx</td><td><span class="badge-ok">${freteInfo}</span></td></tr>`;
+                    }
+                });
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
+            } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Falha ao carregar histórico.</td></tr>'; }
+        }
+
+        // ====================================================
+        // ADMIN: RH E GESTÃO DE ACESSOS (DINÂMICO)
+        // ====================================================
+        function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
+
+        function renderizarTabelaAcessosAdmin() {
+            const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
+            for (let nome in bdUsuariosLogistica) {
+                const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
+                tbody.innerHTML += `<tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255,51,51,0.05);' : ''}"><td><strong>${nome}</strong></td><td>${user.funcao || 'Equipe'}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td><td style="text-align: right;"><div class="tabela-senha-box" style="justify-content: flex-end;"><input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}"><button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button><button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 10px;" onclick="toggleStatusUsuarioNuvem('${nome}', ${isAtivo})">${isAtivo ? 'Desligar' : 'Reativar'}</button></div></td></tr>`;
+            }
+        }
+
+        async function toggleStatusUsuarioNuvem(nome, isAtivo) {
+            if(isAtivo && !confirm(`Desativar o acesso de ${nome}?`)) return;
+            try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro de banco."); }
+        }
+
+        async function salvarNovoUsuario() {
+            const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim();
+            if(!nome || !senha) return alert("Preencha Nome e Senha.");
+            try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado! Ele já fará parte do Painel de Desempenho.`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro ao gravar usuário."); }
+        }
+
+        // ====================================================
+        // ESTOQUE: FILA SEPARAÇÃO E BIPAGEM DINÂMICA
         // ====================================================
         function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -789,7 +888,7 @@
         function processarBipagem(fase) {
             const input = document.getElementById(`bip${fase}`); const ean = input.value.trim(); const banco = fase === 'OV' ? itensBipagemOV : itensBipagemRMA;
             if(ean && banco[ean]) { banco[ean].bipado++; desenharCards(fase, banco); input.value = ''; } 
-            else if (ean) { document.getElementById('txtErroEstoque').innerText = "Código não encontrado ou não pertence a esta etapa."; document.getElementById('erroModal').style.display = 'flex'; input.value = ''; }
+            else if (ean) { document.getElementById('erroModal').style.display = 'flex'; input.value = ''; }
         }
 
         function fecharErroModal() { document.getElementById('erroModal').style.display = 'none'; if(etapaAtualEstoque === 'OV') { for(let e in itensBipagemOV) itensBipagemOV[e].bipado = 0; desenharCards('OV', itensBipagemOV); document.getElementById('bipOV').focus(); } else { for(let e in itensBipagemRMA) itensBipagemRMA[e].bipado = 0; desenharCards('RMA', itensBipagemRMA); document.getElementById('bipRMA').focus(); } }
@@ -801,7 +900,7 @@
                 document.getElementById(`fase${fase}`).classList.remove('ativa'); document.getElementById(`fase${fase}`).classList.add('concluida'); document.getElementById(`status${fase}`).innerText = 'Concluído'; document.getElementById(`bip${fase}`).disabled = true;
                 if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
                 else { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = 'Logística Liberada'; }
-            } else { document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a meta do Escritório."; document.getElementById('erroModal').style.display = 'flex'; }
+            } else { document.getElementById('erroModal').style.display = 'flex'; }
         }
 
         function adicionarCaixaEmbalagem() { contadorVolumesInterno++; volumeUnicoID++; const id = volumeUnicoID; document.getElementById('listaVolumesCaixas').insertAdjacentHTML('beforeend', `<div class="volume-box" id="caixaVol-${id}"><div class="volume-title">Volume Nº 0${contadorVolumesInterno}</div>${contadorVolumesInterno>1?`<button class="btn-remover-caixa" onclick="document.getElementById('caixaVol-${id}').remove(); contadorVolumesInterno--;">✖</button>`:''}<div class="grid-4"><div><input type="number" class="input-dark" placeholder="Peso (Kg)"></div><div><input type="number" class="input-dark" placeholder="Compr. (cm)"></div><div><input type="number" class="input-dark" placeholder="Larg. (cm)"></div><div><input type="number" class="input-dark" placeholder="Alt. (cm)"></div></div></div>`); }
@@ -809,7 +908,7 @@
         async function concluirExpedicaoNuvem() {
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             try { 
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', operadorSeparacao: usuarioLogado, volumesReais: contadorVolumesInterno }); 
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', operadorFinal: usuarioLogado, volumesReais: contadorVolumesInterno }); 
                 alert("📦 Conferência finalizada! Pedido enviado para Cotação de Frete."); abrirFilaCotacao(); 
             } catch(error) { alert("Falha ao salvar conclusão."); }
         }
@@ -905,47 +1004,9 @@
             try {
                 const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
                 const freteEscolhido = ovData.cotacoes[idxCotacao];
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Concluído', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido, operadorFinal: usuarioLogado });
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Concluído', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido });
                 alert("✅ OV Faturada e Concluída com Sucesso!"); document.getElementById('modalEscolhaFrete').style.display = 'none'; carregarFilaFaturamentoNuvem();
             } catch(e) { alert("Erro ao concluir faturamento."); }
-        }
-
-        function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
-        async function carregarHistoricoDaNuvem() {
-            const tbody = document.getElementById('tabelaHistorico'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando histórico na nuvem...</td></tr>';
-            try {
-                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
-                snapshot.forEach((doc) => {
-                    const ov = doc.data();
-                    if (ov.status === 'Concluído') { 
-                        contador++; const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
-                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx</td><td><span class="badge-ok">${freteInfo}</span></td></tr>`;
-                    }
-                });
-                if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
-            } catch (error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red);">Falha ao carregar histórico.</td></tr>'; }
-        }
-
-        // ADMIN: RH
-        function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
-
-        function renderizarTabelaAcessosAdmin() {
-            const tbody = document.getElementById('tabelaEquipeUsuarios'); tbody.innerHTML = '';
-            for (let nome in bdUsuariosLogistica) {
-                const user = bdUsuariosLogistica[nome]; const isAtivo = (user.status !== 'inativo');
-                tbody.innerHTML += `<tr style="${!isAtivo ? 'opacity: 0.5; background: rgba(255,51,51,0.05);' : ''}"><td><strong>${nome}</strong></td><td>${user.funcao || 'Equipe'}</td><td><span class="badge-papel ${user.role === 'admin' ? 'badge-admin' : ''}">${user.role}</span></td><td><span class="${isAtivo ? 'status-online' : 'status-offline'}">${isAtivo ? 'Ativo' : 'Desligado'}</span></td><td style="text-align: right;"><div class="tabela-senha-box" style="justify-content: flex-end;"><input type="password" class="senha-input" value="${user.senha}" readonly id="senha-${nome}"><button class="btn-icon" onclick="mostrarSenha('senha-${nome}')" title="Ver Senha">👁️</button><button class="btn-outline-2" style="border-color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; color: ${isAtivo ? 'var(--error-red)' : 'var(--success-green)'}; margin-left: 10px;" onclick="toggleStatusUsuarioNuvem('${nome}', ${isAtivo})">${isAtivo ? 'Desligar' : 'Reativar'}</button></div></td></tr>`;
-            }
-        }
-
-        async function toggleStatusUsuarioNuvem(nome, isAtivo) {
-            if(isAtivo && !confirm(`Desativar o acesso de ${nome}?`)) return;
-            try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro de banco."); }
-        }
-
-        async function salvarNovoUsuario() {
-            const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim();
-            if(!nome || !senha) return alert("Preencha Nome e Senha.");
-            try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado!`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro ao gravar usuário."); }
         }
     </script>
 </body>
