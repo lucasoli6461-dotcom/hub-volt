@@ -98,12 +98,12 @@
         .item-grade input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: var(--volt-green); text-align: center; border-radius: 4px; box-sizing: border-box; font-weight: bold;}
         .item-grade input:focus { border-color: var(--volt-green); outline: none; }
 
-        /* MINICARDS MONITORAMENTO */
+        /* MINICARDS MONITORAMENTO AO VIVO */
         .mini-card { background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; position: relative; transition: 0.2s; }
         .mini-card:hover { border-color: var(--volt-green); }
         .mini-card h4 { margin: 0 0 5px 0; color: white; font-size: 16px; }
         .mini-card p { margin: 0; color: #888; font-size: 12px; line-height: 1.4;}
-        .badge-mini-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .badge-mini-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 5px; text-transform: uppercase; }
         .status-aguardando { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); }
         .status-separando { background: rgba(0, 204, 102, 0.1); color: var(--success-green); border: 1px solid rgba(0, 204, 102, 0.3); }
         .btn-del-mini { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: var(--error-red); cursor: pointer; font-size: 14px; padding: 5px; transition: 0.2s;}
@@ -148,8 +148,10 @@
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
         
-        /* Lista de logs de auditoria no Dossiê */
-        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left; max-height: 200px; overflow-y: auto;}
+        /* Lista de logs de auditoria */
+        .auditoria-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .auditoria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .log-lista { list-style: none; padding: 0; margin: 0; text-align: left; max-height: 300px; overflow-y: auto;}
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
 
@@ -180,7 +182,7 @@
         .volume-title { font-size: 14px; font-weight: bold; color: var(--volt-green); margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
         .btn-remover-caixa { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase;}
         
-        /* Roteiro Inteligente */
+        /* Roteiro Inteligente (WMS FEFO) */
         .roteiro-box { border-left: 4px solid var(--volt-green); background: #0a0a0a; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
         .roteiro-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #333; padding: 12px 0; }
         .roteiro-item:last-child { border-bottom: none; }
@@ -223,16 +225,16 @@
     <div id="erroModal" class="modal-overlay">
         <div class="erro-box">
             <h2 style="color: var(--error-red); margin-top:0; font-size: 32px;">⚠️ DIVERGÊNCIA!</h2>
-            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido detectado.</p>
+            <p style="color: white; font-size: 18px;" id="txtErroEstoque">Produto inválido ou quantidade excedente.</p>
             <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
                 <strong style="color: var(--error-red);">Regra Operacional:</strong>
-                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem da etapa foi zerada. Remova o item incorreto da caixa e recomece a bipagem do passo atual para garantir 100% de exatidão.</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 5px 0 0 0;">A contagem da etapa foi zerada. Remova o item incorreto e recomece a bipagem para garantir 100% de exatidão. O erro já foi reportado ao Escritório.</p>
             </div>
             <button class="btn-volt" style="background: var(--error-red); color: white; margin-top: 25px;" onclick="fecharErroModal()">Entendido - Recomeçar</button>
         </div>
     </div>
 
-    <!-- MODAL DE CORREÇÃO E ESCOLHA DE FRETE (FATURAMENTO) -->
+    <!-- MODAL DE CORREÇÃO E ESCOLHA DE FRETE -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -256,7 +258,7 @@
         </div>
     </div>
 
-    <!-- NOVO: MODAL DOSSIÊ COMPLETO (HISTÓRICO) -->
+    <!-- MODAL DOSSIÊ COMPLETO (HISTÓRICO) -->
     <div id="modalResumoOV" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 800px; border-color: #00aaff; max-height: 90vh; overflow-y: auto; padding: 40px;">
             <div class="modulo-header" style="border-bottom-color: #333; margin-bottom: 20px;">
@@ -287,12 +289,24 @@
             <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Transportadora Escolhida</h4>
             <div id="resumoFreteInfo" style="font-size: 16px; color: white;">-</div>
 
-            <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Auditoria de Erros (Bancada)</h4>
+            <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Auditoria de Erros da Bancada</h4>
             <div id="resumoLogsList"></div>
         </div>
     </div>
 
-    <!-- MODAL DE CADASTRO DE EQUIPE (RH) -->
+    <!-- MODAL AUDITORIA DE LOGS AO VIVO -->
+    <div id="modalAuditoria" class="modal-overlay">
+        <div class="auditoria-box">
+            <div class="auditoria-header">
+                <h3 style="margin: 0; color: white; font-size: 20px;">Erros Registrados: <span id="modalOV">#0000</span></h3>
+                <span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span>
+            </div>
+            <ul class="log-lista" id="listaErrosLogs"></ul>
+            <div style="text-align: right; margin-top: 25px;"><button class="btn-volt" style="padding: 10px 20px; width: auto;" onclick="document.getElementById('modalAuditoria').style.display='none'">Fechar Visão</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO DE EQUIPE -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -545,7 +559,7 @@
                         <button class="btn-volt" style="width: auto;" onclick="salvarNovaOV()">LIBERAR PARA A FILA DE SEPARAÇÃO</button>
                     </div>
 
-                    <!-- MONITORAMENTO DA FILA AO VIVO COM OPÇÃO DE EXCLUIR -->
+                    <!-- MONITORAMENTO DA FILA AO VIVO COM ALERTA DE ERRO -->
                     <hr style="border-color: #222; margin: 40px 0;">
                     <div>
                         <h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Monitoramento da Fila (Ao Vivo)</h3>
@@ -575,7 +589,7 @@
                 </div>
             </div>
 
-            <!-- NOVO Subtela Admin: HISTÓRICO DE OVS FATURADAS -->
+            <!-- Subtela Admin: HISTÓRICO DE OVS FATURADAS -->
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -649,6 +663,7 @@
                 </div>
             </div>
 
+            <!-- Fila de Separação (Estoque) -->
             <div id="estoqueFila" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 10px;">
                     <h2 style="font-size: 24px;">Fila de Separação</h2>
@@ -657,6 +672,7 @@
                 <div id="containerFilaEstoque"></div>
             </div>
 
+            <!-- Fila de Cotação (Estoque) -->
             <div id="estoqueFilaCotacao" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 10px;">
                     <h2 style="font-size: 24px;">Pedidos Aguardando Cotação</h2>
@@ -665,6 +681,7 @@
                 <div id="containerFilaCotacao"></div>
             </div>
 
+            <!-- Preparação Física / Download -->
             <div id="estoquePreparacao" class="sub-screen">
                 <div class="modulo-header" style="border:none; margin-bottom: 0;">
                     <button class="btn-outline" style="border:none; padding-left: 0;" onclick="abrirFilaSeparacao()">⟵ VOLTAR À FILA</button>
@@ -688,6 +705,7 @@
                 </div>
             </div>
 
+            <!-- Conferência às Cegas -->
             <div id="estoqueConferencia" class="sub-screen">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                     <button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR À FILA E PAUSAR</button>
@@ -732,6 +750,7 @@
                 </div>
             </div>
 
+            <!-- Tela de Inserir Cotações (Estoque) -->
             <div id="estoqueFazerCotacao" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -771,6 +790,7 @@
                 </div>
             </div>
 
+            <!-- Tela de Endereçamento do Lado do Operador -->
             <div id="estoqueEnderecamento" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -835,12 +855,10 @@
     <!-- MOTOR DO SISTEMA (JAVASCRIPT / FIREBASE)   -->
     <!-- ========================================== -->
     <script>
-        // Inicialização do Firebase
         const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
         firebase.initializeApp(firebaseConfig); 
         const db = firebase.firestore();
         
-        // BASE DE DADOS DOS 31 PRODUTOS DA VOLT (EAN CAIXINHA)
         const baseCatalogoVOLT = [
             {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
             {sku: "CH45WH", ean: "7898974018083"}, {sku: "CH65WH", ean: "7898974018007"}, {sku: "PCC20GR", ean: "7898974018045"}, {sku: "FAC10BK", ean: "7898996240301"},
@@ -853,7 +871,6 @@
         ];
 
         let catalogoCompleto = []; 
-
         let bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
         let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
         let idOvGlobal = null; let objOvGlobal = null;
@@ -881,19 +898,14 @@
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario);
-                    if(prod) {
-                        prod.masterEan = data.eanMaster || '';
-                        prod.qtdMaster = data.qtdMaster || 100;
-                    } else {
-                        catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100});
-                    }
+                    if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; } 
+                    else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); }
                 });
-            } catch(e) { console.warn("Modo offline."); }
+            } catch(e) {}
             catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku));
         }
 
         function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
-
         function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
         function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
         function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
@@ -913,7 +925,7 @@
                         }
                     });
                 }
-            } catch (error) { console.error("Offline."); }
+            } catch (error) {}
         }
 
         function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
@@ -938,66 +950,36 @@
             navegarAdmin('adminCatalogo');
             const tbody = document.getElementById('tabelaCatalogoConfig');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
-            
             try {
-                const snapshot = await db.collection("catalogo_produtos").get();
-                let nuvemDados = {};
+                const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {};
                 snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
                 
                 tbody.innerHTML = '';
                 catalogoCompleto.forEach(prod => {
-                    const salvo = nuvemDados[prod.ean] || {};
-                    const masterVal = salvo.eanMaster || '';
-                    const masterQtd = salvo.qtdMaster || 100;
-                    
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #222;">
-                            <td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td>
-                            <td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td>
-                            <td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td>
-                            <td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td>
-                            <td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td>
-                        </tr>
-                    `;
+                    const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100;
+                    tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td><td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td><td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td><td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td><td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td></tr>`;
                 });
-            } catch(e) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro ao carregar banco de dados.</td></tr>';
-            }
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro ao carregar banco de dados.</td></tr>'; }
         }
 
         async function salvarProdutoCatalogo(eanUnitario, sku) {
-            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim();
-            const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
+            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
             try {
-                await db.collection("catalogo_produtos").doc(eanUnitario).set({
-                    sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd)
-                }, {merge: true});
-                
-                let p = catalogoCompleto.find(x => x.ean === eanUnitario);
-                if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); }
-
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true});
+                let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); }
                 alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`);
             } catch(e) { alert("Erro ao salvar produto."); }
         }
 
         async function salvarNovoSKUNuvem() {
-            const sku = document.getElementById('cadSkuNovo').value.trim();
-            const eanUnitario = document.getElementById('cadEanNovo').value.trim();
-            const eanMaster = document.getElementById('cadMasterNovo').value.trim();
-            const qtdMaster = document.getElementById('cadQtdMasterNovo').value;
-
+            const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim();
+            const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value;
             if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios.");
-
             try {
-                await db.collection("catalogo_produtos").doc(eanUnitario).set({
-                    sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster)
-                });
-                alert(`✅ Novo produto ${sku} criado no sistema!`);
-                document.getElementById('modalNovoSKU').style.display = 'none';
-                
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) });
+                alert(`✅ Novo produto ${sku} criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none';
                 document.getElementById('cadSkuNovo').value = ''; document.getElementById('cadEanNovo').value = '';
-                await inicializarCatalogoMestre(); 
-                abrirModuloCatalogo(); 
+                await inicializarCatalogoMestre(); abrirModuloCatalogo(); 
             } catch(e) { alert("Erro ao criar produto."); }
         }
 
@@ -1011,23 +993,12 @@
             const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
             try {
-                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get();
-                tbody.innerHTML = '';
-                let contador = 0;
+                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach(doc => {
                     const item = doc.data();
                     if(item.quantidade > 0) {
                         contador++;
-                        tbody.innerHTML += `
-                            <tr style="border-bottom: 1px solid #222;">
-                                <td><span class="badge-endereco">${item.endereco}</span></td>
-                                <td><strong>${item.sku}</strong></td>
-                                <td><span class="badge-lote">${item.lote}</span></td>
-                                <td>${item.caixas} cx</td>
-                                <td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td>
-                                <td><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">Zerar</button></td>
-                            </tr>
-                        `;
+                        tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-lote">${item.lote}</span></td><td>${item.caixas} cx</td><td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">Zerar</button></td></tr>`;
                     }
                 });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhum produto alocado nos endereços ainda.</td></tr>';
@@ -1035,104 +1006,54 @@
         }
 
         async function guardarEstoqueNuvem(perfil = 'Admin') {
-            const fieldAddress = perfil === 'Admin' ? 'inboundAddress' : 'inboundAddressEstoque';
-            const fieldLot = perfil === 'Admin' ? 'inboundLot' : 'inboundLotEstoque';
-            const fieldProduct = perfil === 'Admin' ? 'inboundProduct' : 'inboundProductEstoque';
-
-            const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase();
-            const lote = document.getElementById(fieldLot).value.trim().toUpperCase();
-            const eanBipado = document.getElementById(fieldProduct).value.trim();
+            const fieldAddress = perfil === 'Admin' ? 'inboundAddress' : 'inboundAddressEstoque'; const fieldLot = perfil === 'Admin' ? 'inboundLot' : 'inboundLotEstoque'; const fieldProduct = perfil === 'Admin' ? 'inboundProduct' : 'inboundProductEstoque';
+            const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase(); const lote = document.getElementById(fieldLot).value.trim().toUpperCase(); const eanBipado = document.getElementById(fieldProduct).value.trim();
 
             if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto.");
-
-            let produtoEncontrado = null;
-            let isMaster = false;
-
+            let produtoEncontrado = null; let isMaster = false;
             for(let prod of catalogoCompleto) {
                 if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; }
                 if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; }
             }
+            if(!produtoEncontrado) { document.getElementById(fieldProduct).value = ''; return alert("Código não encontrado no Catálogo da Volt. Cadastre-o primeiro."); }
 
-            if(!produtoEncontrado) {
-                document.getElementById(fieldProduct).value = '';
-                return alert("Código não encontrado no Catálogo da Volt. Cadastre-o primeiro.");
-            }
-
-            const qtdAdicionar = isMaster ? produtoEncontrado.qtdMaster : 1;
-            const caixasAdicionar = isMaster ? 1 : 0; 
-
-            document.getElementById(fieldProduct).value = ''; 
-            document.getElementById(fieldProduct).focus();
+            const qtdAdicionar = isMaster ? produtoEncontrado.qtdMaster : 1; const caixasAdicionar = isMaster ? 1 : 0; 
+            document.getElementById(fieldProduct).value = ''; document.getElementById(fieldProduct).focus();
 
             try {
-                const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`;
-                const docRef = db.collection("estoque_posicoes").doc(docId);
-                const docSnap = await docRef.get();
-
-                if (docSnap.exists) {
-                    await docRef.update({
-                        quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar),
-                        caixas: firebase.firestore.FieldValue.increment(caixasAdicionar)
-                    });
-                } else {
-                    await docRef.set({
-                        endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku,
-                        quantidade: qtdAdicionar, caixas: caixasAdicionar, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
+                const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get();
+                if (docSnap.exists) { await docRef.update({ quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar), caixas: firebase.firestore.FieldValue.increment(caixasAdicionar) }); } 
+                else { await docRef.set({ endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku, quantidade: qtdAdicionar, caixas: caixasAdicionar, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }
                 carregarMapaEstoque(perfil);
             } catch(e) { alert("Erro ao guardar estoque."); }
         }
 
-        async function zerarPosicaoEstoque(id, perfil) {
-            if(confirm("Tem certeza que deseja apagar este saldo do mapa?")) {
-                await db.collection("estoque_posicoes").doc(id).delete();
-                carregarMapaEstoque(perfil);
-            }
-        }
-
+        async function zerarPosicaoEstoque(id, perfil) { if(confirm("Tem certeza que deseja apagar este saldo do mapa?")) { await db.collection("estoque_posicoes").doc(id).delete(); carregarMapaEstoque(perfil); } }
 
         // ====================================================
         // ADMIN: LANÇAMENTO MANUAL EM GRADE
         // ====================================================
-        function abrirModuloLancamentos() { 
-            navegarAdmin('adminLancamentos'); 
-            carregarMiniFilaAdmin(); 
-            renderizarGridLancamentos(); 
-        }
+        function abrirModuloLancamentos() { navegarAdmin('adminLancamentos'); carregarMiniFilaAdmin(); renderizarGridLancamentos(); }
 
         function renderizarGridLancamentos() {
-            const grid = document.getElementById('gridProdutosLancamento');
-            grid.innerHTML = '';
-            catalogoCompleto.forEach(prod => {
-                grid.innerHTML += `
-                    <div class="item-grade">
-                        <strong>${prod.sku}</strong>
-                        <input type="number" id="lanca_qtd_${prod.ean}" placeholder="0">
-                    </div>
-                `;
-            });
+            const grid = document.getElementById('gridProdutosLancamento'); grid.innerHTML = '';
+            catalogoCompleto.forEach(prod => { grid.innerHTML += `<div class="item-grade"><strong>${prod.sku}</strong><input type="number" id="lanca_qtd_${prod.ean}" placeholder="0"></div>`; });
         }
 
         document.getElementById('fileOV').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneOV').classList.add('concluido'); document.getElementById('dropTitleOV').innerText = "✅ OV Anexada"; document.getElementById('dropTitleOV').style.color = "var(--success-green)"; }});
         document.getElementById('fileRMA').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneRMA').classList.add('concluido'); document.getElementById('dropTitleRMA').innerText = "✅ Remessa Anexada"; document.getElementById('dropTitleRMA').style.color = "var(--success-green)"; }});
 
         function adicionarLoteItens() {
-            const tipo = document.getElementById('addTipoLote').value; 
-            const bancoAlvo = tipo === 'OV' ? itensLancamentoOV : itensLancamentoRMA;
-            let adicionouAlgo = false;
-
+            const tipo = document.getElementById('addTipoLote').value; const bancoAlvo = tipo === 'OV' ? itensLancamentoOV : itensLancamentoRMA; let adicionouAlgo = false;
             catalogoCompleto.forEach(prod => {
                 const input = document.getElementById(`lanca_qtd_${prod.ean}`);
                 if(input && input.value > 0) {
                     const qtd = parseInt(input.value);
                     if (bancoAlvo[prod.ean]) bancoAlvo[prod.ean].alvo += qtd; 
                     else bancoAlvo[prod.ean] = { sku: prod.sku, alvo: qtd, bipado: 0 };
-                    input.value = ''; 
-                    adicionouAlgo = true;
+                    input.value = ''; adicionouAlgo = true;
                 }
             });
-
             if(!adicionouAlgo) return alert("Você precisa digitar a quantidade de pelo menos um produto na grade.");
             atualizarListaManualAdmin();
         }
@@ -1154,8 +1075,7 @@
             if(!num) return alert("O número da OV é obrigatório.");
             if(Object.keys(itensLancamentoOV).length === 0) return alert("Adicione pelo menos 1 item na Ordem Principal através da grade.");
 
-            document.getElementById('dropTitleOV').innerText = "⏳ Lançando...";
-            let base64OV = null; let base64RMA = null;
+            document.getElementById('dropTitleOV').innerText = "⏳ Lançando..."; let base64OV = null; let base64RMA = null;
 
             try {
                 if(temArquivoOV) base64OV = await getBase64(fileOvInput.files[0]);
@@ -1167,16 +1087,19 @@
                     hasArquivoOV: temArquivoOV, arquivoOV_base64: base64OV, 
                     hasArquivoRMA: temArquivoRMA, arquivoRMA_base64: base64RMA, 
                     itensOV: itensLancamentoOV, itensRMA: itensLancamentoRMA, 
-                    status: 'Aguardando Liberação', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+                    status: 'Aguardando Liberação', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    auditoriaLogs: [] // Inicia limpo para receber logs ao vivo
                 }); 
                 
                 alert(`A OV ${num} foi enviada para a fila de expedição com sucesso!`); 
                 document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('fileOV').value = ''; document.getElementById('fileRMA').value = ''; document.getElementById('dropzoneOV').classList.remove('concluido'); document.getElementById('dropzoneRMA').classList.remove('concluido'); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; document.getElementById('dropTitleOV').style.color = "var(--text-light)"; document.getElementById('dropTitleRMA').innerText = "📥 Clicar para Anexar Remessa"; document.getElementById('dropTitleRMA').style.color = "#888"; 
-                itensLancamentoOV = {}; itensLancamentoRMA = {}; atualizarListaManualAdmin(); 
-                carregarMiniFilaAdmin(); 
+                itensLancamentoOV = {}; itensLancamentoRMA = {}; atualizarListaManualAdmin(); carregarMiniFilaAdmin(); 
             } catch (e) { alert("Erro ao gravar dados na nuvem."); }
         }
 
+        // ====================================================
+        // ADMIN - MONITORAMENTO AO VIVO E LOGS
+        // ====================================================
         async function carregarMiniFilaAdmin() {
             const container = document.getElementById('miniFilaAdmin');
             container.innerHTML = '<p style="color: var(--volt-green); font-size: 12px; grid-column: span 4;">Buscando dados ao vivo da nuvem...</p>';
@@ -1192,12 +1115,17 @@
                         const badgeClass = isSeparando ? 'status-separando' : 'status-aguardando';
                         const operadorTexto = isSeparando ? `<br><span style="color: white;">Por: ${ov.operadorSeparacao || 'Equipe'}</span>` : '';
 
+                        // ALERTA DE ERROS AO VIVO
+                        const qtdErros = (ov.auditoriaLogs) ? ov.auditoriaLogs.length : 0;
+                        const alertaErros = qtdErros > 0 ? `<div style="margin-top: 8px;"><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 2px 5px; font-size: 10px;" onclick="abrirAuditoriaLogs('${id}', '${ov.numero}', '${ov.operadorSeparacao || 'Equipe'}')">⚠️ ${qtdErros} Erros (Ver)</button></div>` : '';
+
                         container.innerHTML += `
                             <div class="mini-card">
                                 <button class="btn-del-mini" title="Excluir Definitivamente" onclick="deletarOVAdmin('${id}', '${ov.numero}')">✖</button>
                                 <h4>${ov.numero}</h4>
                                 <p>${ov.cliente}${operadorTexto}</p>
-                                <span class="badge-mini-status ${badgeClass}">${ov.status}</span>
+                                ${alertaErros}
+                                <div style="margin-top: ${qtdErros > 0 ? '5px' : '10px'};"><span class="badge-mini-status ${badgeClass}">${ov.status}</span></div>
                             </div>
                         `;
                     }
@@ -1206,38 +1134,20 @@
             } catch (error) { container.innerHTML = '<p style="color: var(--error-red); font-size: 12px; grid-column: span 4;">Erro ao carregar monitoramento.</p>'; }
         }
 
-        async function deletarOVAdmin(id, numero) {
-            if(confirm(`Tem certeza que deseja EXCLUIR a ordem ${numero}? Isso apagará do banco de dados e tirará da fila do estoque.`)) {
-                try {
-                    await db.collection("estoque_ovs").doc(id).delete();
-                    carregarMiniFilaAdmin(); alert(`Ordem ${numero} apagada com sucesso!`);
-                } catch (error) { alert("Erro ao excluir ordem no banco."); }
-            }
-        }
+        async function deletarOVAdmin(id, numero) { if(confirm(`Tem certeza que deseja EXCLUIR a ordem ${numero}? Isso apagará do banco de dados e tirará da fila do estoque.`)) { try { await db.collection("estoque_ovs").doc(id).delete(); carregarMiniFilaAdmin(); alert(`Ordem ${numero} apagada com sucesso!`); } catch (error) { alert("Erro ao excluir ordem no banco."); } } }
 
         // ====================================================
-        // ADMIN: HISTÓRICO FATURADO, DESEMPENHO E AUDITORIA
+        // ADMIN: HISTÓRICO DINÂMICO E AUDITORIA
         // ====================================================
-        
-        function abrirModuloEquipe() {
-            navegarAdmin('adminEquipe');
-            carregarEstatisticasEquipe();
-            renderizarTabelaAcessosAdmin();
-        }
-
-        function abrirModuloHistorico() { 
-            navegarAdmin('adminHistorico'); 
-            carregarHistoricoDaNuvem(); 
-        }
+        function abrirModuloEquipe() { navegarAdmin('adminEquipe'); carregarEstatisticasEquipe(); renderizarTabelaAcessosAdmin(); }
+        function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
 
         async function carregarEstatisticasEquipe() {
             const container = document.getElementById('containerDesempenhoEquipe');
             container.innerHTML = '<p style="color: var(--volt-green); grid-column: span 3;">Calculando desempenho atualizado da equipe...</p>';
-
             try {
                 const snapshotOVs = await db.collection("estoque_ovs").get();
                 let statsPorOperador = {}; let totalExpedidos = 0;
-
                 snapshotOVs.forEach(doc => {
                     const ov = doc.data();
                     if (ov.status === 'Concluído' || ov.status === 'Aguardando Cotação' || ov.status === 'Aguardando Faturamento') {
@@ -1258,26 +1168,11 @@
                         const separados = statsPorOperador[nome] ? statsPorOperador[nome].separados : 0;
                         const erros = statsPorOperador[nome] ? statsPorOperador[nome].erros : 0;
                         const statusBadge = user.status !== 'inativo' ? '<span style="color: var(--volt-green); font-size: 14px;">Ativo</span>' : '<span style="color: var(--error-red); font-size: 14px;">Inativo</span>';
-                        htmlCards += `
-                        <div class="equipe-card" style="border-left-color: ${user.status !== 'inativo' ? 'var(--volt-green)' : '#444'};">
-                            <div class="equipe-nome">${nome} ${statusBadge}</div>
-                            <div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros Graves: <strong style="${erros > 0 ? 'color: var(--error-red);' : 'color: var(--success-green);'}">${erros}</strong></span></div>
-                            <div class="equipe-stats"><span>Eficiência: <strong style="color: var(--success-green);">100%</strong></span></div>
-                        </div>`;
+                        htmlCards += `<div class="equipe-card" style="border-left-color: ${user.status !== 'inativo' ? 'var(--volt-green)' : '#444'};"><div class="equipe-nome">${nome} ${statusBadge}</div><div class="equipe-stats" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;"><span>Separados: <strong>${separados}</strong></span><span>Erros de Leitura: <strong style="${erros > 0 ? 'color: var(--error-red);' : 'color: var(--success-green);'}">${erros}</strong></span></div><div class="equipe-stats"><span>Auditoria baseada nos logs da nuvem</span></div></div>`;
                     }
                 }
-
-                htmlCards += `
-                <div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div class="equipe-nome">Mês Geral</div>
-                    <div class="equipe-stats" style="margin-bottom: 5px;"><span>Expedidos: <strong>${totalExpedidos} Pedidos</strong></span></div>
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;" onclick="alert('Gerando Relatório CSV...')">📥 CSV</button>
-                        <button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;" onclick="confirm('Tem certeza que deseja apagar os dados deste mês?')">🗑️ Limpar</button>
-                    </div>
-                </div>`;
+                htmlCards += `<div class="equipe-card" style="border-left-color: #444; display: flex; flex-direction: column; justify-content: space-between;"><div class="equipe-nome">Mês Geral</div><div class="equipe-stats" style="margin-bottom: 5px;"><span>Expedidos: <strong>${totalExpedidos} Pedidos</strong></span></div><div style="display: flex; gap: 10px; margin-top: 15px;"><button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--volt-green); color: var(--volt-green); cursor: pointer;" onclick="alert('Gerando Relatório CSV...')">📥 CSV</button><button style="flex: 1; font-size: 11px; padding: 8px; background: transparent; border: 1px solid var(--error-red); color: var(--error-red); cursor: pointer;" onclick="confirm('Tem certeza que deseja apagar os dados deste mês?')">🗑️ Limpar</button></div></div>`;
                 container.innerHTML = htmlCards;
-
             } catch (error) { container.innerHTML = '<p style="color: var(--error-red); grid-column: span 3;">Erro ao carregar estatísticas.</p>'; }
         }
 
@@ -1292,45 +1187,31 @@
                         let totalItens = 0;
                         if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
                         if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
-                        
                         const freteInfo = ov.freteEscolhido ? `${ov.freteEscolhido.transportadora} (R$ ${ov.freteEscolhido.preco})` : 'Não registrado';
                         
-                        tbody.innerHTML += `
-                        <tr>
-                            <td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td>
-                            <td><strong>${ov.numero}</strong></td>
-                            <td>${ov.cliente}</td>
-                            <td>${ov.volumesReais || '-'} cx / ${totalItens} itens</td>
-                            <td><span class="badge-ok">${freteInfo}</span></td>
-                            <td><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff;" onclick="abrirResumoCompleto('${doc.id}')">Dossiê Completo</button></td>
-                        </tr>`;
+                        tbody.innerHTML += `<tr><td style="font-size: 12px; color: #aaa;">${ov.dataConclusao}</td><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais || '-'} cx / ${totalItens} itens</td><td><span class="badge-ok">${freteInfo}</span></td><td><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff;" onclick="abrirResumoCompleto('${doc.id}')">Dossiê Completo</button></td></tr>`;
                     }
                 });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">Nenhuma expedição faturada encontrada.</td></tr>';
             } catch (error) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red);">Falha ao carregar histórico.</td></tr>'; }
         }
 
-        async function abrirResumoCompleto(id_doc) {
-            const modal = document.getElementById('modalResumoOV');
-            modal.style.display = 'flex';
-            
-            document.getElementById('resumoOvNum').innerText = "Carregando...";
-            document.getElementById('resumoCliente').innerText = "-";
-            document.getElementById('resumoData').innerText = "-";
-            document.getElementById('resumoOps').innerText = "-";
-            document.getElementById('resumoItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
-            document.getElementById('resumoVolList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
-            document.getElementById('resumoFreteInfo').innerHTML = "-";
-            document.getElementById('resumoLogsList').innerHTML = "-";
-
+        async function abrirAuditoriaLogs(id_doc, numero, operador) {
+            document.getElementById('modalOV').innerText = `#${numero}`; document.getElementById('modalOperador').innerText = operador;
+            const listaLogs = document.getElementById('listaErrosLogs'); listaLogs.innerHTML = '<li class="log-item"><span class="log-hora">Carregando...</span><strong>Buscando logs no Firebase...</strong></li>'; document.getElementById('modalAuditoria').style.display = 'flex';
             try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get();
-                const ov = docRef.data();
-                
-                document.getElementById('resumoOvNum').innerText = ov.numero;
-                document.getElementById('resumoCliente').innerText = ov.cliente;
-                document.getElementById('resumoData').innerText = `Lançada: ${ov.data}\nFaturada: ${ov.dataConclusao || '-'}`;
-                document.getElementById('resumoOps').innerText = `Separada por: ${ov.operadorSeparacao || '-'}\nFaturada por: ${ov.operadorFinal || '-'}`;
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data(); listaLogs.innerHTML = '';
+                if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) { ovData.auditoriaLogs.forEach(log => { listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Erro:</strong> ${log.mensagem}</li>`; }); } 
+                else { listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhum erro registrado. Conferência cega foi de 100%.</strong></li>`; }
+            } catch(e) { listaLogs.innerHTML = `<li class="log-item"><span class="log-hora">Erro</span><strong>Não foi possível carregar os logs.</strong></li>`; }
+        }
+
+        async function abrirResumoCompleto(id_doc) {
+            const modal = document.getElementById('modalResumoOV'); modal.style.display = 'flex';
+            document.getElementById('resumoOvNum').innerText = "Carregando..."; document.getElementById('resumoCliente').innerText = "-"; document.getElementById('resumoData').innerText = "-"; document.getElementById('resumoOps').innerText = "-"; document.getElementById('resumoItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>'; document.getElementById('resumoVolList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>'; document.getElementById('resumoFreteInfo').innerHTML = "-"; document.getElementById('resumoLogsList').innerHTML = "-";
+            try {
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ov = docRef.data();
+                document.getElementById('resumoOvNum').innerText = ov.numero; document.getElementById('resumoCliente').innerText = ov.cliente; document.getElementById('resumoData').innerText = `Lançada: ${ov.data}\nFaturada: ${ov.dataConclusao || '-'}`; document.getElementById('resumoOps').innerText = `Separada por: ${ov.operadorSeparacao || '-'}\nFaturada por: ${ov.operadorFinal || '-'}`;
                 
                 let itensHtml = '';
                 if(ov.itensOV) Object.values(ov.itensOV).forEach(i => itensHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 8px; border-bottom: 1px solid #222; color:#888; font-size:12px;">Principal</td><td style="padding: 8px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
@@ -1338,31 +1219,18 @@
                 document.getElementById('resumoItensList').innerHTML = itensHtml || '<tr><td colspan="3" style="padding: 10px;">Nenhum item registrado.</td></tr>';
                 
                 let volHtml = '';
-                if(ov.detalhesVolumes && ov.detalhesVolumes.length > 0) {
-                    ov.detalhesVolumes.forEach(v => volHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">Vol 0${v.id}</td><td style="padding: 8px; border-bottom: 1px solid #222;">${v.peso} kg</td><td style="padding: 8px; border-bottom: 1px solid #222; color:#aaa;">${v.comp}x${v.larg}x${v.alt} cm</td></tr>`);
-                } else {
-                    volHtml = '<tr><td colspan="3" style="padding: 10px;">Sem volumes registrados.</td></tr>';
-                }
+                if(ov.detalhesVolumes && ov.detalhesVolumes.length > 0) { ov.detalhesVolumes.forEach(v => volHtml += `<tr><td style="padding: 8px; border-bottom: 1px solid #222;">Vol 0${v.id}</td><td style="padding: 8px; border-bottom: 1px solid #222;">${v.peso} kg</td><td style="padding: 8px; border-bottom: 1px solid #222; color:#aaa;">${v.comp}x${v.larg}x${v.alt} cm</td></tr>`); } 
+                else { volHtml = '<tr><td colspan="3" style="padding: 10px;">Sem volumes registrados.</td></tr>'; }
                 document.getElementById('resumoVolList').innerHTML = volHtml;
                 
-                if(ov.freteEscolhido) {
-                    document.getElementById('resumoFreteInfo').innerHTML = `<strong style="color:var(--volt-green);">${ov.freteEscolhido.transportadora}</strong> - R$ ${ov.freteEscolhido.preco} (${ov.freteEscolhido.prazo} Dias)`;
-                } else {
-                    document.getElementById('resumoFreteInfo').innerHTML = 'Frete não registrado.';
-                }
+                if(ov.freteEscolhido) { document.getElementById('resumoFreteInfo').innerHTML = `<strong style="color:var(--volt-green);">${ov.freteEscolhido.transportadora}</strong> - R$ ${ov.freteEscolhido.preco} (${ov.freteEscolhido.prazo} Dias)`; } 
+                else { document.getElementById('resumoFreteInfo').innerHTML = 'Frete não registrado.'; }
                 
                 let logsHtml = '';
-                if(ov.auditoriaLogs && ov.auditoriaLogs.length > 0) {
-                    ov.auditoriaLogs.forEach(l => logsHtml += `<li style="font-size:13px; color:#aaa; margin-bottom:8px; border-left: 2px solid var(--error-red); padding-left: 10px;">[${l.hora}] ${l.mensagem}</li>`);
-                } else {
-                    logsHtml = '<li style="font-size:13px; color:var(--success-green);">Sem divergências. A equipe teve 100% de precisão na bancada.</li>';
-                }
+                if(ov.auditoriaLogs && ov.auditoriaLogs.length > 0) { ov.auditoriaLogs.forEach(l => logsHtml += `<li style="font-size:13px; color:#aaa; margin-bottom:8px; border-left: 2px solid var(--error-red); padding-left: 10px;">[${l.hora}] ${l.mensagem}</li>`); } 
+                else { logsHtml = '<li style="font-size:13px; color:var(--success-green);">Sem divergências. A equipe teve 100% de precisão na bancada.</li>'; }
                 document.getElementById('resumoLogsList').innerHTML = `<ul style="padding: 0; margin:0; list-style: none;">${logsHtml}</ul>`;
-                
-            } catch(e) {
-                alert("Erro ao carregar detalhes do Dossiê.");
-                modal.style.display = 'none';
-            }
+            } catch(e) { alert("Erro ao carregar detalhes do Dossiê."); modal.style.display = 'none'; }
         }
 
         // ====================================================
@@ -1391,51 +1259,28 @@
 
         async function abrirModalEscolhaFrete(id_doc, numero) {
             idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero;
-            const containerCotacoes = document.getElementById('listaCotacoesAdmin'); 
-            const containerDimensoes = document.getElementById('listaDimensoesAdmin');
-            
-            containerCotacoes.innerHTML = '<p style="color: var(--volt-green);">Carregando opções...</p>';
-            containerDimensoes.innerHTML = '<p style="color: var(--text-muted); font-size: 12px;">Buscando dimensões da caixa...</p>';
-            
+            const containerCotacoes = document.getElementById('listaCotacoesAdmin'); const containerDimensoes = document.getElementById('listaDimensoesAdmin');
+            containerCotacoes.innerHTML = '<p style="color: var(--volt-green);">Carregando opções...</p>'; containerDimensoes.innerHTML = '<p style="color: var(--text-muted); font-size: 12px;">Buscando dimensões da caixa...</p>';
             document.getElementById('modalEscolhaFrete').style.display = 'flex';
             
             try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); 
-                const ovData = docRef.data();
-                
-                // RENDERIZAR DIMENSÕES EDITÁVEIS PARA O ADMIN
+                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data();
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => {
-                        containerDimensoes.innerHTML += `
-                            <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
-                                <div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div>
-                                <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div>
-                                <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div>
-                                <div style="display: flex; gap: 5px;">
-                                    <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
-                                    <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
-                                </div>
-                            </div>
-                        `;
+                        containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`;
                     });
-                } else {
-                    containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão foi registrada pelo estoque nesta OV.</p>';
-                }
+                } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão foi registrada pelo estoque nesta OV.</p>'; }
 
-                // RENDERIZAR COTAÇÕES
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
-                    ovData.cotacoes.forEach((cot, idx) => {
-                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button></div></div>`;
-                    });
+                    ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button></div></div>`; });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação foi registrada pela equipe.</p>'; }
             } catch(e) { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Erro ao carregar opções.</p>'; }
         }
 
         function adicionarDimensaoAdmin() {
-            const container = document.getElementById('listaDimensoesAdmin');
-            const currentCount = container.querySelectorAll('.grid-4').length;
+            const container = document.getElementById('listaDimensoesAdmin'); const currentCount = container.querySelectorAll('.grid-4').length;
             const txtVazio = container.querySelector('p'); if (txtVazio) txtVazio.remove();
             container.insertAdjacentHTML('beforeend', `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${currentCount + 1} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`);
         }
@@ -1467,11 +1312,7 @@
             }
         }
 
-        async function toggleStatusUsuarioNuvem(nome, isAtivo) {
-            if(isAtivo && !confirm(`Desativar o acesso de ${nome}?`)) return;
-            try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro de banco."); }
-        }
-
+        async function toggleStatusUsuarioNuvem(nome, isAtivo) { if(isAtivo && !confirm(`Desativar o acesso de ${nome}?`)) return; try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) { alert("Erro de banco."); } }
         async function salvarNovoUsuario() {
             const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim();
             if(!nome || !senha) return alert("Preencha Nome e Senha.");
@@ -1549,10 +1390,18 @@
 
         function processarBipagem(fase) {
             const input = document.getElementById(`bip${fase}`); const ean = input.value.trim(); const banco = fase === 'OV' ? itensBipagemOV : itensBipagemRMA;
-            if(ean && banco[ean]) { banco[ean].bipado++; desenharCards(fase, banco); input.value = ''; } 
-            else if (ean) { 
+            if(ean && banco[ean]) { 
+                banco[ean].bipado++; desenharCards(fase, banco); input.value = ''; 
+            } else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                auditoriaLogsSessao.push({ hora: hora, mensagem: `Bipou código incorreto na conferência: ${ean}` });
+                const msg = `Bipou código incorreto na conferência: ${ean}`;
+                auditoriaLogsSessao.push({ hora: hora, mensagem: msg });
+                
+                // SALVA O ERRO NA NUVEM IMEDIATAMENTE (TEMPO REAL)
+                db.collection("estoque_ovs").doc(idOvGlobal).update({
+                    auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg })
+                });
+
                 document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
@@ -1567,8 +1416,16 @@
                 if(fase === 'OV' && document.getElementById('faseRMA').style.display !== 'none') { etapaAtualEstoque = 'RMA'; document.getElementById('faseRMA').classList.add('ativa'); document.getElementById('statusRMA').innerText = 'Aguardando Leitura'; document.getElementById('bipRMA').disabled = false; document.getElementById('bipRMA').focus(); } 
                 else { etapaAtualEstoque = 'LOG'; document.getElementById('faseLogistica').classList.add('ativa'); document.getElementById('statusLog').innerText = 'Logística Liberada'; }
             } else { 
-                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); auditoriaLogsSessao.push({ hora: hora, mensagem: `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.` });
-                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a meta oculta da ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
+                const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); 
+                const msg = `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.`;
+                auditoriaLogsSessao.push({ hora: hora, mensagem: msg });
+
+                // SALVA O ERRO DE VALIDAÇÃO NA NUVEM IMEDIATAMENTE (TEMPO REAL)
+                db.collection("estoque_ovs").doc(idOvGlobal).update({
+                    auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg })
+                });
+
+                document.getElementById('txtErroEstoque').innerText = "Quantidades divergentes com a ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
 
@@ -1592,7 +1449,7 @@
             let detalhesVolumes = [];
             document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             try { 
-                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes, auditoriaLogs: auditoriaLogsSessao }); 
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Cotação', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes }); 
                 alert("📦 Conferência finalizada! Pedido enviado para Cotação."); abrirFilaCotacao(); 
             } catch(error) { alert("Falha ao salvar conclusão."); }
         }
