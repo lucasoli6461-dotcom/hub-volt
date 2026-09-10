@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>HUB VOLT - Sistema Integrado de Gestão WMS</title>
-    <link rel="icon" type="image/png" href="image_a87265.png">
+    <link rel="icon" type="image/png" href="icone_volt.png">
     
     <!-- Biblioteca Chart.js para os Gráficos do Admin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,6 +90,9 @@
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
 
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
@@ -97,7 +100,7 @@
 
         /* DRAG & DROP E LISTAS */
         .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 10px;}
-        .upload-area:hover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
+        .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
         .upload-area.concluido { border-color: var(--success-green); border-style: solid; background-color: rgba(0, 204, 102, 0.05); }
 
         .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px 15px; border-bottom: 1px solid #222; font-size: 13px; }
@@ -141,11 +144,6 @@
         th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
         th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
         td { font-size: 14px; }
-        
-        .status-online { color: var(--success-green); font-weight: bold; }
-        .status-online::before { content: "● "; color: var(--success-green); }
-        .status-offline { color: var(--text-muted); }
-        .status-offline::before { content: "● "; color: #555; }
         
         .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
         .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); }
@@ -775,10 +773,9 @@
         function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         window.onload = async function() { 
-            await carregarUsuariosDaNuvem(); 
             await inicializarCatalogoMestre();
+            await carregarUsuariosDaNuvem(); 
             
-            // Set today's date for inputs
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inboundData').value = today;
             document.getElementById('inboundDataEstoque').value = today;
@@ -792,9 +789,6 @@
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
             } else { 
                 document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
-                document.getElementById('gridUsuariosLogin').innerHTML = '<div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Buscando credenciais...</div>';
-                // Força recarregar interface de login caso o fallback tenha engatilhado depois
-                setTimeout(renderLoginGrid, 500);
             }
         };
 
@@ -819,9 +813,8 @@
                         const nome = doc.id; const user = doc.data(); bdUsuariosLogistica[nome] = user; 
                     });
                 }
-            } catch (error) { console.warn("Modo offline ou banco vazio. Usando base de segurança."); }
+            } catch (error) { console.warn("Modo offline ou banco vazio."); }
 
-            // Se o Firebase estiver vazio no primeiro acesso, insere Lucas e Luiz visualmente para não travar
             if(Object.keys(bdUsuariosLogistica).length === 0) {
                 bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
             }
@@ -1363,7 +1356,7 @@
         function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
         // ====================================================
-        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO)
+        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO) E CARDS
         // ====================================================
         function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -1530,14 +1523,12 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
-            // Abate do mapa de estoque (FEFO) - Correção para bater com Lote e Data
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
                     let qtdPrecisava = objOvGlobal.itensOV[ean].alvo;
                     let pEncontradas = mapa.filter(x => x.sku === objOvGlobal.itensOV[ean].sku && x.quantidade > 0);
                     pEncontradas.sort((a,b) => new Date(a.dataEntrada) - new Date(b.dataEntrada)); 
-                    
                     for(let p of pEncontradas) {
                         if(qtdPrecisava <= 0) break;
                         let abater = Math.min(qtdPrecisava, p.quantidade);
