@@ -95,6 +95,9 @@
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
 
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
@@ -313,7 +316,7 @@
         </div>
     </div>
 
-    <!-- MODAL FATURAMENTO -->
+    <!-- MODAL FATURAMENTO (ATUALIZADO COM EXCLUSÃO/ADIÇÃO DE COTAÇÕES) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -332,6 +335,7 @@
                 <div id="listaDimensoesAdmin"></div>
             </div>
 
+            <!-- Edição de Cotações no Admin -->
             <div style="background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <h4 style="margin: 0 0 10px 0; color: var(--volt-green); font-size: 14px;">Cotações Lançadas</h4>
                 <div id="listaCotacoesAdmin"></div>
@@ -434,7 +438,9 @@
         <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
-            <div class="login-grid" id="gridUsuariosLogin"></div>
+            <div class="login-grid" id="gridUsuariosLogin">
+                <!-- Fallback automático entra aqui via JS -->
+            </div>
         </div>
 
         <!-- ========================================== -->
@@ -748,7 +754,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SCRIPTS (LÓGICA COMPLETA)                  -->
+    <!-- SCRIPTS (LÓGICA COMPLETA E EXPANDIDA)      -->
     <!-- ========================================== -->
     <script>
         // Inicialização do Firebase
@@ -777,7 +783,7 @@
 
         let catalogoCompleto = []; 
         
-        // CORREÇÃO CRÍTICA: Base populada por padrão para não travar a tela
+        // BASE POPULADA PARA NÃO TRAVAR A TELA DE LOGIN
         let bdUsuariosLogistica = { 
             'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
             'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
@@ -821,12 +827,11 @@
         // ====================================================
         // INICIALIZAÇÃO DA PÁGINA
         // ====================================================
-        window.onload = async function() { 
-            
-            // 1. Renderiza a tela de login IMEDIATAMENTE (com os dados padrão)
+        window.onload = function() { 
+            // 1. Renderiza a tela de login IMEDIATAMENTE (sem esperar internet)
             renderLoginGrid();
 
-            // 2. Preenche as datas padrão nos inputs de Inbound
+            // 2. Preenche as datas padrão nos inputs
             const today = new Date().toISOString().split('T')[0];
             if(document.getElementById('inboundData')) {
                 document.getElementById('inboundData').value = today;
@@ -835,7 +840,7 @@
                 document.getElementById('inboundDataEstoque').value = today;
             }
 
-            // 3. Restaura sessão do usuário caso ele tenha dado F5
+            // 3. Verifica se já está logado na Sessão
             const savedUser = localStorage.getItem('hubVoltUser'); 
             const savedRole = localStorage.getItem('hubVoltRole');
             
@@ -854,13 +859,13 @@
                 document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
             }
 
-            // 4. Carrega tudo da nuvem em segundo plano sem travar a interface
+            // 4. Busca atualizações da nuvem em segundo plano (Não trava a tela)
             carregarUsuariosDaNuvem(); 
             inicializarCatalogoMestre();
         };
 
         // ====================================================
-        // SISTEMA DE LOGIN (SEM TRAVAR)
+        // SISTEMA DE LOGIN
         // ====================================================
         function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
@@ -890,14 +895,15 @@
             try {
                 const snapshot = await db.collection("usuarios").get(); 
                 if (!snapshot.empty) {
-                    bdUsuariosLogistica = {};  
+                    let tempBd = {};  
                     snapshot.forEach((doc) => {
-                        bdUsuariosLogistica[doc.id] = doc.data(); 
+                        tempBd[doc.id] = doc.data(); 
                     });
-                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem se existirem
+                    bdUsuariosLogistica = tempBd;
+                    renderLoginGrid(); 
                 }
             } catch (error) { 
-                console.warn("Modo offline ou banco vazio. Usando base local."); 
+                console.warn("Modo offline ou banco vazio. Mantendo base de segurança."); 
             }
         }
 
@@ -983,6 +989,25 @@
         // ====================================================
         // MATRIZ DE CATÁLOGO (ADMIN)
         // ====================================================
+        async function inicializarCatalogoMestre() {
+            catalogoCompleto = [...baseCatalogoVOLT];
+            catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
+            try {
+                const snapshot = await db.collection("catalogo_produtos").get();
+                snapshot.forEach(doc => {
+                    const data = doc.data(); 
+                    let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario);
+                    if(prod) { 
+                        prod.masterEan = data.eanMaster || ''; 
+                        prod.qtdMaster = data.qtdMaster || 100; 
+                    } else { 
+                        catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); 
+                    }
+                });
+            } catch(e) {}
+            catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku));
+        }
+
         async function abrirModuloCatalogo() {
             navegarAdmin('adminCatalogo'); 
             const tbody = document.getElementById('tabelaCatalogoConfig');
@@ -1019,6 +1044,7 @@
                 await db.collection("catalogo_produtos").doc(eanUnitario).set({ 
                     sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) 
                 }, {merge: true}); 
+                
                 let p = catalogoCompleto.find(x => x.ean === eanUnitario); 
                 if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } 
                 alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); 
@@ -1185,6 +1211,8 @@
         // ====================================================
         // DASHBOARD GRÁFICO
         // ====================================================
+        let chartFamInst = null; let chartSkuInst = null;
+
         async function abrirModuloResumoEstoque() {
             navegarAdmin('adminResumoEstoque');
             document.getElementById('resumoCx').innerText = "...";
@@ -1193,9 +1221,7 @@
 
             try {
                 const snapshot = await db.collection("estoque_posicoes").get();
-                let totalCx = 0; 
-                let totalUn = 0; 
-                let skusSet = new Set();
+                let totalCx = 0; let totalUn = 0; let skusSet = new Set();
                 let familyData = { 'Cabo': 0, 'Fonte': 0, 'Fone de ouvido': 0, 'Power bank': 0, 'Outros': 0 };
                 let skuData = {};
 
@@ -1204,7 +1230,6 @@
                     totalCx += item.caixas; 
                     totalUn += item.quantidade; 
                     skusSet.add(item.sku);
-                    
                     const fam = item.familia || 'Outros';
                     if(familyData[fam] !== undefined) {
                         familyData[fam] += item.quantidade; 
