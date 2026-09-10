@@ -90,6 +90,9 @@
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
 
+        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
+
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
@@ -119,11 +122,14 @@
         .mini-card h4 { margin: 0 0 5px 0; color: white; font-size: 16px; }
         .mini-card p { margin: 0; color: #888; font-size: 12px; line-height: 1.4;}
         .badge-mini-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 5px; text-transform: uppercase; }
+        
+        /* Status Cores */
         .status-lancada { background: rgba(136, 136, 136, 0.1); color: #aaa; border: 1px solid rgba(136, 136, 136, 0.3); }
         .status-separacao { background: rgba(0, 170, 255, 0.1); color: var(--blue-action); border: 1px solid rgba(0, 170, 255, 0.3); }
         .status-separado { background: rgba(196, 240, 0, 0.1); color: var(--volt-green); border: 1px solid rgba(196, 240, 0, 0.3); }
         .status-conferencia { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); }
         .status-conferido { background: rgba(0, 204, 102, 0.1); color: var(--success-green); border: 1px solid rgba(0, 204, 102, 0.3); }
+        
         .btn-del-mini { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: var(--error-red); cursor: pointer; font-size: 14px; padding: 5px; transition: 0.2s;}
         .btn-del-mini:hover { transform: scale(1.3); }
 
@@ -271,8 +277,14 @@
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEditarOV').style.display='none'">✖ Fechar</button>
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Edite as quantidades alvo desta ordem abaixo e salve para o operador continuar.</p>
-            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
-            <div style="text-align: right;"><button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correção da OV</button></div>
+            
+            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <!-- Preenchido via JS -->
+            </div>
+
+            <div style="text-align: right;">
+                <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correção da OV</button>
+            </div>
         </div>
     </div>
 
@@ -343,7 +355,10 @@
     <div id="modalResumoOV" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 800px; border-color: #00aaff; max-height: 90vh; overflow-y: auto; padding: 40px;">
             <div class="modulo-header" style="border-bottom-color: #333; margin-bottom: 20px;">
-                <div><h2 style="font-size: 24px; color: #00aaff; margin:0;">Dossiê da Expedição</h2><p style="color: white; font-size: 18px; margin: 5px 0 0 0;" id="resumoOvNum">OV-0000</p></div>
+                <div>
+                    <h2 style="font-size: 24px; color: #00aaff; margin:0;">Dossiê da Expedição</h2>
+                    <p style="color: white; font-size: 18px; margin: 5px 0 0 0;" id="resumoOvNum">OV-0000</p>
+                </div>
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalResumoOV').style.display='none'">✖ Fechar Dossiê</button>
             </div>
             
@@ -356,11 +371,19 @@
             </div>
 
             <div class="grid-2">
-                <div><h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Itens Separados</h4><table style="margin-top: 0;"><tbody id="resumoItensList"></tbody></table></div>
-                <div><h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Volumes Físicos</h4><table style="margin-top: 0;"><tbody id="resumoVolList"></tbody></table></div>
+                <div>
+                    <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Itens Separados</h4>
+                    <table style="margin-top: 0;"><tbody id="resumoItensList"></tbody></table>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px;">Volumes Físicos</h4>
+                    <table style="margin-top: 0;"><tbody id="resumoVolList"></tbody></table>
+                </div>
             </div>
+
             <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Transportadora Escolhida</h4>
             <div id="resumoFreteInfo" style="font-size: 16px; color: white;">-</div>
+
             <h4 style="color: var(--text-light); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px;">Auditoria de Erros da Bancada</h4>
             <div id="resumoLogsList"></div>
         </div>
@@ -387,13 +410,23 @@
                 <div class="form-group"><label>Cargo / Função</label><input type="text" id="novoFuncao" class="input-dark" placeholder="Ex: Operador"></div>
             </div>
             <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
-                <div class="form-group"><label>Nível de Acesso</label><select id="novoRole" class="input-dark"><option value="estoque">Operador (Estoque)</option><option value="admin">Administrador</option></select></div>
+                <div class="form-group">
+                    <label>Nível de Acesso</label>
+                    <select id="novoRole" class="input-dark">
+                        <option value="estoque">Operador (Estoque)</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
                 <div class="form-group"><label>Senha Inicial</label><input type="text" id="novoSenha" class="input-dark" placeholder="Senha"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button>
+            </div>
         </div>
     </div>
 
+    <!-- MODAL DE NOVO PRODUTO (SKU) -->
     <div id="modalNovoSKU" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU</h3>
@@ -403,33 +436,70 @@
                 <div class="form-group"><label>EAN Master (Opcional)</label><input type="text" id="cadMasterNovo" class="input-dark" placeholder="Bipar EAN da Master"></div>
                 <div class="form-group"><label>Qtd por Master</label><input type="number" id="cadQtdMasterNovo" class="input-dark" value="100"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <!-- TELA DE LOGIN -->
+        
+        <!-- ========================================== -->
+        <!-- VIEW LAYER 1: TELA DE LOGIN DINÂMICA       -->
+        <!-- ========================================== -->
         <div id="viewLogin" class="view-layer active">
-            <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
-            <div class="login-grid" id="gridUsuariosLogin"></div>
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1>
+            </div>
+            <div class="login-grid" id="gridUsuariosLogin">
+                <div style="color: var(--volt-green); grid-column: 1 / -1; text-align: center;">Carregando usuários...</div>
+            </div>
         </div>
 
         <!-- ========================================== -->
         <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR   -->
         <!-- ========================================== -->
         <div id="viewAdmin" class="view-layer">
+            
             <div id="adminDash" class="sub-screen active">
-                <div class="greeting"><h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1><p>Módulos de Gestão e Logística Avançada</p></div>
-                <div class="grid-3" style="margin-bottom: 20px;">
-                    <div class="hub-card" onclick="abrirModuloLancamentos()"><div><h3>1. Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div><div class="action">Abrir Módulo ➔</div></div>
-                    <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()"><div><h3 style="color: white;">2. Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div><div class="action" style="color: var(--volt-green);">Ver Fila ➔</div></div>
-                    <div class="hub-card" style="border-color: #00aaff;" onclick="abrirModuloHistorico()"><div><h3 style="color: white;">3. Histórico de OVs</h3><p>Consulte o Dossiê completo de todas as OVs concluídas.</p></div><div class="action" style="color: #00aaff;">Ver Faturadas ➔</div></div>
+                <div class="greeting">
+                    <h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1>
+                    <p>Módulos de Gestão e Logística Avançada</p>
                 </div>
+                
+                <div class="grid-3" style="margin-bottom: 20px;">
+                    <div class="hub-card" onclick="abrirModuloLancamentos()">
+                        <div><h3>1. Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div>
+                        <div class="action">Abrir Módulo ➔</div>
+                    </div>
+                    <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()">
+                        <div><h3 style="color: white;">2. Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div>
+                        <div class="action" style="color: var(--volt-green);">Ver Fila ➔</div>
+                    </div>
+                    <div class="hub-card" style="border-color: #00aaff;" onclick="abrirModuloHistorico()">
+                        <div><h3 style="color: white;">3. Histórico de OVs</h3><p>Consulte o Dossiê completo de todas as OVs concluídas.</p></div>
+                        <div class="action" style="color: #00aaff;">Ver Faturadas ➔</div>
+                    </div>
+                </div>
+
                 <div class="grid-4">
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()"><div><h3 style="font-size: 16px;">Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div><div class="action" style="font-size: 12px;">Configurar SKUs ➔</div></div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()"><div><h3 style="font-size: 16px;">Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div><div class="action" style="font-size: 12px;">Guardar Estoque ➔</div></div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px; border-color: var(--volt-green);" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action" style="font-size: 12px; color: var(--volt-green);">Ver Dashboard ➔</div></div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()"><div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div><div class="action" style="font-size: 12px;">Abrir Painel ➔</div></div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()">
+                        <div><h3 style="font-size: 16px;">Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div>
+                        <div class="action" style="font-size: 12px;">Configurar SKUs ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()">
+                        <div><h3 style="font-size: 16px;">Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div>
+                        <div class="action" style="font-size: 12px;">Guardar Estoque ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px; border-color: var(--volt-green);" onclick="abrirModuloResumoEstoque()">
+                        <div><h3 style="font-size: 16px; color:white;">Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div>
+                        <div class="action" style="font-size: 12px; color: var(--volt-green);">Ver Dashboard ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()">
+                        <div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div>
+                        <div class="action" style="font-size: 12px;">Abrir Painel ➔</div>
+                    </div>
                 </div>
             </div>
 
@@ -465,17 +535,43 @@
             <!-- Subtela: CATÁLOGO -->
             <div id="adminCatalogo" class="sub-screen">
                 <div class="modulo-box">
-                    <div class="modulo-header" style="margin-bottom: 10px;"><h2>Catálogo de SKUs e Caixas Master</h2><div><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 10px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div></div>
+                    <div class="modulo-header" style="margin-bottom: 10px;">
+                        <h2>Catálogo de SKUs e Caixas Master</h2>
+                        <div>
+                            <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 10px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button>
+                            <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                        </div>
+                    </div>
                     <p style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 20px;">Adicione o código da Caixa Master de cada produto para criar o seu banco de dados automatizado de Entrada de Mercadorias.</p>
-                    <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th style="padding: 15px;">Produto / SKU</th><th style="padding: 15px;">EAN Unitário (Caixinha)</th><th style="padding: 15px;">EAN Master (Opcional)</th><th style="padding: 15px;">Qtd por Master</th><th style="padding: 15px; text-align: right;">Ação</th></tr></thead><tbody id="tabelaCatalogoConfig"><tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr></tbody></table></div>
+                    
+                    <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                        <table style="margin-top: 0;">
+                            <thead style="background: #000;">
+                                <tr>
+                                    <th style="padding: 15px;">Produto / SKU</th>
+                                    <th style="padding: 15px;">EAN Unitário (Caixinha)</th>
+                                    <th style="padding: 15px;">EAN Master (Opcional)</th>
+                                    <th style="padding: 15px;">Qtd por Master</th>
+                                    <th style="padding: 15px; text-align: right;">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaCatalogoConfig">
+                                <tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- Subtela: ENTRADA DE ESTOQUE (INBOUND) -->
+            <!-- Subtela: ENTRADA DE ESTOQUE / ENDEREÇAMENTO (INBOUND) -->
             <div id="adminEnderecamento" class="sub-screen">
                 <div class="modulo-box">
-                    <div class="modulo-header"><h2>Entrada e Endereçamento de Lotes</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
+                    <div class="modulo-header">
+                        <h2>Entrada e Endereçamento de Lotes</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
                     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Bipe o endereço, lote, e a caixa master. As informações de Família e Data de Entrada vão alimentar o Roteiro e o Dashboard.</p>
+                    
                     <div class="grid-2" style="gap: 30px;">
                         <div>
                             <div class="grid-2">
@@ -484,7 +580,15 @@
                             </div>
                             <div class="grid-2">
                                 <div class="form-group"><label>3. DATA DE ENTRADA</label><input type="date" id="inboundData" class="input-dark"></div>
-                                <div class="form-group"><label>4. FAMÍLIA</label><select id="inboundFamilia" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option></select></div>
+                                <div class="form-group">
+                                    <label>4. FAMÍLIA</label>
+                                    <select id="inboundFamilia" class="input-dark">
+                                        <option value="Cabo">Cabo</option>
+                                        <option value="Fonte">Fonte</option>
+                                        <option value="Fone de ouvido">Fone de ouvido</option>
+                                        <option value="Power bank">Power bank</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -493,10 +597,28 @@
                             <div style="text-align: right; margin-top: 10px;"><button class="btn-volt" onclick="guardarEstoqueNuvem('Admin')">GUARDAR ESTOQUE</button></div>
                         </div>
                     </div>
+
                     <hr style="border-color: #222; margin: 40px 0;">
                     <div>
                         <h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3>
-                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th>Endereço</th><th>Produto / SKU</th><th>Família</th><th>Lote (Entrada)</th><th>Caixas</th><th>Total Un.</th><th>Ação</th></tr></thead><tbody id="tabelaMapaEstoque"><tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando mapa do estoque...</td></tr></tbody></table></div>
+                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                            <table style="margin-top: 0;">
+                                <thead style="background: #000;">
+                                    <tr>
+                                        <th>Endereço</th>
+                                        <th>Produto / SKU</th>
+                                        <th>Família</th>
+                                        <th>Lote (Entrada)</th>
+                                        <th>Caixas</th>
+                                        <th>Total Un.</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaMapaEstoque">
+                                    <tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando mapa do estoque...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -504,14 +626,18 @@
             <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
-                    <div class="modulo-header"><h2>Nova Tarefa de Expedição</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
+                    <div class="modulo-header">
+                        <h2>Nova Tarefa de Expedição</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #222;">
                         <div>
                             <div class="form-group"><label>NÚMERO DA OV</label><input type="text" id="ovNumero" class="input-dark" placeholder="Ex: OV-4119"></div>
                             <div class="form-group"><label>CLIENTE / DESTINATÁRIO</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
                             <div class="form-group"><label>VOLUMES (PREVISÃO)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
                             
-                            <!-- NOVO: BRINDES E OBSERVAÇÕES -->
+                            <!-- BRINDES E OBSERVAÇÕES -->
                             <div class="form-group" style="background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333;">
                                 <label style="color: var(--volt-green);">🎁 Incluir Brindes (Check-list para o Estoque)</label>
                                 <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
@@ -605,7 +731,7 @@
                 <div class="prep-box" style="padding: 30px;">
                     <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Roteiro de Separação - <span id="prepOvNumero">OV-0000</span></h2>
                     
-                    <div id="boxObsBrindes" style="display: none;"></div> <!-- Mostra Obs e Brindes aqui -->
+                    <div id="boxObsBrindes" style="display: none;"></div>
 
                     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Siga a rota abaixo pelos corredores. Pegue exatamente os lotes indicados (Garantia mais antiga primeiro).</p>
                     
@@ -693,26 +819,52 @@
         let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
-        function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
-        function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
-
         window.onload = async function() { 
-            await carregarUsuariosDaNuvem(); await inicializarCatalogoMestre();
+            await inicializarCatalogoMestre();
+            await carregarUsuariosDaNuvem(); 
             
-            // Set today's date for inputs
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inboundData').value = today;
             document.getElementById('inboundDataEstoque').value = today;
 
             const savedUser = localStorage.getItem('hubVoltUser'); const savedRole = localStorage.getItem('hubVoltRole');
-            if (savedUser && savedRole) {
+            if (savedUser && savedRole && bdUsuariosLogistica[savedUser]) {
                 usuarioLogado = savedUser; papelLogado = savedRole;
                 document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
                 document.getElementById('btnSair').style.display = 'block'; document.getElementById('modalSenha').style.display = 'none';
                 atualizarSaudacao(); mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
-            } else { document.getElementById('headerNomeUser').innerText = "Identifique-se"; }
+            } else { 
+                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
+            }
         };
+
+        async function carregarUsuariosDaNuvem() {
+            const grid = document.getElementById('gridUsuariosLogin');
+            try {
+                const snapshot = await db.collection("usuarios").get(); 
+                if (!snapshot.empty) {
+                    bdUsuariosLogistica = {};  
+                    snapshot.forEach((doc) => {
+                        const nome = doc.id; const user = doc.data(); bdUsuariosLogistica[nome] = user; 
+                    });
+                }
+            } catch (error) { console.warn("Modo offline ou banco vazio. Usando base de segurança."); }
+
+            // Se o Firebase estiver vazio no primeiro acesso, insere Lucas e Luiz visualmente para não travar
+            if(Object.keys(bdUsuariosLogistica).length === 0) {
+                bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
+            }
+
+            grid.innerHTML = '';
+            for (let nome in bdUsuariosLogistica) {
+                const user = bdUsuariosLogistica[nome];
+                if (user.status !== 'inativo') {
+                    const isEstoque = user.role === 'estoque';
+                    grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${isEstoque ? 'color: white; border-color:#444;' : 'color: var(--volt-green); border-color: var(--border-color);'}">${nome.charAt(0)}</div><h3 style="margin:0; margin-top:10px;">${nome}</h3><span style="font-size: 11px; ${isEstoque ? 'color: #888;' : 'color: var(--volt-green);'}">${isEstoque ? 'ESTOQUE' : 'ADMIN'}</span></div>`;
+                }
+            }
+        }
 
         async function inicializarCatalogoMestre() {
             catalogoCompleto = [...baseCatalogoVOLT];
@@ -733,23 +885,6 @@
         function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
         function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
         function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
-
-        async function carregarUsuariosDaNuvem() {
-            const grid = document.getElementById('gridUsuariosLogin');
-            try {
-                const snapshot = await db.collection("usuarios").get(); 
-                if (!snapshot.empty) {
-                    bdUsuariosLogistica = {}; grid.innerHTML = ''; 
-                    snapshot.forEach((doc) => {
-                        const nome = doc.id; const user = doc.data(); bdUsuariosLogistica[nome] = user; 
-                        if (user.status !== 'inativo') {
-                            const isEstoque = user.role === 'estoque';
-                            grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${isEstoque ? 'color: white; border-color:#444;' : 'color: var(--volt-green); border-color: var(--border-color);'}">${nome.charAt(0)}</div><h3 style="margin:0; margin-top:10px;">${nome}</h3><span style="font-size: 11px; ${isEstoque ? 'color: #888;' : 'color: var(--volt-green);'}">${isEstoque ? 'ESTOQUE' : 'ADMIN'}</span></div>`;
-                        }
-                    });
-                }
-            } catch (error) {}
-        }
 
         function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
         function fecharSenhaModal() { document.getElementById('modalSenha').style.display = 'none'; }
@@ -857,7 +992,6 @@
             document.getElementById(fieldProduct).value = ''; document.getElementById(fieldProduct).focus(); document.getElementById(fieldMultiplier).value = '1';
 
             try {
-                // Modificado para ID único permitindo multiplos registros para a mesma familia, mas foca no sku+lote
                 const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; 
                 const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get();
                 if (docSnap.exists) { 
@@ -928,7 +1062,6 @@
                 document.getElementById('resumoUn').innerText = totalUn;
                 document.getElementById('resumoSkus').innerText = skusSet.size;
 
-                // Render Chart Familias
                 if(chartFamInst) chartFamInst.destroy();
                 const ctxFam = document.getElementById('chartFamilias').getContext('2d');
                 chartFamInst = new Chart(ctxFam, {
@@ -937,7 +1070,6 @@
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {color: 'white'} } } }
                 });
 
-                // Render Chart Top SKUs
                 if(chartSkuInst) chartSkuInst.destroy();
                 let sortSkus = Object.keys(skuData).map(k => ({sku: k, qtd: skuData[k]})).sort((a,b) => b.qtd - a.qtd).slice(0, 5);
                 const ctxSku = document.getElementById('chartTopSkus').getContext('2d');
@@ -947,7 +1079,7 @@
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: {color: '#222'}, ticks: {color: '#888'} }, x: { grid: {display: false}, ticks: {color: 'white'} } } }
                 });
 
-            } catch(e) { console.warn("Erro ao gerar graficos"); }
+            } catch(e) {}
         }
 
         // ====================================================
@@ -992,7 +1124,6 @@
             const fileOvInput = document.getElementById('fileOV'); const fileRmaInput = document.getElementById('fileRMA');
             const temArquivoOV = fileOvInput.files.length > 0; const temArquivoRMA = fileRmaInput.files.length > 0;
             
-            // Pega Brindes e Observações
             const obs = document.getElementById('ovObservacao').value.trim();
             const brindesChk = document.querySelectorAll('.brinde-chk:checked');
             let listaBrindes = [];
@@ -1090,7 +1221,8 @@
                 snapshot.forEach((doc) => {
                     const ov = doc.data(); const id = doc.id;
                     if (ov.status === 'Aguardando Faturamento') {
-                        contador++; let totalItens = 0;
+                        contador++; 
+                        let totalItens = 0;
                         if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
                         if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
                         tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais} cx</td><td>${totalItens} itens</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar e Faturar</button></td></tr>`;
@@ -1118,7 +1250,7 @@
 
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
-                    ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; });
+                    ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação">✖</button></div></div>`; });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
         }
@@ -1226,7 +1358,6 @@
                 const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ov = docRef.data();
                 document.getElementById('resumoOvNum').innerText = ov.numero; document.getElementById('resumoCliente').innerText = ov.cliente; document.getElementById('resumoData').innerText = `Lançada: ${ov.data}\nFaturada: ${ov.dataConclusao || '-'}`; document.getElementById('resumoOps').innerText = `Separada por: ${ov.operadorSeparacao || '-'}\nFaturada por: ${ov.operadorFinal || '-'}`;
                 
-                // Brindes e Observações
                 if(ov.observacao || (ov.brindes && ov.brindes.length > 0)) {
                     let h = '';
                     if(ov.brindes && ov.brindes.length > 0) h += `<div class="caixa-brindes"><strong style="color:var(--volt-green);">🎁 Brindes Inclusos:</strong> ${ov.brindes.join(', ')}</div>`;
@@ -1271,7 +1402,7 @@
         function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
         // ====================================================
-        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO)
+        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO) E CARDS
         // ====================================================
         function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -1306,7 +1437,6 @@
             await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em separação', operadorSeparacao: usuarioLogado });
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
             
-            // Renderiza Obs e Brindes na tela de Separação
             const boxObs = document.getElementById('boxObsBrindes'); boxObs.innerHTML = '';
             if(objOvGlobal.observacao || (objOvGlobal.brindes && objOvGlobal.brindes.length > 0)) {
                 boxObs.style.display = 'block'; let h = '';
@@ -1317,7 +1447,6 @@
 
             const htmlRoteiro = document.getElementById('roteiroPickingHtml'); htmlRoteiro.innerHTML = '<p style="color: var(--volt-green);">Gerando roteiro lógico FEFO...</p>';
             
-            // LÓGICA FEFO: Puxa o mapa de estoque e acha o lote mais antigo para cada SKU
             try {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = [];
                 mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
@@ -1326,10 +1455,8 @@
                     let r = '<div class="roteiro-box">';
                     for(let ean in objOvGlobal.itensOV) {
                         const item = objOvGlobal.itensOV[ean];
-                        
-                        // Acha no mapa
                         let pEncontradas = mapa.filter(x => x.sku === item.sku && x.quantidade > 0);
-                        pEncontradas.sort((a,b) => new Date(a.dataEntrada) - new Date(b.dataEntrada)); // FEFO
+                        pEncontradas.sort((a,b) => new Date(a.dataEntrada) - new Date(b.dataEntrada)); 
                         
                         if(pEncontradas.length > 0) {
                             const best = pEncontradas[0];
@@ -1341,7 +1468,7 @@
                     }
                     r += '</div>'; htmlRoteiro.innerHTML = r;
                 } else { htmlRoteiro.innerHTML = '<p>Nenhum item principal na ordem.</p>'; }
-            } catch(e) { htmlRoteiro.innerHTML = '<p>Erro ao roteirizar mapa de estoque.</p>'; }
+            } catch(e) {}
 
             if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { const btnOv = document.getElementById('btnDownloadOv'); btnOv.style.display = 'inline-flex'; btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`); } 
             if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { const btnRma = document.getElementById('btnDownloadRma'); btnRma.style.display = 'inline-flex'; btnRma.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoRMA_base64, `Remessa_${numero}.pdf`); }
@@ -1416,7 +1543,7 @@
             else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Bipou código não pertencente à esta etapa: ${ean}`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada."; document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
+                document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
 
@@ -1432,7 +1559,7 @@
             } else { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('txtErroEstoque').innerText = "O erro foi gravado. Quantidades divergentes com a ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
+                document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
 
@@ -1442,7 +1569,7 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
-            // Abate do mapa de estoque (FEFO)
+            // Abate do mapa de estoque (FEFO) - Correção para bater com Lote e Data
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
@@ -1458,12 +1585,11 @@
                     }
                 }
             }
-
             try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Conferido', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes }); alert("📦 Conferência finalizada! Pedido enviado para Cotação."); abrirFilaConferencia(); } catch(error) {}
         }
 
         // ====================================================
-        // ESTOQUE: COTAÇÃO DE FRETES
+        // ESTOQUE: COTAÇÃO DE FRETES (CARDS)
         // ====================================================
         function abrirFilaCotacao() { navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
 
