@@ -17,7 +17,12 @@
             --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; 
             --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-light); 
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; 
+        }
         .container { width: 100%; max-width: 1150px; padding: 20px; box-sizing: border-box; }
         
         .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -274,7 +279,9 @@
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Edite as quantidades alvo desta ordem abaixo e salve para o operador continuar.</p>
             
-            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
+            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <!-- Preenchido via JS -->
+            </div>
 
             <div style="text-align: right;">
                 <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correção da OV</button>
@@ -382,7 +389,7 @@
         </div>
     </div>
 
-    <!-- MODAL AUDITORIA LOGS (ERRO AO VIVO) -->
+    <!-- MODAL AUDITORIA LOGS (ERRO) -->
     <div id="modalAuditoria" class="modal-overlay">
         <div class="auditoria-box">
             <div class="auditoria-header">
@@ -427,9 +434,7 @@
         <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
-            <div class="login-grid" id="gridUsuariosLogin">
-                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Carregando usuários...</div>
-            </div>
+            <div class="login-grid" id="gridUsuariosLogin"></div>
         </div>
 
         <!-- ========================================== -->
@@ -747,10 +752,18 @@
     <!-- ========================================== -->
     <script>
         // Inicialização do Firebase
-        const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
+            authDomain: "hub-volt.firebaseapp.com", 
+            projectId: "hub-volt", 
+            storageBucket: "hub-volt.firebasestorage.app", 
+            messagingSenderId: "483817757628", 
+            appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
+        };
         firebase.initializeApp(firebaseConfig); 
         const db = firebase.firestore();
         
+        // BASE DE DADOS DOS 31 PRODUTOS DA VOLT
         const baseCatalogoVOLT = [
             {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
             {sku: "CH45WH", ean: "7898974018083"}, {sku: "CH65WH", ean: "7898974018007"}, {sku: "PCC20GR", ean: "7898974018045"}, {sku: "FAC10BK", ean: "7898996240301"},
@@ -763,29 +776,66 @@
         ];
 
         let catalogoCompleto = []; 
-        let bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
-        let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
-        let idOvGlobal = null; let objOvGlobal = null; let idOvEditGlobal = null; let idEditLoteGlobal = null;
-        let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
-        let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
-        let cotacoesAtuais = []; let auditoriaLogsSessao = [];
+        
+        // CORREÇÃO CRÍTICA: Base populada por padrão para não travar a tela
+        let bdUsuariosLogistica = { 
+            'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
+            'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
+        };
+        
+        let usuarioLogado = null; 
+        let papelLogado = null; 
+        let usuarioSelecionadoTemp = null;
+        let idOvGlobal = null; 
+        let objOvGlobal = null; 
+        let idOvEditGlobal = null; 
+        let idEditLoteGlobal = null;
+        let etapaAtualEstoque = 'OV'; 
+        let contadorVolumesInterno = 0; 
+        let volumeUnicoID = 0;
+        let itensLancamentoOV = {}; 
+        let itensLancamentoRMA = {}; 
+        let itensBipagemOV = {}; 
+        let itensBipagemRMA = {};
+        let cotacoesAtuais = []; 
+        let auditoriaLogsSessao = [];
 
-        function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
-        function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        function getBase64(file) { 
+            return new Promise((resolve, reject) => { 
+                const reader = new FileReader(); 
+                reader.readAsDataURL(file); 
+                reader.onload = () => resolve(reader.result); 
+                reader.onerror = error => reject(error); 
+            }); 
+        }
+
+        function baixarArquivoBase64(base64Str, fileName) { 
+            const link = document.createElement('a'); 
+            link.href = base64Str; 
+            link.download = fileName; 
+            document.body.appendChild(link); 
+            link.click(); 
+            document.body.removeChild(link); 
+        }
 
         // ====================================================
-        // INICIALIZAÇÃO DA PÁGINA (CORRIGIDO E SINCRONIZADO)
+        // INICIALIZAÇÃO DA PÁGINA
         // ====================================================
-        window.onload = function() { 
-            // 1. Renderiza a tela de login IMEDIATAMENTE (sem esperar internet)
+        window.onload = async function() { 
+            
+            // 1. Renderiza a tela de login IMEDIATAMENTE (com os dados padrão)
             renderLoginGrid();
 
-            // 2. Preenche as datas padrão nos inputs
+            // 2. Preenche as datas padrão nos inputs de Inbound
             const today = new Date().toISOString().split('T')[0];
-            if(document.getElementById('inboundData')) document.getElementById('inboundData').value = today;
-            if(document.getElementById('inboundDataEstoque')) document.getElementById('inboundDataEstoque').value = today;
+            if(document.getElementById('inboundData')) {
+                document.getElementById('inboundData').value = today;
+            }
+            if(document.getElementById('inboundDataEstoque')) {
+                document.getElementById('inboundDataEstoque').value = today;
+            }
 
-            // 3. Verifica se já está logado na Sessão
+            // 3. Restaura sessão do usuário caso ele tenha dado F5
             const savedUser = localStorage.getItem('hubVoltUser'); 
             const savedRole = localStorage.getItem('hubVoltRole');
             
@@ -797,12 +847,14 @@
                 document.getElementById('modalSenha').style.display = 'none';
                 atualizarSaudacao(); 
                 mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
+                if(papelLogado === 'admin') { 
+                    renderizarTabelaAcessosAdmin(); 
+                }
             } else { 
                 document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
             }
 
-            // 4. Busca atualizações da nuvem em segundo plano (Não trava a tela)
+            // 4. Carrega tudo da nuvem em segundo plano sem travar a interface
             carregarUsuariosDaNuvem(); 
             inicializarCatalogoMestre();
         };
@@ -842,10 +894,10 @@
                     snapshot.forEach((doc) => {
                         bdUsuariosLogistica[doc.id] = doc.data(); 
                     });
-                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem
+                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem se existirem
                 }
             } catch (error) { 
-                console.warn("Modo offline ou erro de banco. Mantendo fallback local."); 
+                console.warn("Modo offline ou banco vazio. Usando base local."); 
             }
         }
 
@@ -899,30 +951,38 @@
         // ====================================================
         // NAVEGAÇÃO E LAYERS
         // ====================================================
-        function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
-        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
-        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
+        function atualizarSaudacao() { 
+            const hora = new Date().getHours(); 
+            let texto = "Boa noite"; 
+            if (hora >= 5 && hora < 12) texto = "Bom dia"; 
+            else if (hora >= 12 && hora < 18) texto = "Boa tarde"; 
+            document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; 
+        }
+
+        function mudarViewLayerGlobal(viewId) { 
+            document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); 
+            document.getElementById(viewId).classList.add('active'); 
+        }
+
+        function navegarAdmin(subScreenId) { 
+            document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); 
+            document.getElementById(subScreenId).classList.add('active'); 
+        }
+
+        function navegarEstoque(subScreenId) { 
+            document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); 
+            document.getElementById(subScreenId).classList.add('active'); 
+        }
+
+        function voltarLogoHome() { 
+            if (usuarioLogado) {
+                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
+            } 
+        }
 
         // ====================================================
         // MATRIZ DE CATÁLOGO (ADMIN)
         // ====================================================
-        async function inicializarCatalogoMestre() {
-            catalogoCompleto = [...baseCatalogoVOLT];
-            catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
-            try {
-                const snapshot = await db.collection("catalogo_produtos").get();
-                snapshot.forEach(doc => {
-                    const data = doc.data(); 
-                    let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario);
-                    if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; } 
-                    else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); }
-                });
-            } catch(e) {}
-            catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku));
-        }
-
         async function abrirModuloCatalogo() {
             navegarAdmin('adminCatalogo'); 
             const tbody = document.getElementById('tabelaCatalogoConfig');
@@ -959,7 +1019,6 @@
                 await db.collection("catalogo_produtos").doc(eanUnitario).set({ 
                     sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) 
                 }, {merge: true}); 
-                
                 let p = catalogoCompleto.find(x => x.ean === eanUnitario); 
                 if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } 
                 alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); 
@@ -1126,8 +1185,6 @@
         // ====================================================
         // DASHBOARD GRÁFICO
         // ====================================================
-        let chartFamInst = null; let chartSkuInst = null;
-
         async function abrirModuloResumoEstoque() {
             navegarAdmin('adminResumoEstoque');
             document.getElementById('resumoCx').innerText = "...";
@@ -1136,7 +1193,9 @@
 
             try {
                 const snapshot = await db.collection("estoque_posicoes").get();
-                let totalCx = 0; let totalUn = 0; let skusSet = new Set();
+                let totalCx = 0; 
+                let totalUn = 0; 
+                let skusSet = new Set();
                 let familyData = { 'Cabo': 0, 'Fonte': 0, 'Fone de ouvido': 0, 'Power bank': 0, 'Outros': 0 };
                 let skuData = {};
 
@@ -1145,6 +1204,7 @@
                     totalCx += item.caixas; 
                     totalUn += item.quantidade; 
                     skusSet.add(item.sku);
+                    
                     const fam = item.familia || 'Outros';
                     if(familyData[fam] !== undefined) {
                         familyData[fam] += item.quantidade; 
