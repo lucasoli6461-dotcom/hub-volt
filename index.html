@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>HUB VOLT - Sistema Integrado de Gestão WMS</title>
-    <link rel="icon" type="image/png" href="icone_volt.png">
+    <link rel="icon" type="image/png" href="image_a87265.png">
     
     <!-- Biblioteca Chart.js para os Gráficos do Admin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -94,9 +94,6 @@
         .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 20px;}
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
-
-        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
-        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
 
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
@@ -316,7 +313,7 @@
         </div>
     </div>
 
-    <!-- MODAL FATURAMENTO (ATUALIZADO COM EXCLUSÃO/ADIÇÃO DE COTAÇÕES) -->
+    <!-- MODAL FATURAMENTO -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -335,7 +332,6 @@
                 <div id="listaDimensoesAdmin"></div>
             </div>
 
-            <!-- Edição de Cotações no Admin -->
             <div style="background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <h4 style="margin: 0 0 10px 0; color: var(--volt-green); font-size: 14px;">Cotações Lançadas</h4>
                 <div id="listaCotacoesAdmin"></div>
@@ -439,7 +435,7 @@
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
             <div class="login-grid" id="gridUsuariosLogin">
-                <!-- Fallback automático entra aqui via JS -->
+                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Carregando sistema...</div>
             </div>
         </div>
 
@@ -783,7 +779,7 @@
 
         let catalogoCompleto = []; 
         
-        // BASE POPULADA PARA NÃO TRAVAR A TELA DE LOGIN
+        // CORREÇÃO CRÍTICA: Base populada por padrão para não travar a tela
         let bdUsuariosLogistica = { 
             'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
             'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
@@ -825,13 +821,13 @@
         }
 
         // ====================================================
-        // INICIALIZAÇÃO DA PÁGINA
+        // INICIALIZAÇÃO DA PÁGINA (CORRIGIDO E SINCRONIZADO)
         // ====================================================
         window.onload = function() { 
             // 1. Renderiza a tela de login IMEDIATAMENTE (sem esperar internet)
             renderLoginGrid();
 
-            // 2. Preenche as datas padrão nos inputs
+            // 2. Preenche as datas padrão nos inputs de Inbound
             const today = new Date().toISOString().split('T')[0];
             if(document.getElementById('inboundData')) {
                 document.getElementById('inboundData').value = today;
@@ -865,7 +861,7 @@
         };
 
         // ====================================================
-        // SISTEMA DE LOGIN
+        // SISTEMA DE LOGIN (SEM TRAVAR)
         // ====================================================
         function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
@@ -900,10 +896,10 @@
                         tempBd[doc.id] = doc.data(); 
                     });
                     bdUsuariosLogistica = tempBd;
-                    renderLoginGrid(); 
+                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem se existirem
                 }
             } catch (error) { 
-                console.warn("Modo offline ou banco vazio. Mantendo base de segurança."); 
+                console.warn("Modo offline ou banco vazio. Mantendo fallback local."); 
             }
         }
 
@@ -982,8 +978,8 @@
 
         function voltarLogoHome() { 
             if (usuarioLogado) {
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-            } 
+                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); 
+            }
         }
 
         // ====================================================
@@ -1070,7 +1066,7 @@
         }
 
         // ====================================================
-        // ENDEREÇAMENTO DE ESTOQUE (INBOUND COM DATA E FAMILIA)
+        // ENDEREÇAMENTO DE ESTOQUE (INBOUND)
         // ====================================================
         function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
         function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
@@ -1230,6 +1226,7 @@
                     totalCx += item.caixas; 
                     totalUn += item.quantidade; 
                     skusSet.add(item.sku);
+                    
                     const fam = item.familia || 'Outros';
                     if(familyData[fam] !== undefined) {
                         familyData[fam] += item.quantidade; 
@@ -2203,6 +2200,7 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
+                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada.";
                 document.getElementById('erroModal').style.display = 'flex'; 
                 input.value = ''; 
             }
@@ -2247,6 +2245,7 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
+                document.getElementById('txtErroEstoque').innerText = "O erro foi gravado. Quantidades divergentes com a ordem fiscal.";
                 document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
