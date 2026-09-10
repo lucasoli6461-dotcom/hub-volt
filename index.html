@@ -90,9 +90,6 @@
         .hub-card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { color: var(--volt-green); font-weight: bold; font-size: 14px;}
 
-        .pedido-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px 25px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
-        .pedido-item:hover { border-color: var(--volt-green); transform: translateX(5px); }
-
         .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
         .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
@@ -100,7 +97,7 @@
 
         /* DRAG & DROP E LISTAS */
         .upload-area { border: 2px dashed #444; background-color: #0a0a0a; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 10px;}
-        .upload-area:hover, .upload-area.dragover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
+        .upload-area:hover { border-color: var(--volt-green); background-color: rgba(196, 240, 0, 0.05); }
         .upload-area.concluido { border-color: var(--success-green); border-style: solid; background-color: rgba(0, 204, 102, 0.05); }
 
         .item-listado { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px 15px; border-bottom: 1px solid #222; font-size: 13px; }
@@ -410,23 +407,13 @@
                 <div class="form-group"><label>Cargo / Função</label><input type="text" id="novoFuncao" class="input-dark" placeholder="Ex: Operador"></div>
             </div>
             <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
-                <div class="form-group">
-                    <label>Nível de Acesso</label>
-                    <select id="novoRole" class="input-dark">
-                        <option value="estoque">Operador (Estoque)</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </div>
+                <div class="form-group"><label>Nível de Acesso</label><select id="novoRole" class="input-dark"><option value="estoque">Operador (Estoque)</option><option value="admin">Administrador</option></select></div>
                 <div class="form-group"><label>Senha Inicial</label><input type="text" id="novoSenha" class="input-dark" placeholder="Senha"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button>
-                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button>
-            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button></div>
         </div>
     </div>
 
-    <!-- MODAL DE NOVO PRODUTO (SKU) -->
     <div id="modalNovoSKU" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU</h3>
@@ -436,24 +423,16 @@
                 <div class="form-group"><label>EAN Master (Opcional)</label><input type="text" id="cadMasterNovo" class="input-dark" placeholder="Bipar EAN da Master"></div>
                 <div class="form-group"><label>Qtd por Master</label><input type="number" id="cadQtdMasterNovo" class="input-dark" value="100"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button>
-                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button>
-            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button></div>
         </div>
     </div>
 
     <div class="container">
-        
-        <!-- ========================================== -->
-        <!-- VIEW LAYER 1: TELA DE LOGIN DINÂMICA       -->
-        <!-- ========================================== -->
+        <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
-            <div style="text-align: center; margin-bottom: 40px;">
-                <h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1>
-            </div>
+            <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
             <div class="login-grid" id="gridUsuariosLogin">
-                <div style="color: var(--volt-green); grid-column: 1 / -1; text-align: center;">Carregando usuários...</div>
+                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Carregando usuários...</div>
             </div>
         </div>
 
@@ -461,45 +440,18 @@
         <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR   -->
         <!-- ========================================== -->
         <div id="viewAdmin" class="view-layer">
-            
             <div id="adminDash" class="sub-screen active">
-                <div class="greeting">
-                    <h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1>
-                    <p>Módulos de Gestão e Logística Avançada</p>
-                </div>
-                
+                <div class="greeting"><h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1><p>Módulos de Gestão e Logística Avançada</p></div>
                 <div class="grid-3" style="margin-bottom: 20px;">
-                    <div class="hub-card" onclick="abrirModuloLancamentos()">
-                        <div><h3>1. Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div>
-                        <div class="action">Abrir Módulo ➔</div>
-                    </div>
-                    <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()">
-                        <div><h3 style="color: white;">2. Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div>
-                        <div class="action" style="color: var(--volt-green);">Ver Fila ➔</div>
-                    </div>
-                    <div class="hub-card" style="border-color: #00aaff;" onclick="abrirModuloHistorico()">
-                        <div><h3 style="color: white;">3. Histórico de OVs</h3><p>Consulte o Dossiê completo de todas as OVs concluídas.</p></div>
-                        <div class="action" style="color: #00aaff;">Ver Faturadas ➔</div>
-                    </div>
+                    <div class="hub-card" onclick="abrirModuloLancamentos()"><div><h3>1. Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div><div class="action">Abrir Módulo ➔</div></div>
+                    <div class="hub-card" style="border-color: var(--volt-green);" onclick="abrirModuloFaturamento()"><div><h3 style="color: white;">2. Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div><div class="action" style="color: var(--volt-green);">Ver Fila ➔</div></div>
+                    <div class="hub-card" style="border-color: #00aaff;" onclick="abrirModuloHistorico()"><div><h3 style="color: white;">3. Histórico de OVs</h3><p>Consulte o Dossiê completo de todas as OVs concluídas.</p></div><div class="action" style="color: #00aaff;">Ver Faturadas ➔</div></div>
                 </div>
-
                 <div class="grid-4">
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()">
-                        <div><h3 style="font-size: 16px;">Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div>
-                        <div class="action" style="font-size: 12px;">Configurar SKUs ➔</div>
-                    </div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()">
-                        <div><h3 style="font-size: 16px;">Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div>
-                        <div class="action" style="font-size: 12px;">Guardar Estoque ➔</div>
-                    </div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px; border-color: var(--volt-green);" onclick="abrirModuloResumoEstoque()">
-                        <div><h3 style="font-size: 16px; color:white;">Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div>
-                        <div class="action" style="font-size: 12px; color: var(--volt-green);">Ver Dashboard ➔</div>
-                    </div>
-                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()">
-                        <div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div>
-                        <div class="action" style="font-size: 12px;">Abrir Painel ➔</div>
-                    </div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()"><div><h3 style="font-size: 16px;">Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div><div class="action" style="font-size: 12px;">Configurar SKUs ➔</div></div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()"><div><h3 style="font-size: 16px;">Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div><div class="action" style="font-size: 12px;">Guardar Estoque ➔</div></div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px; border-color: var(--volt-green);" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action" style="font-size: 12px; color: var(--volt-green);">Ver Dashboard ➔</div></div>
+                    <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()"><div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div><div class="action" style="font-size: 12px;">Abrir Painel ➔</div></div>
                 </div>
             </div>
 
@@ -746,7 +698,7 @@
             <div id="estoqueConferencia" class="sub-screen">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;"><button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="abrirFilaConferencia()">⟵ PAUSAR CONFERÊNCIA</button><h2 style="margin: 0; font-size: 24px; color: white;">Conferência - <span style="color: var(--volt-green);" id="confOvNumero">OV-0000</span></h2><div style="width: 150px;"></div></div>
                 <div id="faseOV" class="fase-section ativa"><h3>1. Itens Ordem Principal <span id="statusOV" style="font-size: 14px; font-weight: normal;">Lendo</span></h3><div class="produtos-grid" id="containerOV"></div><div class="form-group" style="margin-top: 20px;"><input type="text" id="bipOV" class="input-bip" autofocus onkeypress="if(event.key === 'Enter') processarBipagem('OV')"><div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('OV')">✔ VALIDAR ITENS</button></div></div></div>
-                <div id="faseRMA" class="fase-section"><h3>2. Remessa (RMA) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3><div class="produtos-grid" id="containerRMA"></div><div class="form-group" style="margin-top: 20px;"><input type="text" id="bipRMA" class="input-bip" disabled onkeypress="if(event.key === 'Enter') processarBipagem('RMA')"><div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('RMA')">✔ VALIDAR REMESSA</button></div></div></div>
+                <div id="faseRMA" class="fase-section"><h3>2. Remessa (RMA/Brindes) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3><div class="produtos-grid" id="containerRMA"></div><div class="form-group" style="margin-top: 20px;"><input type="text" id="bipRMA" class="input-bip" disabled onkeypress="if(event.key === 'Enter') processarBipagem('RMA')"><div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('RMA')">✔ VALIDAR REMESSA</button></div></div></div>
                 <div id="faseLogistica" class="fase-section"><h3>3. Fechamento de Volumes <span id="statusLog" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3><div id="listaVolumesCaixas"></div><button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Nova Caixa</button><div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;"><button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicaoNuvem()">ENVIAR PARA COTAÇÃO DE FRETE</button></div></div>
             </div>
 
@@ -819,10 +771,14 @@
         let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
+        function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
+        function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+
         window.onload = async function() { 
-            await inicializarCatalogoMestre();
             await carregarUsuariosDaNuvem(); 
+            await inicializarCatalogoMestre();
             
+            // Set today's date for inputs
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inboundData').value = today;
             document.getElementById('inboundDataEstoque').value = today;
@@ -836,11 +792,25 @@
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
             } else { 
                 document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
+                document.getElementById('gridUsuariosLogin').innerHTML = '<div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Buscando credenciais...</div>';
+                // Força recarregar interface de login caso o fallback tenha engatilhado depois
+                setTimeout(renderLoginGrid, 500);
             }
         };
 
-        async function carregarUsuariosDaNuvem() {
+        function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
+            grid.innerHTML = '';
+            for (let nome in bdUsuariosLogistica) {
+                const user = bdUsuariosLogistica[nome];
+                if (user.status !== 'inativo') {
+                    const isEstoque = user.role === 'estoque';
+                    grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${isEstoque ? 'color: white; border-color:#444;' : 'color: var(--volt-green); border-color: var(--border-color);'}">${nome.charAt(0)}</div><h3 style="margin:0; margin-top:10px;">${nome}</h3><span style="font-size: 11px; ${isEstoque ? 'color: #888;' : 'color: var(--volt-green);'}">${isEstoque ? 'ESTOQUE' : 'ADMIN'}</span></div>`;
+                }
+            }
+        }
+
+        async function carregarUsuariosDaNuvem() {
             try {
                 const snapshot = await db.collection("usuarios").get(); 
                 if (!snapshot.empty) {
@@ -855,15 +825,7 @@
             if(Object.keys(bdUsuariosLogistica).length === 0) {
                 bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
             }
-
-            grid.innerHTML = '';
-            for (let nome in bdUsuariosLogistica) {
-                const user = bdUsuariosLogistica[nome];
-                if (user.status !== 'inativo') {
-                    const isEstoque = user.role === 'estoque';
-                    grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="${isEstoque ? 'color: white; border-color:#444;' : 'color: var(--volt-green); border-color: var(--border-color);'}">${nome.charAt(0)}</div><h3 style="margin:0; margin-top:10px;">${nome}</h3><span style="font-size: 11px; ${isEstoque ? 'color: #888;' : 'color: var(--volt-green);'}">${isEstoque ? 'ESTOQUE' : 'ADMIN'}</span></div>`;
-                }
-            }
+            renderLoginGrid();
         }
 
         async function inicializarCatalogoMestre() {
@@ -1221,8 +1183,7 @@
                 snapshot.forEach((doc) => {
                     const ov = doc.data(); const id = doc.id;
                     if (ov.status === 'Aguardando Faturamento') {
-                        contador++; 
-                        let totalItens = 0;
+                        contador++; let totalItens = 0;
                         if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
                         if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
                         tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais} cx</td><td>${totalItens} itens</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar e Faturar</button></td></tr>`;
@@ -1250,7 +1211,7 @@
 
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
-                    ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação">✖</button></div></div>`; });
+                    ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
         }
@@ -1402,7 +1363,7 @@
         function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
         // ====================================================
-        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO) E CARDS
+        // ESTOQUE: WMS, FILA SEPARAÇÃO (FEFO)
         // ====================================================
         function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -1543,7 +1504,7 @@
             else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Bipou código não pertencente à esta etapa: ${ean}`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
+                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada."; document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
 
@@ -1559,7 +1520,7 @@
             } else { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Faltou ou sobrou itens na validação cega (${fase}). Recomeçando.`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('erroModal').style.display = 'flex'; 
+                document.getElementById('txtErroEstoque').innerText = "O erro foi gravado. Quantidades divergentes com a ordem fiscal."; document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
 
