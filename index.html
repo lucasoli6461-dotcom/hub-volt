@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>HUB VOLT - Sistema Integrado de Gestão WMS</title>
-    <link rel="icon" type="image/png" href="image_a87265.png">
+    <link rel="icon" type="image/png" href="icone_volt.png">
     
     <!-- Biblioteca Chart.js para os Gráficos do Admin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
     <style>
         /* ========================================== */
@@ -313,7 +317,7 @@
         </div>
     </div>
 
-    <!-- MODAL FATURAMENTO -->
+    <!-- MODAL FATURAMENTO (ATUALIZADO COM EXCLUSÃO/ADIÇÃO DE COTAÇÕES) -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 650px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -332,6 +336,7 @@
                 <div id="listaDimensoesAdmin"></div>
             </div>
 
+            <!-- Edição de Cotações no Admin -->
             <div style="background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <h4 style="margin: 0 0 10px 0; color: var(--volt-green); font-size: 14px;">Cotações Lançadas</h4>
                 <div id="listaCotacoesAdmin"></div>
@@ -435,7 +440,7 @@
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
             <div class="login-grid" id="gridUsuariosLogin">
-                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Carregando sistema...</div>
+                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Iniciando sistema...</div>
             </div>
         </div>
 
@@ -750,22 +755,74 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SCRIPTS (LÓGICA COMPLETA E EXPANDIDA)      -->
+    <!-- SCRIPTS (LÓGICA COMPLETA)                  -->
     <!-- ========================================== -->
     <script>
-        // Inicialização do Firebase
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
-            authDomain: "hub-volt.firebaseapp.com", 
-            projectId: "hub-volt", 
-            storageBucket: "hub-volt.firebasestorage.app", 
-            messagingSenderId: "483817757628", 
-            appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
-        };
-        firebase.initializeApp(firebaseConfig); 
-        const db = firebase.firestore();
-        
-        // BASE DE DADOS DOS 31 PRODUTOS DA VOLT
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // Renderiza offline IMEDIATAMENTE antes de qualquer requisição
+            bdUsuariosLogistica = { 
+                'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
+                'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
+            };
+            renderLoginGrid();
+
+            // Seta datas iniciais nos inputs de Inbound
+            const today = new Date().toISOString().split('T')[0];
+            if(document.getElementById('inboundData')) {
+                document.getElementById('inboundData').value = today;
+            }
+            if(document.getElementById('inboundDataEstoque')) {
+                document.getElementById('inboundDataEstoque').value = today;
+            }
+
+            // Checa a memória do navegador para o auto-login rápido
+            const savedUser = localStorage.getItem('hubVoltUser'); 
+            const savedRole = localStorage.getItem('hubVoltRole');
+            
+            if (savedUser && savedRole) {
+                usuarioLogado = savedUser; 
+                papelLogado = savedRole;
+                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
+                document.getElementById('btnSair').style.display = 'block'; 
+                document.getElementById('modalSenha').style.display = 'none';
+                atualizarSaudacao(); 
+                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
+                if(papelLogado === 'admin') { 
+                    renderizarTabelaAcessosAdmin(); 
+                }
+            } else { 
+                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
+            }
+
+            // Adia as consultas pesadas para o Firebase não travar a CPU e a tela inicial
+            setTimeout(() => {
+                iniciarConexaoNuvem();
+            }, 500);
+        });
+
+        // Configuração segura do Firebase encapsulada
+        let db = null;
+        function iniciarConexaoNuvem() {
+            try {
+                const firebaseConfig = { 
+                    apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
+                    authDomain: "hub-volt.firebaseapp.com", 
+                    projectId: "hub-volt", 
+                    storageBucket: "hub-volt.firebasestorage.app", 
+                    messagingSenderId: "483817757628", 
+                    appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
+                };
+                firebase.initializeApp(firebaseConfig); 
+                db = firebase.firestore();
+                
+                carregarUsuariosDaNuvem(); 
+                inicializarCatalogoMestre();
+            } catch (error) {
+                console.warn("Sem internet ou erro no Firebase. Mantendo sistema offline.", error);
+            }
+        }
+
         const baseCatalogoVOLT = [
             {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
             {sku: "CH45WH", ean: "7898974018083"}, {sku: "CH65WH", ean: "7898974018007"}, {sku: "PCC20GR", ean: "7898974018045"}, {sku: "FAC10BK", ean: "7898996240301"},
@@ -778,15 +835,6 @@
         ];
 
         let catalogoCompleto = []; 
-        
-        // CORREÇÃO CRÍTICA: Base populada por padrão para não travar a tela
-        let bdUsuariosLogistica = { 
-            'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
-            'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
-        };
-        
-        let usuarioLogado = null; 
-        let papelLogado = null; 
         let usuarioSelecionadoTemp = null;
         let idOvGlobal = null; 
         let objOvGlobal = null; 
@@ -821,52 +869,11 @@
         }
 
         // ====================================================
-        // INICIALIZAÇÃO DA PÁGINA (CORRIGIDO E SINCRONIZADO)
-        // ====================================================
-        window.onload = function() { 
-            // 1. Renderiza a tela de login IMEDIATAMENTE (sem esperar internet)
-            renderLoginGrid();
-
-            // 2. Preenche as datas padrão nos inputs de Inbound
-            const today = new Date().toISOString().split('T')[0];
-            if(document.getElementById('inboundData')) {
-                document.getElementById('inboundData').value = today;
-            }
-            if(document.getElementById('inboundDataEstoque')) {
-                document.getElementById('inboundDataEstoque').value = today;
-            }
-
-            // 3. Verifica se já está logado na Sessão
-            const savedUser = localStorage.getItem('hubVoltUser'); 
-            const savedRole = localStorage.getItem('hubVoltRole');
-            
-            if (savedUser && savedRole) {
-                usuarioLogado = savedUser; 
-                papelLogado = savedRole;
-                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
-                document.getElementById('btnSair').style.display = 'block'; 
-                document.getElementById('modalSenha').style.display = 'none';
-                atualizarSaudacao(); 
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                if(papelLogado === 'admin') { 
-                    renderizarTabelaAcessosAdmin(); 
-                }
-            } else { 
-                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
-            }
-
-            // 4. Busca atualizações da nuvem em segundo plano (Não trava a tela)
-            carregarUsuariosDaNuvem(); 
-            inicializarCatalogoMestre();
-        };
-
-        // ====================================================
-        // SISTEMA DE LOGIN (SEM TRAVAR)
+        // SISTEMA DE LOGIN (SEGURO)
         // ====================================================
         function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
             if(!grid) return;
-            
             grid.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
                 const user = bdUsuariosLogistica[nome];
@@ -888,6 +895,7 @@
         }
 
         async function carregarUsuariosDaNuvem() {
+            if(!db) return;
             try {
                 const snapshot = await db.collection("usuarios").get(); 
                 if (!snapshot.empty) {
@@ -896,10 +904,10 @@
                         tempBd[doc.id] = doc.data(); 
                     });
                     bdUsuariosLogistica = tempBd;
-                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem se existirem
+                    renderLoginGrid(); 
                 }
             } catch (error) { 
-                console.warn("Modo offline ou banco vazio. Mantendo fallback local."); 
+                console.warn("Nuvem não acessível agora."); 
             }
         }
 
@@ -988,6 +996,7 @@
         async function inicializarCatalogoMestre() {
             catalogoCompleto = [...baseCatalogoVOLT];
             catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
+            if(!db) return;
             try {
                 const snapshot = await db.collection("catalogo_produtos").get();
                 snapshot.forEach(doc => {
@@ -1066,7 +1075,7 @@
         }
 
         // ====================================================
-        // ENDEREÇAMENTO DE ESTOQUE (INBOUND)
+        // ENDEREÇAMENTO DE ESTOQUE (INBOUND COM DATA E FAMILIA)
         // ====================================================
         function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
         function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
@@ -2200,7 +2209,6 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
-                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada.";
                 document.getElementById('erroModal').style.display = 'flex'; 
                 input.value = ''; 
             }
@@ -2245,7 +2253,6 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
-                document.getElementById('txtErroEstoque').innerText = "O erro foi gravado. Quantidades divergentes com a ordem fiscal.";
                 document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
