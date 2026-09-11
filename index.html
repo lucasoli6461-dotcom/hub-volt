@@ -231,6 +231,7 @@
         .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
     </style>
+
 </head>
 <body>
 
@@ -394,6 +395,24 @@
         </div>
     </div>
 
+    <!-- MODAL DE DETALHES DO PRODUTO (DASHBOARD) -->
+    <div id="modalDetalhesProduto" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 600px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto;">
+            <div class="modulo-header" style="margin-bottom: 15px;">
+                <h2 style="font-size: 20px;">Detalhes: <span id="detalheSkuNome" style="color: white;">SKU</span></h2>
+                <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalDetalhesProduto').style.display='none'">✖ Fechar</button>
+            </div>
+            <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                <table style="margin-top: 0;">
+                    <thead style="background: #000;">
+                        <tr><th>Endereço</th><th>Lote</th><th>Caixas</th><th>Unidades</th></tr>
+                    </thead>
+                    <tbody id="tabelaDetalhesProduto"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL AUDITORIA LOGS (ERRO) -->
     <div id="modalAuditoria" class="modal-overlay">
         <div class="auditoria-box">
@@ -440,7 +459,7 @@
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
             <div class="login-grid" id="gridUsuariosLogin">
-                <div style="color: var(--text-muted); grid-column: 1 / -1; text-align: center; font-size: 14px;">Iniciando sistema...</div>
+                <!-- Fallback automático entra aqui via JS -->
             </div>
         </div>
 
@@ -488,6 +507,11 @@
                             <h4 style="margin: 0 0 10px 0; color: #888; font-size: 12px; text-transform: uppercase;">Top 5 Produtos (Unidades)</h4>
                             <canvas id="chartTopSkus"></canvas>
                         </div>
+                    </div>
+
+                    <h3 style="color: var(--text-light); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Posições de Estoque por Produto</h3>
+                    <div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;">
+                        <!-- Cards de produtos serão injetados aqui -->
                     </div>
                 </div>
             </div>
@@ -755,74 +779,25 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SCRIPTS (LÓGICA COMPLETA)                  -->
+    <!-- SCRIPTS (LÓGICA COMPLETA E EXPANDIDA)      -->
     <!-- ========================================== -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            // Renderiza offline IMEDIATAMENTE antes de qualquer requisição
-            bdUsuariosLogistica = { 
-                'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
-                'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
-            };
-            renderLoginGrid();
+        // Memória para uso do Modal de Detalhes dos Produtos
+        let globalEstoqueData = [];
 
-            // Seta datas iniciais nos inputs de Inbound
-            const today = new Date().toISOString().split('T')[0];
-            if(document.getElementById('inboundData')) {
-                document.getElementById('inboundData').value = today;
-            }
-            if(document.getElementById('inboundDataEstoque')) {
-                document.getElementById('inboundDataEstoque').value = today;
-            }
-
-            // Checa a memória do navegador para o auto-login rápido
-            const savedUser = localStorage.getItem('hubVoltUser'); 
-            const savedRole = localStorage.getItem('hubVoltRole');
-            
-            if (savedUser && savedRole) {
-                usuarioLogado = savedUser; 
-                papelLogado = savedRole;
-                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
-                document.getElementById('btnSair').style.display = 'block'; 
-                document.getElementById('modalSenha').style.display = 'none';
-                atualizarSaudacao(); 
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                if(papelLogado === 'admin') { 
-                    renderizarTabelaAcessosAdmin(); 
-                }
-            } else { 
-                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
-            }
-
-            // Adia as consultas pesadas para o Firebase não travar a CPU e a tela inicial
-            setTimeout(() => {
-                iniciarConexaoNuvem();
-            }, 500);
-        });
-
-        // Configuração segura do Firebase encapsulada
-        let db = null;
-        function iniciarConexaoNuvem() {
-            try {
-                const firebaseConfig = { 
-                    apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
-                    authDomain: "hub-volt.firebaseapp.com", 
-                    projectId: "hub-volt", 
-                    storageBucket: "hub-volt.firebasestorage.app", 
-                    messagingSenderId: "483817757628", 
-                    appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
-                };
-                firebase.initializeApp(firebaseConfig); 
-                db = firebase.firestore();
-                
-                carregarUsuariosDaNuvem(); 
-                inicializarCatalogoMestre();
-            } catch (error) {
-                console.warn("Sem internet ou erro no Firebase. Mantendo sistema offline.", error);
-            }
-        }
-
+        // Inicialização do Firebase
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
+            authDomain: "hub-volt.firebaseapp.com", 
+            projectId: "hub-volt", 
+            storageBucket: "hub-volt.firebasestorage.app", 
+            messagingSenderId: "483817757628", 
+            appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
+        };
+        firebase.initializeApp(firebaseConfig); 
+        const db = firebase.firestore();
+        
+        // BASE DE DADOS DOS 31 PRODUTOS DA VOLT
         const baseCatalogoVOLT = [
             {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
             {sku: "CH45WH", ean: "7898974018083"}, {sku: "CH65WH", ean: "7898974018007"}, {sku: "PCC20GR", ean: "7898974018045"}, {sku: "FAC10BK", ean: "7898996240301"},
@@ -835,6 +810,15 @@
         ];
 
         let catalogoCompleto = []; 
+        
+        // CORREÇÃO CRÍTICA: Base populada por padrão para não travar a tela
+        let bdUsuariosLogistica = { 
+            'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
+            'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
+        };
+        
+        let usuarioLogado = null; 
+        let papelLogado = null; 
         let usuarioSelecionadoTemp = null;
         let idOvGlobal = null; 
         let objOvGlobal = null; 
@@ -869,11 +853,52 @@
         }
 
         // ====================================================
-        // SISTEMA DE LOGIN (SEGURO)
+        // INICIALIZAÇÃO DA PÁGINA (CORRIGIDO E SINCRONIZADO)
+        // ====================================================
+        window.onload = function() { 
+            // 1. Renderiza a tela de login IMEDIATAMENTE (sem esperar internet)
+            renderLoginGrid();
+
+            // 2. Preenche as datas padrão nos inputs de Inbound
+            const today = new Date().toISOString().split('T')[0];
+            if(document.getElementById('inboundData')) {
+                document.getElementById('inboundData').value = today;
+            }
+            if(document.getElementById('inboundDataEstoque')) {
+                document.getElementById('inboundDataEstoque').value = today;
+            }
+
+            // 3. Verifica se já está logado na Sessão
+            const savedUser = localStorage.getItem('hubVoltUser'); 
+            const savedRole = localStorage.getItem('hubVoltRole');
+            
+            if (savedUser && savedRole) {
+                usuarioLogado = savedUser; 
+                papelLogado = savedRole;
+                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
+                document.getElementById('btnSair').style.display = 'block'; 
+                document.getElementById('modalSenha').style.display = 'none';
+                atualizarSaudacao(); 
+                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
+                if(papelLogado === 'admin') { 
+                    renderizarTabelaAcessosAdmin(); 
+                }
+            } else { 
+                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
+            }
+
+            // 4. Busca atualizações da nuvem em segundo plano (Não trava a tela)
+            carregarUsuariosDaNuvem(); 
+            inicializarCatalogoMestre();
+        };
+
+        // ====================================================
+        // SISTEMA DE LOGIN (SEM TRAVAR)
         // ====================================================
         function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
             if(!grid) return;
+            
             grid.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
                 const user = bdUsuariosLogistica[nome];
@@ -895,7 +920,6 @@
         }
 
         async function carregarUsuariosDaNuvem() {
-            if(!db) return;
             try {
                 const snapshot = await db.collection("usuarios").get(); 
                 if (!snapshot.empty) {
@@ -904,10 +928,10 @@
                         tempBd[doc.id] = doc.data(); 
                     });
                     bdUsuariosLogistica = tempBd;
-                    renderLoginGrid(); 
+                    renderLoginGrid(); // Re-renderiza com dados oficiais da nuvem se existirem
                 }
             } catch (error) { 
-                console.warn("Nuvem não acessível agora."); 
+                console.warn("Modo offline ou banco vazio. Mantendo fallback local."); 
             }
         }
 
@@ -996,7 +1020,6 @@
         async function inicializarCatalogoMestre() {
             catalogoCompleto = [...baseCatalogoVOLT];
             catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
-            if(!db) return;
             try {
                 const snapshot = await db.collection("catalogo_produtos").get();
                 snapshot.forEach(doc => {
@@ -1214,7 +1237,7 @@
         }
 
         // ====================================================
-        // DASHBOARD GRÁFICO
+        // DASHBOARD GRÁFICO (REMOVIDO "OUTROS" + CARDS DE PRODUTO)
         // ====================================================
         let chartFamInst = null; let chartSkuInst = null;
 
@@ -1226,42 +1249,66 @@
 
             try {
                 const snapshot = await db.collection("estoque_posicoes").get();
-                let totalCx = 0; let totalUn = 0; let skusSet = new Set();
-                let familyData = { 'Cabo': 0, 'Fonte': 0, 'Fone de ouvido': 0, 'Power bank': 0, 'Outros': 0 };
+                let totalCx = 0; 
+                let totalUn = 0; 
+                let skusSet = new Set();
+                let familyData = { 'Cabo': 0, 'Fonte': 0, 'Fone de ouvido': 0, 'Power bank': 0 };
                 let skuData = {};
+                let skuMap = {}; // Para os cards de estoque abaixo
+                
+                // Reinicia a variável global para o Modal de Detalhes
+                globalEstoqueData = [];
 
                 snapshot.forEach(doc => {
                     const item = doc.data();
-                    totalCx += item.caixas; 
-                    totalUn += item.quantidade; 
-                    skusSet.add(item.sku);
-                    
-                    const fam = item.familia || 'Outros';
-                    if(familyData[fam] !== undefined) {
-                        familyData[fam] += item.quantidade; 
-                    } else {
-                        familyData['Outros'] += item.quantidade;
+                    if(item.quantidade > 0) {
+                        globalEstoqueData.push(item);
+                        totalCx += item.caixas; 
+                        totalUn += item.quantidade; 
+                        skusSet.add(item.sku);
+                        
+                        // Auto-Classificador inteligente (Remove "Outros" de itens antigos)
+                        let fam = item.familia;
+                        if (!fam || fam === 'Outros') {
+                            if(item.sku.includes('CH')) fam = 'Fonte';
+                            else if(item.sku.includes('MP') || item.sku.includes('CP')) fam = 'Fone de ouvido';
+                            else if(item.sku.includes('PS') || item.sku.includes('SA') || item.sku.includes('SP') || item.sku.includes('SB') || item.sku.includes('DCP') || item.sku.includes('XMT')) fam = 'Power bank';
+                            else fam = 'Cabo'; // Padrão FAL, FAC, FCC, FCL, MCC, MCL, PCC
+                        }
+                        
+                        if(familyData[fam] !== undefined) {
+                            familyData[fam] += item.quantidade; 
+                        } else {
+                            familyData['Cabo'] += item.quantidade; // Garantia contra erros bizarros
+                        }
+                        
+                        if(!skuData[item.sku]) skuData[item.sku] = 0;
+                        skuData[item.sku] += item.quantidade;
+
+                        // Agrupamento para os Cards da Visão Geral
+                        if(!skuMap[item.sku]) skuMap[item.sku] = { sku: item.sku, qtd: 0, locs: new Set() };
+                        skuMap[item.sku].qtd += item.quantidade;
+                        skuMap[item.sku].locs.add(item.endereco);
                     }
-                    
-                    if(!skuData[item.sku]) skuData[item.sku] = 0;
-                    skuData[item.sku] += item.quantidade;
                 });
 
                 document.getElementById('resumoCx').innerText = totalCx;
                 document.getElementById('resumoUn').innerText = totalUn;
                 document.getElementById('resumoSkus').innerText = skusSet.size;
 
+                // Gráfico de Famílias (Sem o Outros)
                 if(chartFamInst) chartFamInst.destroy();
                 const ctxFam = document.getElementById('chartFamilias').getContext('2d');
                 chartFamInst = new Chart(ctxFam, {
                     type: 'doughnut',
                     data: { 
                         labels: Object.keys(familyData), 
-                        datasets: [{ data: Object.values(familyData), backgroundColor: ['#c4f000', '#00aaff', '#ff3333', '#ffcc00', '#555'], borderWidth: 0 }] 
+                        datasets: [{ data: Object.values(familyData), backgroundColor: ['#c4f000', '#00aaff', '#ff3333', '#ffcc00'], borderWidth: 0 }] 
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {color: 'white'} } } }
                 });
 
+                // Gráfico Top 5 SKUs
                 if(chartSkuInst) chartSkuInst.destroy();
                 let sortSkus = Object.keys(skuData).map(k => ({sku: k, qtd: skuData[k]})).sort((a,b) => b.qtd - a.qtd).slice(0, 5);
                 const ctxSku = document.getElementById('chartTopSkus').getContext('2d');
@@ -1282,7 +1329,48 @@
                     }
                 });
 
+                // Renderiza os Cards de Produtos Abaixo dos Gráficos
+                const containerCards = document.getElementById('cardsEstoqueDashboard');
+                containerCards.innerHTML = '';
+                let sortedSkusMap = Object.values(skuMap).sort((a,b) => b.qtd - a.qtd);
+                
+                sortedSkusMap.forEach(s => {
+                    const locaisStr = Array.from(s.locs).join(', ');
+                    containerCards.innerHTML += `
+                        <div class="hub-card" style="min-height: auto; padding: 15px;" onclick="abrirDetalhesProduto('${s.sku}')">
+                            <h3 style="font-size: 18px; color: var(--volt-green); margin-bottom: 5px;">${s.sku}</h3>
+                            <p style="font-size: 14px; color: white; margin-bottom: 5px;">Total: <strong>${s.qtd} un</strong></p>
+                            <p style="font-size: 11px; color: #888; margin: 0; line-height: 1.3;">Endereços: ${locaisStr}</p>
+                        </div>
+                    `;
+                });
+
             } catch(e) { console.log(e); }
+        }
+
+        // NOVO: Função que abre os detalhes de um produto ao clicar no Card do Dashboard
+        function abrirDetalhesProduto(sku) {
+            document.getElementById('detalheSkuNome').innerText = sku;
+            const tbody = document.getElementById('tabelaDetalhesProduto');
+            tbody.innerHTML = '';
+            
+            // Puxa as informações globais que foram carregadas no dashboard
+            const itens = globalEstoqueData.filter(i => i.sku === sku);
+            itens.sort((a, b) => a.endereco.localeCompare(b.endereco)); 
+
+            itens.forEach(item => {
+                const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-';
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 10px 15px;"><span class="badge-endereco">${item.endereco}</span></td>
+                        <td style="padding: 10px 15px;"><span class="badge-lote">${item.lote}</span> <span style="font-size:10px;color:#888;margin-left:5px;">${dEnt}</span></td>
+                        <td style="padding: 10px 15px;">${item.caixas} cx</td>
+                        <td style="padding: 10px 15px; color: var(--volt-green); font-weight: bold;">${item.quantidade}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('modalDetalhesProduto').style.display = 'flex';
         }
 
         // ====================================================
@@ -2209,6 +2297,7 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
+                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada.";
                 document.getElementById('erroModal').style.display = 'flex'; 
                 input.value = ''; 
             }
@@ -2253,6 +2342,7 @@
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ 
                     auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) 
                 });
+                document.getElementById('txtErroEstoque').innerText = "O erro foi gravado. Quantidades divergentes com a ordem fiscal.";
                 document.getElementById('erroModal').style.display = 'flex'; 
             }
         }
