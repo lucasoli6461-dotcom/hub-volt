@@ -231,7 +231,6 @@
         .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
     </style>
-
 </head>
 <body>
 
@@ -284,7 +283,9 @@
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Edite as quantidades alvo desta ordem abaixo e salve para o operador continuar.</p>
             
-            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
+            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <!-- Preenchido via JS -->
+            </div>
 
             <div style="text-align: right;">
                 <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correção da OV</button>
@@ -524,6 +525,18 @@
                     <h3 style="color: var(--text-light); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Posições de Estoque por Produto</h3>
                     <div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;">
                         <!-- Cards de produtos serão injetados aqui -->
+                    </div>
+
+                    <h3 style="color: var(--error-red); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Histórico Recente de Saídas (Itens Expedidos)</h3>
+                    <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto; margin-top: 20px;">
+                        <table style="margin-top: 0;">
+                            <thead style="background: #000;">
+                                <tr><th>Data</th><th>Ordem de Venda</th><th>Produto / SKU</th><th>Qtd. Expedida</th></tr>
+                            </thead>
+                            <tbody id="tabelaHistoricoSaidas">
+                                <tr><td colspan="4" style="text-align: center; color: var(--volt-green);">Carregando histórico...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1221,6 +1234,58 @@
                     containerCards.innerHTML += `<div class="hub-card" style="min-height: auto; padding: 15px;" onclick="abrirDetalhesProduto('${s.sku}')"><h3 style="font-size: 18px; color: var(--volt-green); margin-bottom: 5px;">${s.sku}</h3><p style="font-size: 14px; color: white; margin-bottom: 5px;">Total: <strong>${s.qtd} un</strong></p><p style="font-size: 11px; color: #888; margin: 0; line-height: 1.3;">Endereços: ${locaisStr}</p></div>`;
                 });
 
+                // ===============================================
+                // HISTÓRICO RECENTE DE SAÍDAS (EXPEDIDOS)
+                // ===============================================
+                const tbodySaidas = document.getElementById('tabelaHistoricoSaidas');
+                tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--volt-green);">Calculando saídas...</td></tr>';
+                
+                const ovsSnap = await db.collection("estoque_ovs")
+                    .where("status", "in", ["Conferido", "Em cotação", "Aguardando Cotação", "Aguardando Faturamento", "Faturado", "Concluído"])
+                    .get(); 
+                    
+                let saidas = [];
+                ovsSnap.forEach(doc => {
+                    const ov = doc.data();
+                    const dataFim = ov.dataConclusao || ov.data || '-';
+                    if (ov.itensOV) {
+                        Object.values(ov.itensOV).forEach(i => {
+                            saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'Principal', ts: ov.timestamp });
+                        });
+                    }
+                    if (ov.itensRMA) {
+                        Object.values(ov.itensRMA).forEach(i => {
+                            saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'RMA', ts: ov.timestamp });
+                        });
+                    }
+                });
+
+                tbodySaidas.innerHTML = '';
+                if (saidas.length > 0) {
+                    saidas.sort((a,b) => {
+                        const tA = a.ts ? a.ts.toMillis() : 0;
+                        const tB = b.ts ? b.ts.toMillis() : 0;
+                        return tB - tA; // Ordem decrescente
+                    });
+                    
+                    // Limita as últimas 50 saídas para não pesar a tela
+                    const saidasRecentes = saidas.slice(0, 50);
+                    
+                    saidasRecentes.forEach(s => {
+                        let tipoBadge = s.tipo === 'RMA' ? `<span style="color:var(--warning-yellow); font-size:10px; margin-left:5px;">(RMA)</span>` : '';
+                        tbodySaidas.innerHTML += `
+                            <tr style="border-bottom: 1px solid #222;">
+                                <td style="color:#aaa; font-size:12px;">${s.data}</td>
+                                <td><strong>${s.ov}</strong></td>
+                                <td>${s.sku} ${tipoBadge}</td>
+                                <td style="color:var(--error-red); font-weight:bold;">-${s.qtd}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">Nenhuma saída registrada.</td></tr>';
+                }
+
             } catch(e) { console.log(e); }
         }
 
@@ -1351,7 +1416,7 @@
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO (NOVO MODELO DOSSIÊ COMPLETO)
+        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO)
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -1376,11 +1441,7 @@
             idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero; document.getElementById('modalEscolhaFrete').style.display = 'flex';
             
             // Zera todos os dados da tela
-            document.getElementById('freteCliente').innerText = "-";
-            document.getElementById('freteData').innerText = "-";
-            document.getElementById('freteOps').innerText = "-";
-            document.getElementById('freteItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
-            
+            document.getElementById('freteCliente').innerText = "-"; document.getElementById('freteData').innerText = "-"; document.getElementById('freteOps').innerText = "-"; document.getElementById('freteItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
             carregarCotasEDimensoes();
         }
 
@@ -1391,46 +1452,24 @@
             try {
                 const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
                 
-                // Preenche o "Mini-Dossiê"
-                document.getElementById('freteCliente').innerText = ovData.cliente || '-';
-                document.getElementById('freteData').innerText = ovData.data || '-';
-                document.getElementById('freteOps').innerText = ovData.operadorSeparacao || '-';
+                document.getElementById('freteCliente').innerText = ovData.cliente || '-'; document.getElementById('freteData').innerText = ovData.data || '-'; document.getElementById('freteOps').innerText = ovData.operadorSeparacao || '-';
                 
                 let itensHtml = '';
                 if(ovData.itensOV) Object.values(ovData.itensOV).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:#888; font-size:11px;">Principal</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
                 if(ovData.itensRMA) Object.values(ovData.itensRMA).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:var(--warning-yellow); font-size:11px;">RMA</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
                 document.getElementById('freteItensList').innerHTML = itensHtml || '<tr><td colspan="3" style="padding: 10px;">Nenhum item registrado.</td></tr>';
 
-                // Dimensões editáveis
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => { 
-                        containerDimensoes.innerHTML += `
-                        <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
-                            <div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div>
-                            <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div>
-                            <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div>
-                            <div style="display: flex; gap: 5px;">
-                                <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
-                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
-                            </div>
-                        </div>`; 
+                        containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`; 
                     });
                 } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão registrada.</p>'; }
 
-                // Cotações editáveis
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => { 
-                        containerCotacoes.innerHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;">
-                            <div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div>
-                            <div style="text-align: right;">
-                                <strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong>
-                                <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button>
-                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button>
-                            </div>
-                        </div>`; 
+                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; 
                     });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
@@ -1724,7 +1763,7 @@
             else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Bipou código não pertencente à esta etapa: ${ean}`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada."; document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
+                document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
 
@@ -1750,6 +1789,7 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
+            // Abate do mapa de estoque (FEFO)
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
