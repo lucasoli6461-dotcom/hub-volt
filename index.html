@@ -274,21 +274,21 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DE OV (ADMIN) -->
+    <!-- MODAL DE EDIÇÃO DE OV (ADMIN) COM SKUS EDITAVEIS -->
     <div id="modalEditarOV" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 600px; border-color: var(--warning-yellow); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
-                <h2 style="font-size: 20px; color: var(--warning-yellow);">Corrigir Quantidades - <span id="editOvNum" style="color: white;">OV-0000</span></h2>
+                <h2 style="font-size: 20px; color: var(--warning-yellow);">Corrigir OV - <span id="editOvNum" style="color: white;">OV-0000</span></h2>
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEditarOV').style.display='none'">✖ Fechar</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Edite as quantidades alvo desta ordem abaixo e salve para o operador continuar.</p>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Você pode alterar tanto as quantidades quanto o nome dos produtos (SKUs). Se remover toda a quantidade, o item será apagado.</p>
             
             <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <!-- Preenchido via JS -->
             </div>
 
             <div style="text-align: right;">
-                <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correção da OV</button>
+                <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correções</button>
             </div>
         </div>
     </div>
@@ -494,7 +494,7 @@
                     <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()"><div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div><div class="action" style="font-size: 12px;">Abrir Painel ➔</div></div>
                 </div>
 
-                <!-- NOVO: ACESSO DIRETO À OPERAÇÃO PELO ADMIN -->
+                <!-- ACESSO DIRETO À OPERAÇÃO PELO ADMIN -->
                 <h3 style="color: var(--text-light); margin-top: 40px; margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 10px;">Acesso à Operação Física (Estoque)</h3>
                 <div class="grid-3">
                     <div class="hub-card" style="min-height: 120px; padding: 20px;" onclick="abrirFilaSeparacao()">
@@ -825,7 +825,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SCRIPTS (LÓGICA COMPLETA E EXPANDIDA)      -->
+    <!-- SCRIPTS (LÓGICA COMPLETA)                  -->
     <!-- ========================================== -->
     <script>
         // Função Global de Retorno
@@ -966,6 +966,15 @@
         function fazerLogout() { localStorage.removeItem('hubVoltUser'); localStorage.removeItem('hubVoltRole'); location.reload(); }
 
         // ====================================================
+        // NAVEGAÇÃO E LAYERS
+        // ====================================================
+        function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
+        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
+        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
+        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
+        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
+
+        // ====================================================
         // MATRIZ DE CATÁLOGO (ADMIN)
         // ====================================================
         async function inicializarCatalogoMestre() {
@@ -988,6 +997,7 @@
             tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
             try {
                 const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {}; snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
+                
                 tbody.innerHTML = '';
                 catalogoCompleto.forEach(prod => {
                     const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100;
@@ -998,7 +1008,7 @@
 
         async function salvarProdutoCatalogo(eanUnitario, sku) {
             const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
-            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); }
+            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); }
         }
 
         async function salvarNovoSKUNuvem() {
@@ -1088,7 +1098,7 @@
         }
 
         // ====================================================
-        // DASHBOARD GRÁFICO (REMOVIDO "OUTROS" + CARDS DE PRODUTO)
+        // DASHBOARD GRÁFICO E CARDS DE PRODUTO
         // ====================================================
         let chartFamInst = null; let chartSkuInst = null;
 
@@ -1190,7 +1200,7 @@
         }
 
         // ====================================================
-        // GRADE DE LANÇAMENTO DE OVs
+        // GRADE DE LANÇAMENTO E FILTRO DE BUSCA
         // ====================================================
         function abrirModuloLancamentos() { navegarAdmin('adminLancamentos'); carregarMiniFilaAdmin(); renderizarGridLancamentos(); }
 
@@ -1297,23 +1307,73 @@
             idOvEditGlobal = id_doc; document.getElementById('editOvNum').innerText = numero; const container = document.getElementById('listaEdicaoItens'); container.innerHTML = '<p style="color: var(--volt-green);">Carregando itens...</p>'; document.getElementById('modalEditarOV').style.display = 'flex';
             try {
                 const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ov = docRef.data(); container.innerHTML = '';
-                if (ov.itensOV) { for(let ean in ov.itensOV) { container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2; color: white;">${ov.itensOV[ean].sku} <span style="font-size:10px; color:#888;">(Principal)</span></div><div><input type="number" id="edit_ov_${ean}" class="input-dark edit-qtd-input" value="${ov.itensOV[ean].alvo}"></div></div>`; } }
-                if (ov.itensRMA) { for(let ean in ov.itensRMA) { container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2; color: white;">${ov.itensRMA[ean].sku} <span style="font-size:10px; color:var(--warning-yellow);">(RMA)</span></div><div><input type="number" id="edit_rma_${ean}" class="input-dark edit-qtd-input" value="${ov.itensRMA[ean].alvo}"></div></div>`; } }
+                if (ov.itensOV) { 
+                    for(let ean in ov.itensOV) { 
+                        container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:#888;">SKU (Principal)</label><input type="text" id="edit_ov_sku_${ean}" class="input-dark" value="${ov.itensOV[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:#888;">Qtd.</label><input type="number" id="edit_ov_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensOV[ean].alvo}" style="padding: 8px;"></div></div>`; 
+                    } 
+                }
+                if (ov.itensRMA) { 
+                    for(let ean in ov.itensRMA) { 
+                        container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:var(--warning-yellow);">SKU (RMA)</label><input type="text" id="edit_rma_sku_${ean}" class="input-dark" value="${ov.itensRMA[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:var(--warning-yellow);">Qtd.</label><input type="number" id="edit_rma_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensRMA[ean].alvo}" style="padding: 8px;"></div></div>`; 
+                    } 
+                }
             } catch(e) {}
         }
 
         async function salvarEdicaoOVAdmin() {
             try {
                 const docRef = await db.collection("estoque_ovs").doc(idOvEditGlobal).get(); let ov = docRef.data();
-                if (ov.itensOV) { for(let ean in ov.itensOV) { const newVal = document.getElementById(`edit_ov_${ean}`).value; ov.itensOV[ean].alvo = parseInt(newVal) || 0; } }
-                if (ov.itensRMA) { for(let ean in ov.itensRMA) { const newVal = document.getElementById(`edit_rma_${ean}`).value; ov.itensRMA[ean].alvo = parseInt(newVal) || 0; } }
-                await db.collection("estoque_ovs").doc(idOvEditGlobal).update({ itensOV: ov.itensOV, itensRMA: ov.itensRMA, hasProblema: false });
-                alert("Quantidades corrigidas com sucesso!"); document.getElementById('modalEditarOV').style.display = 'none'; carregarMiniFilaAdmin();
-            } catch(e) {}
+                
+                let novosItensOV = {};
+                if (ov.itensOV) { 
+                    for(let ean in ov.itensOV) { 
+                        const newSku = document.getElementById(`edit_ov_sku_${ean}`).value.trim().toUpperCase(); 
+                        const newQtd = parseInt(document.getElementById(`edit_ov_qtd_${ean}`).value) || 0; 
+                        
+                        if(newQtd > 0) {
+                            let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
+                            if(!prodInfo) {
+                                alert(`Produto Principal "${newSku}" não encontrado no Catálogo. Verifique a digitação.`);
+                                return;
+                            }
+                            let newEan = prodInfo.ean;
+                            if(novosItensOV[newEan]) { novosItensOV[newEan].alvo += newQtd; } 
+                            else { novosItensOV[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                        }
+                    } 
+                }
+                
+                let novosItensRMA = {};
+                if (ov.itensRMA) { 
+                    for(let ean in ov.itensRMA) { 
+                        const newSku = document.getElementById(`edit_rma_sku_${ean}`).value.trim().toUpperCase(); 
+                        const newQtd = parseInt(document.getElementById(`edit_rma_qtd_${ean}`).value) || 0; 
+                        
+                        if(newQtd > 0) {
+                            let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
+                            if(!prodInfo) {
+                                alert(`Produto de RMA "${newSku}" não encontrado no Catálogo. Verifique a digitação.`);
+                                return;
+                            }
+                            let newEan = prodInfo.ean;
+                            if(novosItensRMA[newEan]) { novosItensRMA[newEan].alvo += newQtd; } 
+                            else { novosItensRMA[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                        }
+                    } 
+                }
+
+                await db.collection("estoque_ovs").doc(idOvEditGlobal).update({ 
+                    itensOV: novosItensOV, 
+                    itensRMA: novosItensRMA, 
+                    hasProblema: false 
+                });
+                
+                alert("Ordem corrigida com sucesso!"); document.getElementById('modalEditarOV').style.display = 'none'; carregarMiniFilaAdmin();
+            } catch(e) { alert("Erro ao salvar correção."); }
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO E EDIÇÃO DE COTAÇÕES
+        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO)
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -1336,6 +1396,8 @@
 
         async function abrirModalEscolhaFrete(id_doc, numero) {
             idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero; document.getElementById('modalEscolhaFrete').style.display = 'flex';
+            
+            // Zera todos os dados da tela
             document.getElementById('freteCliente').innerText = "-"; document.getElementById('freteData').innerText = "-"; document.getElementById('freteOps').innerText = "-"; document.getElementById('freteItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
             carregarCotasEDimensoes();
         }
@@ -1357,14 +1419,31 @@
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => { 
-                        containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`; 
+                        containerDimensoes.innerHTML += `
+                        <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
+                            <div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div>
+                            <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div>
+                            <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div>
+                            <div style="display: flex; gap: 5px;">
+                                <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
+                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
+                            </div>
+                        </div>`; 
                     });
                 } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão registrada.</p>'; }
 
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => { 
-                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; 
+                        containerCotacoes.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;">
+                            <div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div>
+                            <div style="text-align: right;">
+                                <strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong>
+                                <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button>
+                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button>
+                            </div>
+                        </div>`; 
                     });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
@@ -1705,7 +1784,7 @@
         }
 
         // ====================================================
-        // ESTOQUE: COTAÇÃO DE FRETES
+        // ESTOQUE: COTAÇÃO DE FRETES (CARDS)
         // ====================================================
         function abrirFilaCotacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
 
