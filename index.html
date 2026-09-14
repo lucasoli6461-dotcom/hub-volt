@@ -144,14 +144,110 @@
         .brinde-chk { accent-color: var(--volt-green); transform: scale(1.2); }
 
         /* ========================================== */
-        /* 4. TABELAS E BADGES (INCLUINDO NOVA TABELA TECH) */
+        /* NOVO DESIGN DASHBOARD TECNOLÓGICO (TECH)   */
+        /* ========================================== */
+        .dashboard-panel {
+            background: linear-gradient(180deg, #111 0%, #050505 100%);
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .metric-box-tech {
+            background: linear-gradient(145deg, #161616, #0a0a0a);
+            border: 1px solid #2a2a2a;
+            border-top: 1px solid rgba(196, 240, 0, 0.2);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .metric-box-tech:hover {
+            transform: translateY(-5px);
+            border-top-color: var(--volt-green);
+            box-shadow: 0 10px 25px rgba(196, 240, 0, 0.08);
+        }
+        .metric-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+            opacity: 0.8;
+            color: #ccc;
+        }
+        .metric-label-tech {
+            font-size: 11px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+        .metric-value-tech {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--volt-green);
+            margin: 5px 0 0 0;
+            text-shadow: 0 0 15px rgba(196, 240, 0, 0.2);
+            letter-spacing: -1px;
+        }
+        .chart-container-tech {
+            background: linear-gradient(145deg, #121212, #080808);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            height: 320px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .chart-container-tech:hover {
+            border-color: #333;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .chart-title-tech {
+            margin: 0 0 15px 0;
+            color: #ddd;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-title-tech::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--volt-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--volt-green);
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(196, 240, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(196, 240, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(196, 240, 0, 0); }
+        }
+        .status-pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: var(--volt-green);
+            border-radius: 50%;
+            animation: pulseGlow 2s infinite;
+            margin-right: 8px;
+        }
+
+        /* ========================================== */
+        /* 4. TABELAS E BADGES                        */
         /* ========================================== */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
         th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; }
         td { font-size: 14px; }
         
-        /* NOVO: Estilo Tabela Tecnológica para o Histórico */
         .tech-table-wrapper { background: #0a0a0a; border: 1px solid #222; border-radius: 8px; overflow-x: auto; margin-top: 20px;}
         .tech-table { width: 100%; border-collapse: collapse; text-align: left; margin: 0;}
         .tech-table th { background: #050505; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 15px 20px; border-bottom: 2px solid #222; }
@@ -233,12 +329,6 @@
         
         .caixa-obs { background: rgba(0, 170, 255, 0.1); border-left: 4px solid var(--blue-action); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; text-align: left;}
         .caixa-brindes { background: rgba(196, 240, 0, 0.1); border-left: 4px solid var(--volt-green); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; text-align: left;}
-
-        /* Graficos Dashboard */
-        .chart-container { background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 20px; position: relative; height: 300px; width: 100%; box-sizing: border-box;}
-        .metric-box { background: #161616; border: 1px solid #333; border-radius: 8px; padding: 20px; text-align: center; }
-        .metric-value { font-size: 36px; font-weight: bold; color: var(--volt-green); margin: 10px 0 0 0; }
-        .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
     </style>
 </head>
@@ -524,27 +614,47 @@
 
             <!-- Subtela: NOVO DASHBOARD GRÁFICO (RESUMO DE ESTOQUE) -->
             <div id="adminResumoEstoque" class="sub-screen">
-                <div class="modulo-box">
-                    <div class="modulo-header" style="margin-bottom: 10px;">
-                        <h2>Visão Geral do Estoque (Dashboard)</h2>
+                <div class="modulo-box dashboard-panel">
+                    <div class="modulo-header" style="margin-bottom: 20px; border-bottom: none;">
+                        <div>
+                            <h2 style="font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">Visão Geral <span style="color:white; font-weight: 300;">do Estoque</span></h2>
+                            <p style="color: var(--text-muted); font-size: 13px; margin-top: 5px;">Métricas em tempo real calculadas a partir do módulo de Endereçamento.</p>
+                        </div>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 25px;">Métricas em tempo real calculadas a partir do módulo de Endereçamento.</p>
 
-                    <div class="grid-4" id="cardsResumoNumeros" style="margin-bottom: 25px;">
-                        <div class="metric-box"><div class="metric-label">Total de Caixas</div><div class="metric-value" id="resumoCx">-</div></div>
-                        <div class="metric-box"><div class="metric-label">Unidades no Galpão</div><div class="metric-value" id="resumoUn">-</div></div>
-                        <div class="metric-box"><div class="metric-label">SKUs Cadastrados</div><div class="metric-value" id="resumoSkus">-</div></div>
-                        <div class="metric-box" style="border-color: var(--volt-green);"><div class="metric-label">Valuation Estimado</div><div class="metric-value" style="font-size: 24px; margin-top: 15px; color: white;">Monitoramento Ativo</div></div>
+                    <div class="grid-4" id="cardsResumoNumeros" style="margin-bottom: 30px;">
+                        <div class="metric-box-tech">
+                            <div class="metric-icon">📦</div>
+                            <div class="metric-label-tech">Total de Caixas</div>
+                            <div class="metric-value-tech" id="resumoCx">-</div>
+                        </div>
+                        <div class="metric-box-tech">
+                            <div class="metric-icon">⚡</div>
+                            <div class="metric-label-tech">Unidades no Galpão</div>
+                            <div class="metric-value-tech" id="resumoUn">-</div>
+                        </div>
+                        <div class="metric-box-tech">
+                            <div class="metric-icon">🏷️</div>
+                            <div class="metric-label-tech">SKUs Cadastrados</div>
+                            <div class="metric-value-tech" id="resumoSkus">-</div>
+                        </div>
+                        <div class="metric-box-tech" style="border-top-color: var(--volt-green); background: linear-gradient(145deg, rgba(196,240,0,0.05), #0d0d0d);">
+                            <div class="metric-icon">📈</div>
+                            <div class="metric-label-tech">Valuation Estimado</div>
+                            <div class="metric-value-tech" style="font-size: 18px; margin-top: 15px; color: white; display: flex; align-items: center; justify-content: center; text-shadow: none;">
+                                <span class="status-pulse"></span> Monitoramento Ativo
+                            </div>
+                        </div>
                     </div>
 
                     <div class="grid-2">
-                        <div class="chart-container">
-                            <h4 style="margin: 0 0 10px 0; color: #888; font-size: 12px; text-transform: uppercase;">Distribuição por Família</h4>
+                        <div class="chart-container-tech">
+                            <h4 class="chart-title-tech">Distribuição por Família</h4>
                             <canvas id="chartFamilias"></canvas>
                         </div>
-                        <div class="chart-container">
-                            <h4 style="margin: 0 0 10px 0; color: #888; font-size: 12px; text-transform: uppercase;">Top 5 Produtos (Unidades)</h4>
+                        <div class="chart-container-tech">
+                            <h4 class="chart-title-tech">Top 5 Produtos (Unidades)</h4>
                             <canvas id="chartTopSkus"></canvas>
                         </div>
                     </div>
@@ -554,7 +664,7 @@
                         <!-- Cards de produtos serão injetados aqui -->
                     </div>
 
-                    <!-- NOVO: HISTÓRICO DE SAÍDAS (TECH GRID) -->
+                    <!-- HISTÓRICO DE SAÍDAS (TECH GRID) -->
                     <div class="modulo-box" style="border-color: var(--error-red); box-shadow: 0 0 30px rgba(255, 51, 51, 0.05); margin-top: 40px; padding: 20px;">
                         <div class="modulo-header" style="border-bottom-color: #222; margin-bottom: 15px;">
                             <div>
@@ -568,7 +678,7 @@
                                 <input type="text" id="filtroSaidas" class="input-dark" placeholder="🔍 Buscar por SKU ou N° da OV..." style="margin: 0; border-color: #333;" onkeyup="filtrarHistoricoSaidas()">
                             </div>
                             <div style="display: flex; gap: 10px;">
-                                <div class="metric-box" style="padding: 10px 20px; margin: 0; border-color: #222;"><span style="font-size: 10px; color: #888;">ITENS EXIBIDOS</span><div id="histTotalSaidas" style="font-size: 18px; color: white; font-weight: bold;">0</div></div>
+                                <div class="metric-box-tech" style="padding: 10px 20px; margin: 0; border-color: #222;"><span style="font-size: 10px; color: #888; font-weight: bold;">ITENS EXIBIDOS</span><div id="histTotalSaidas" style="font-size: 18px; color: white; font-weight: bold;">0</div></div>
                             </div>
                         </div>
 
@@ -677,7 +787,7 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS) -->
+            <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS E BUSCA) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -757,7 +867,7 @@
                             <input type="text" id="filtroHistorico" class="input-dark" placeholder="🔍 Buscar por N° da OV ou Cliente..." style="margin: 0; border-color: #333;" onkeyup="filtrarHistorico()">
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <div class="metric-box" style="padding: 10px 20px; margin: 0; border-color: #222;"><span style="font-size: 10px; color: #888;">TOTAL REGISTROS</span><div id="histTotalOvs" style="font-size: 18px; color: white; font-weight: bold;">0</div></div>
+                            <div class="metric-box-tech" style="padding: 10px 20px; margin: 0; border-color: #222;"><span style="font-size: 10px; color: #888; font-weight: bold;">TOTAL REGISTROS</span><div id="histTotalOvs" style="font-size: 18px; color: white; font-weight: bold;">0</div></div>
                         </div>
                     </div>
 
@@ -1160,7 +1270,7 @@
         }
 
         // ====================================================
-        // DASHBOARD GRÁFICO 
+        // DASHBOARD GRÁFICO (REMOVIDO "OUTROS" + CARDS DE PRODUTO)
         // ====================================================
         let chartFamInst = null; let chartSkuInst = null;
 
@@ -1204,7 +1314,7 @@
                 chartFamInst = new Chart(ctxFam, {
                     type: 'doughnut',
                     data: { labels: Object.keys(familyData), datasets: [{ data: Object.values(familyData), backgroundColor: ['#c4f000', '#00aaff', '#ff3333', '#ffcc00'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {color: 'white'} } } }
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: {color: '#aaa', usePointStyle: true, padding: 20} } } }
                 });
 
                 if(chartSkuInst) chartSkuInst.destroy();
@@ -1212,7 +1322,7 @@
                 const ctxSku = document.getElementById('chartTopSkus').getContext('2d');
                 chartSkuInst = new Chart(ctxSku, {
                     type: 'bar',
-                    data: { labels: sortSkus.map(i => i.sku), datasets: [{ label: 'Unidades', data: sortSkus.map(i => i.qtd), backgroundColor: '#c4f000', borderRadius: 4 }] },
+                    data: { labels: sortSkus.map(i => i.sku), datasets: [{ label: 'Unidades', data: sortSkus.map(i => i.qtd), backgroundColor: 'rgba(196, 240, 0, 0.8)', hoverBackgroundColor: '#c4f000', borderRadius: 6, borderSkipped: false }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: {color: '#222'}, ticks: {color: '#888'} }, x: { grid: {display: false}, ticks: {color: 'white'} } } }
                 });
 
@@ -1259,7 +1369,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // Filtro Histórico de Saídas
         function filtrarHistoricoSaidas() {
             const termo = document.getElementById('filtroSaidas').value.toLowerCase();
             const linhas = document.querySelectorAll('#tabelaHistoricoSaidas .hist-saida-row');
@@ -1420,13 +1529,11 @@
                     for(let ean in ov.itensOV) { 
                         const newSku = document.getElementById(`edit_ov_sku_${ean}`).value.trim().toUpperCase(); 
                         const newQtd = parseInt(document.getElementById(`edit_ov_qtd_${ean}`).value) || 0; 
-                        
                         if(newQtd > 0) {
                             let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
                             if(!prodInfo) { alert(`Produto Principal "${newSku}" não encontrado no Catálogo. Verifique a digitação.`); return; }
                             let newEan = prodInfo.ean;
-                            if(novosItensOV[newEan]) { novosItensOV[newEan].alvo += newQtd; } 
-                            else { novosItensOV[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                            if(novosItensOV[newEan]) { novosItensOV[newEan].alvo += newQtd; } else { novosItensOV[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
                         }
                     } 
                 }
@@ -1436,24 +1543,22 @@
                     for(let ean in ov.itensRMA) { 
                         const newSku = document.getElementById(`edit_rma_sku_${ean}`).value.trim().toUpperCase(); 
                         const newQtd = parseInt(document.getElementById(`edit_rma_qtd_${ean}`).value) || 0; 
-                        
                         if(newQtd > 0) {
                             let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
                             if(!prodInfo) { alert(`Produto de RMA "${newSku}" não encontrado no Catálogo. Verifique a digitação.`); return; }
                             let newEan = prodInfo.ean;
-                            if(novosItensRMA[newEan]) { novosItensRMA[newEan].alvo += newQtd; } 
-                            else { novosItensRMA[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                            if(novosItensRMA[newEan]) { novosItensRMA[newEan].alvo += newQtd; } else { novosItensRMA[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
                         }
                     } 
                 }
 
                 await db.collection("estoque_ovs").doc(idOvEditGlobal).update({ itensOV: novosItensOV, itensRMA: novosItensRMA, hasProblema: false });
-                alert("Ordem corrigida com sucesso!"); document.getElementById('modalEditarOV').style.display = 'none'; carregarMiniFilaAdmin();
+                alert("Quantidades corrigidas com sucesso!"); document.getElementById('modalEditarOV').style.display = 'none'; carregarMiniFilaAdmin();
             } catch(e) { alert("Erro ao salvar correção."); }
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO E DEMAIS FUNCOES DE HISTÓRICO
+        // ADMIN: FATURAMENTO E DEMAIS FUNCIONALIDADES
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -1795,6 +1900,9 @@
             try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separado' }); alert("✅ Separação concluída! O carrinho pode ir para a Fila de Conferência."); abrirFilaSeparacao(); } catch(e) {}
         }
 
+        // ====================================================
+        // ESTOQUE: FILA DE CONFERÊNCIA (BANCADA)
+        // ====================================================
         function abrirFilaConferencia() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaConferencia'); carregarFilaConferenciaDaNuvem(); }
 
         async function carregarFilaConferenciaDaNuvem() {
@@ -1875,6 +1983,7 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
+            // Abate do mapa de estoque (FEFO)
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
@@ -1893,7 +2002,7 @@
         }
 
         // ====================================================
-        // ESTOQUE: COTAÇÃO DE FRETES (CARDS)
+        // ESTOQUE: COTAÇÃO DE FRETES
         // ====================================================
         function abrirFilaCotacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
 
