@@ -493,6 +493,23 @@
                     <div class="hub-card" style="min-height: 140px; padding: 20px; border-color: var(--volt-green);" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action" style="font-size: 12px; color: var(--volt-green);">Ver Dashboard ➔</div></div>
                     <div class="hub-card" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()"><div><h3 style="font-size: 16px;">Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div><div class="action" style="font-size: 12px;">Abrir Painel ➔</div></div>
                 </div>
+
+                <!-- NOVO: ACESSO DIRETO À OPERAÇÃO PELO ADMIN -->
+                <h3 style="color: var(--text-light); margin-top: 40px; margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 10px;">Acesso à Operação Física (Estoque)</h3>
+                <div class="grid-3">
+                    <div class="hub-card" style="min-height: 120px; padding: 20px;" onclick="abrirFilaSeparacao()">
+                        <div><h3 style="font-size: 16px;">1. Fila de Separação</h3><p style="font-size: 12px; margin-bottom: 10px;">Acessar roteiros e carrinhos.</p></div>
+                        <div class="action" style="font-size: 12px;">Ver Pendentes ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 120px; padding: 20px;" onclick="abrirFilaConferencia()">
+                        <div><h3 style="font-size: 16px;">2. Fila de Conferência</h3><p style="font-size: 12px; margin-bottom: 10px;">Bipagem cega na bancada.</p></div>
+                        <div class="action" style="font-size: 12px;">Ver Pendentes ➔</div>
+                    </div>
+                    <div class="hub-card" style="min-height: 120px; padding: 20px; border-color: var(--volt-green);" onclick="abrirFilaCotacao()">
+                        <div><h3 style="font-size: 16px; color: white;">3. Cotação de Frete</h3><p style="font-size: 12px; margin-bottom: 10px;">Lançar preços de envio.</p></div>
+                        <div class="action" style="font-size: 12px; color: var(--volt-green);">Fazer Cotações ➔</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Subtela: NOVO DASHBOARD GRÁFICO (RESUMO DE ESTOQUE) -->
@@ -632,7 +649,7 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS E BUSCA) -->
+            <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS) -->
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -671,7 +688,7 @@
                     <div class="form-group">
                         <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (GRADE RÁPIDA)</label>
                         
-                        <!-- NOVO CAMPO DE BUSCA INTELIGENTE -->
+                        <!-- FILTRO DE BUSCA -->
                         <input type="text" id="filtroProdutosLancamento" class="input-dark" style="margin-bottom: 15px; border-color: #555;" placeholder="🔍 Buscar produto por nome ou SKU..." onkeyup="filtrarGradeLancamento()">
                         
                         <div class="grid-lancamento" id="gridProdutosLancamento"><p style="color: var(--volt-green); font-size: 12px; text-align: center; grid-column: 1 / -1;">Carregando Matriz...</p></div>
@@ -734,9 +751,9 @@
             </div>
 
             <!-- Filas do Estoque -->
-            <div id="estoqueFila" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Pedidos para Separar</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR</button></div><div id="containerFilaEstoque"></div></div>
-            <div id="estoqueFilaConferencia" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Pedidos para Conferência</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR</button></div><div id="containerFilaConferencia"></div></div>
-            <div id="estoqueFilaCotacao" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Aguardando Cotação</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR</button></div><div id="containerFilaCotacao"></div></div>
+            <div id="estoqueFila" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Pedidos para Separar</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="voltarAoDash()">⟵ VOLTAR</button></div><div id="containerFilaEstoque"></div></div>
+            <div id="estoqueFilaConferencia" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Pedidos para Conferência</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="voltarAoDash()">⟵ VOLTAR</button></div><div id="containerFilaConferencia"></div></div>
+            <div id="estoqueFilaCotacao" class="sub-screen"><div class="modulo-header" style="border:none; margin-bottom: 10px;"><h2 style="font-size: 24px;">Aguardando Cotação</h2><button class="btn-outline" style="border:none; padding-right: 0;" onclick="voltarAoDash()">⟵ VOLTAR</button></div><div id="containerFilaCotacao"></div></div>
 
             <!-- Telas de Operação -->
             <div id="estoquePreparacao" class="sub-screen">
@@ -781,7 +798,7 @@
             <!-- Inbound Estoque -->
             <div id="estoqueEnderecamento" class="sub-screen">
                 <div class="modulo-box">
-                    <div class="modulo-header"><h2>Guardar Mercadoria (Inbound)</h2><button class="btn-voltar" onclick="navegarEstoque('estoqueDash')">⟵ VOLTAR AO HUB</button></div>
+                    <div class="modulo-header"><h2>Guardar Mercadoria (Inbound)</h2><button class="btn-voltar" onclick="voltarAoDash()">⟵ VOLTAR AO HUB</button></div>
                     <div class="grid-2" style="gap: 30px;">
                         <div>
                             <div class="grid-2">
@@ -811,69 +828,36 @@
     <!-- SCRIPTS (LÓGICA COMPLETA E EXPANDIDA)      -->
     <!-- ========================================== -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            // Renderiza offline IMEDIATAMENTE antes de qualquer requisição
-            bdUsuariosLogistica = { 
-                'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
-                'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
-            };
-            renderLoginGrid();
-
-            // Seta datas iniciais nos inputs de Inbound
-            const today = new Date().toISOString().split('T')[0];
-            if(document.getElementById('inboundData')) {
-                document.getElementById('inboundData').value = today;
-            }
-            if(document.getElementById('inboundDataEstoque')) {
-                document.getElementById('inboundDataEstoque').value = today;
-            }
-
-            // Checa a memória do navegador para o auto-login rápido
-            const savedUser = localStorage.getItem('hubVoltUser'); 
-            const savedRole = localStorage.getItem('hubVoltRole');
-            
-            if (savedUser && savedRole) {
-                usuarioLogado = savedUser; 
-                papelLogado = savedRole;
-                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
-                document.getElementById('btnSair').style.display = 'block'; 
-                document.getElementById('modalSenha').style.display = 'none';
-                atualizarSaudacao(); 
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                if(papelLogado === 'admin') { 
-                    renderizarTabelaAcessosAdmin(); 
-                }
+        // Função Global de Retorno
+        function voltarAoDash() { 
+            if(papelLogado === 'admin') { 
+                mudarViewLayerGlobal('viewAdmin'); 
+                navegarAdmin('adminDash'); 
             } else { 
-                document.getElementById('headerNomeUser').innerText = "Identifique-se"; 
-            }
+                mudarViewLayerGlobal('viewEstoque'); 
+                navegarEstoque('estoqueDash'); 
+            } 
+        }
 
-            // Adia as consultas pesadas para o Firebase não travar a CPU e a tela inicial
-            setTimeout(() => {
-                iniciarConexaoNuvem();
-            }, 500);
-        });
+        // Memória para uso do Modal de Detalhes dos Produtos
+        let globalEstoqueData = [];
 
-        // Configuração segura do Firebase encapsulada
+        // Inicialização do Firebase
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
+            authDomain: "hub-volt.firebaseapp.com", 
+            projectId: "hub-volt", 
+            storageBucket: "hub-volt.firebasestorage.app", 
+            messagingSenderId: "483817757628", 
+            appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
+        };
+        
         let db = null;
-        function iniciarConexaoNuvem() {
-            try {
-                const firebaseConfig = { 
-                    apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", 
-                    authDomain: "hub-volt.firebaseapp.com", 
-                    projectId: "hub-volt", 
-                    storageBucket: "hub-volt.firebasestorage.app", 
-                    messagingSenderId: "483817757628", 
-                    appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" 
-                };
-                firebase.initializeApp(firebaseConfig); 
-                db = firebase.firestore();
-                
-                carregarUsuariosDaNuvem(); 
-                inicializarCatalogoMestre();
-            } catch (error) {
-                console.warn("Sem internet ou erro no Firebase. Mantendo sistema offline.", error);
-            }
+        try {
+            firebase.initializeApp(firebaseConfig); 
+            db = firebase.firestore();
+        } catch(e) {
+            console.warn("Erro ao iniciar Firebase", e);
         }
 
         const baseCatalogoVOLT = [
@@ -888,42 +872,47 @@
         ];
 
         let catalogoCompleto = []; 
-        let usuarioSelecionadoTemp = null;
-        let idOvGlobal = null; 
-        let objOvGlobal = null; 
-        let idOvEditGlobal = null; 
-        let idEditLoteGlobal = null;
-        let etapaAtualEstoque = 'OV'; 
-        let contadorVolumesInterno = 0; 
-        let volumeUnicoID = 0;
-        let itensLancamentoOV = {}; 
-        let itensLancamentoRMA = {}; 
-        let itensBipagemOV = {}; 
-        let itensBipagemRMA = {};
-        let cotacoesAtuais = []; 
-        let auditoriaLogsSessao = [];
-        let globalEstoqueData = [];
+        let bdUsuariosLogistica = {};
+        let usuarioLogado = null; let papelLogado = null; let usuarioSelecionadoTemp = null;
+        let idOvGlobal = null; let objOvGlobal = null; let idOvEditGlobal = null; let idEditLoteGlobal = null;
+        let etapaAtualEstoque = 'OV'; let contadorVolumesInterno = 0; let volumeUnicoID = 0;
+        let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
+        let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
-        function getBase64(file) { 
-            return new Promise((resolve, reject) => { 
-                const reader = new FileReader(); 
-                reader.readAsDataURL(file); 
-                reader.onload = () => resolve(reader.result); 
-                reader.onerror = error => reject(error); 
-            }); 
-        }
-
-        function baixarArquivoBase64(base64Str, fileName) { 
-            const link = document.createElement('a'); 
-            link.href = base64Str; 
-            link.download = fileName; 
-            document.body.appendChild(link); 
-            link.click(); 
-            document.body.removeChild(link); 
-        }
+        function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
+        function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         // ====================================================
-        // SISTEMA DE LOGIN E NAVEGAÇÃO
+        // INICIALIZAÇÃO DA PÁGINA 
+        // ====================================================
+        window.onload = function() { 
+            bdUsuariosLogistica = { 
+                'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
+                'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
+            };
+            renderLoginGrid();
+
+            const today = new Date().toISOString().split('T')[0];
+            if(document.getElementById('inboundData')) document.getElementById('inboundData').value = today;
+            if(document.getElementById('inboundDataEstoque')) document.getElementById('inboundDataEstoque').value = today;
+
+            const savedUser = localStorage.getItem('hubVoltUser'); const savedRole = localStorage.getItem('hubVoltRole');
+            
+            if (savedUser && savedRole && bdUsuariosLogistica[savedUser]) {
+                usuarioLogado = savedUser; papelLogado = savedRole;
+                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
+                document.getElementById('btnSair').style.display = 'block'; document.getElementById('modalSenha').style.display = 'none';
+                atualizarSaudacao(); mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
+                if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
+            } else { document.getElementById('headerNomeUser').innerText = "Identifique-se"; }
+
+            setTimeout(() => {
+                if(db) { carregarUsuariosDaNuvem(); inicializarCatalogoMestre(); }
+            }, 500);
+        };
+
+        // ====================================================
+        // SISTEMA DE LOGIN 
         // ====================================================
         function renderLoginGrid() {
             const grid = document.getElementById('gridUsuariosLogin');
@@ -949,77 +938,39 @@
         }
 
         async function carregarUsuariosDaNuvem() {
-            if(!db) return;
             try {
                 const snapshot = await db.collection("usuarios").get(); 
                 if (!snapshot.empty) {
                     let tempBd = {};  
-                    snapshot.forEach((doc) => {
-                        tempBd[doc.id] = doc.data(); 
-                    });
+                    snapshot.forEach((doc) => { tempBd[doc.id] = doc.data(); });
                     bdUsuariosLogistica = tempBd;
                     renderLoginGrid(); 
                 }
-            } catch (error) { 
-                console.warn("Nuvem não acessível agora."); 
-            }
+            } catch (error) { console.warn("Modo offline ou banco vazio. Mantendo base de segurança."); }
         }
 
-        function abrirModalSenha(nome) { 
-            usuarioSelecionadoTemp = nome; 
-            document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; 
-            document.getElementById('inputSenha').value = ''; 
-            document.getElementById('erroSenha').style.display = 'none'; 
-            document.getElementById('modalSenha').style.display = 'flex'; 
-            setTimeout(() => document.getElementById('inputSenha').focus(), 150); 
-        }
-
+        function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
         function fecharSenhaModal() { document.getElementById('modalSenha').style.display = 'none'; }
         
         function confirmarLogin() {
-            const senha = document.getElementById('inputSenha').value; 
-            const credencial = bdUsuariosLogistica[usuarioSelecionadoTemp];
-            
+            const senha = document.getElementById('inputSenha').value; const credencial = bdUsuariosLogistica[usuarioSelecionadoTemp];
             if (credencial && senha === credencial.senha) {
-                usuarioLogado = usuarioSelecionadoTemp; 
-                papelLogado = credencial.role; 
-                localStorage.setItem('hubVoltUser', usuarioLogado); 
-                localStorage.setItem('hubVoltRole', papelLogado);
-                
-                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
-                document.getElementById('btnSair').style.display = 'block'; 
-                fecharSenhaModal();
-                atualizarSaudacao(); 
-                mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
-                
+                usuarioLogado = usuarioSelecionadoTemp; papelLogado = credencial.role; 
+                localStorage.setItem('hubVoltUser', usuarioLogado); localStorage.setItem('hubVoltRole', papelLogado);
+                document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; document.getElementById('btnSair').style.display = 'block'; fecharSenhaModal();
+                atualizarSaudacao(); mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
             } else { document.getElementById('erroSenha').style.display = 'block'; }
         }
-
         document.getElementById('inputSenha').addEventListener('keypress', e => { if (e.key === 'Enter') confirmarLogin(); });
-
         function fazerLogout() { localStorage.removeItem('hubVoltUser'); localStorage.removeItem('hubVoltRole'); location.reload(); }
 
-        function atualizarSaudacao() { 
-            const hora = new Date().getHours(); 
-            let texto = "Boa noite"; 
-            if (hora >= 5 && hora < 12) texto = "Bom dia"; 
-            else if (hora >= 12 && hora < 18) texto = "Boa tarde"; 
-            document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; 
-        }
-
-        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
-        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
-
         // ====================================================
-        // MATRIZ DE CATÁLOGO E INBOUND (ADMIN/OP)
+        // MATRIZ DE CATÁLOGO (ADMIN)
         // ====================================================
         async function inicializarCatalogoMestre() {
             catalogoCompleto = [...baseCatalogoVOLT];
             catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
-            if(!db) return;
             try {
                 const snapshot = await db.collection("catalogo_produtos").get();
                 snapshot.forEach(doc => {
@@ -1033,55 +984,33 @@
         }
 
         async function abrirModuloCatalogo() {
-            navegarAdmin('adminCatalogo'); 
-            const tbody = document.getElementById('tabelaCatalogoConfig');
+            navegarAdmin('adminCatalogo'); const tbody = document.getElementById('tabelaCatalogoConfig');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
             try {
-                const snapshot = await db.collection("catalogo_produtos").get(); 
-                let nuvemDados = {}; 
-                snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
-                
+                const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {}; snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
                 tbody.innerHTML = '';
                 catalogoCompleto.forEach(prod => {
-                    const salvo = nuvemDados[prod.ean] || {}; 
-                    const masterVal = salvo.eanMaster || ''; 
-                    const masterQtd = salvo.qtdMaster || 100;
-                    
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #222;">
-                            <td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td>
-                            <td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td>
-                            <td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td>
-                            <td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td>
-                            <td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td>
-                        </tr>`;
+                    const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100;
+                    tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td><td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td><td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td><td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td><td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td></tr>`;
                 });
             } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro de conexão.</td></tr>'; }
         }
 
         async function salvarProdutoCatalogo(eanUnitario, sku) {
-            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); 
-            const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
-            try { 
-                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); 
-                let p = catalogoCompleto.find(x => x.ean === eanUnitario); 
-                if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } 
-                alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); 
-            } catch(e) { alert("Erro ao salvar produto."); }
+            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
+            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); }
         }
 
         async function salvarNovoSKUNuvem() {
             const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim();
             const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value;
             if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios.");
-            try { 
-                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) }); 
-                alert(`✅ Novo produto criado no sistema!`); 
-                document.getElementById('modalNovoSKU').style.display = 'none'; 
-                await inicializarCatalogoMestre(); abrirModuloCatalogo(); 
-            } catch(e) { alert("Erro ao criar produto."); }
+            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) }); alert(`✅ Novo produto criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none'; await inicializarCatalogoMestre(); abrirModuloCatalogo(); } catch(e) { alert("Erro ao criar produto."); }
         }
 
+        // ====================================================
+        // ENDEREÇAMENTO DE ESTOQUE (INBOUND COM DATA E FAMILIA)
+        // ====================================================
         function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
         function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
 
@@ -1089,8 +1018,7 @@
             const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
             try {
-                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); 
-                tbody.innerHTML = ''; let contador = 0;
+                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach(doc => {
                     const item = doc.data();
                     if(item.quantidade > 0) {
@@ -1121,7 +1049,6 @@
             const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase(); const lote = document.getElementById(fieldLot).value.trim().toUpperCase(); const eanBipado = document.getElementById(fieldProduct).value.trim(); const mult = parseInt(document.getElementById(fieldMultiplier).value) || 1; const dataEnt = document.getElementById(fieldData).value; const fam = document.getElementById(fieldFamilia).value;
 
             if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto.");
-            
             let produtoEncontrado = null; let isMaster = false;
             for(let prod of catalogoCompleto) {
                 if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; }
@@ -1161,7 +1088,7 @@
         }
 
         // ====================================================
-        // DASHBOARD GRÁFICO (RESUMO)
+        // DASHBOARD GRÁFICO (REMOVIDO "OUTROS" + CARDS DE PRODUTO)
         // ====================================================
         let chartFamInst = null; let chartSkuInst = null;
 
@@ -1224,7 +1151,7 @@
                     containerCards.innerHTML += `<div class="hub-card" style="min-height: auto; padding: 15px;" onclick="abrirDetalhesProduto('${s.sku}')"><h3 style="font-size: 18px; color: var(--volt-green); margin-bottom: 5px;">${s.sku}</h3><p style="font-size: 14px; color: white; margin-bottom: 5px;">Total: <strong>${s.qtd} un</strong></p><p style="font-size: 11px; color: #888; margin: 0; line-height: 1.3;">Endereços: ${locaisStr}</p></div>`;
                 });
 
-                // Tabela de Histórico de Saídas (Recentes)
+                // Tabela de Histórico de Saídas
                 const tbodySaidas = document.getElementById('tabelaHistoricoSaidas');
                 tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--volt-green);">Calculando saídas...</td></tr>';
                 
@@ -1263,7 +1190,7 @@
         }
 
         // ====================================================
-        // GRADE DE LANÇAMENTO E FILTRO DE BUSCA (NOVO)
+        // GRADE DE LANÇAMENTO DE OVs
         // ====================================================
         function abrirModuloLancamentos() { navegarAdmin('adminLancamentos'); carregarMiniFilaAdmin(); renderizarGridLancamentos(); }
 
@@ -1272,7 +1199,6 @@
             catalogoCompleto.forEach(prod => { grid.innerHTML += `<div class="item-grade"><strong>${prod.sku}</strong><input type="number" id="lanca_qtd_${prod.ean}" placeholder="0"></div>`; });
         }
 
-        // NOVO: Função para Filtrar a Grade Rápida
         function filtrarGradeLancamento() {
             const termo = document.getElementById('filtroProdutosLancamento').value.toLowerCase();
             const itens = document.querySelectorAll('#gridProdutosLancamento .item-grade');
@@ -1296,11 +1222,7 @@
                 }
             });
             if(!adicionouAlgo) return alert("Você precisa digitar a quantidade de pelo menos um produto na grade.");
-            
-            // Limpa o filtro após adicionar para o usuário ver todos novamente
-            document.getElementById('filtroProdutosLancamento').value = '';
-            filtrarGradeLancamento();
-
+            document.getElementById('filtroProdutosLancamento').value = ''; filtrarGradeLancamento();
             atualizarListaManualAdmin();
         }
 
@@ -1391,7 +1313,7 @@
         }
 
         // ====================================================
-        // ADMIN: FATURAMENTO (ESCOLHA DE FRETE E CORREÇÃO)
+        // ADMIN: FATURAMENTO E EDIÇÃO DE COTAÇÕES
         // ====================================================
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
 
@@ -1442,7 +1364,7 @@
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => { 
-                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; 
+                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; 
                     });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
@@ -1481,7 +1403,7 @@
         }
 
         // ====================================================
-        // ADMIN: HISTÓRICO E EQUIPE
+        // ADMIN: HISTÓRICO, RELATÓRIOS E RH
         // ====================================================
         function abrirModuloEquipe() { navegarAdmin('adminEquipe'); carregarEstatisticasEquipe(); renderizarTabelaAcessosAdmin(); }
         function abrirModuloHistorico() { navegarAdmin('adminHistorico'); carregarHistoricoDaNuvem(); }
@@ -1597,7 +1519,7 @@
         // ====================================================
         // ESTOQUE: WMS E FILAS
         // ====================================================
-        function abrirFilaSeparacao() { navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
+        function abrirFilaSeparacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
         async function carregarFilaOperadorDaNuvem() {
             const container = document.getElementById('containerFilaEstoque'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila de ordens...</p>';
@@ -1666,6 +1588,7 @@
             if(objOvGlobal.hasArquivoOV && objOvGlobal.arquivoOV_base64) { const btnOv = document.getElementById('btnDownloadOv'); btnOv.style.display = 'inline-flex'; btnOv.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoOV_base64, `OV_${numero}.pdf`); } 
             if(objOvGlobal.hasArquivoRMA && objOvGlobal.arquivoRMA_base64) { const btnRma = document.getElementById('btnDownloadRma'); btnRma.style.display = 'inline-flex'; btnRma.onclick = () => baixarArquivoBase64(objOvGlobal.arquivoRMA_base64, `Remessa_${numero}.pdf`); }
             
+            mudarViewLayerGlobal('viewEstoque');
             navegarEstoque('estoquePreparacao');
         }
 
@@ -1673,14 +1596,17 @@
             const msg = prompt("Qual o problema com este pedido? (Ex: Faltou produto na prateleira, lote errado, quantidade incorreta...)");
             if(!msg) return;
             const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-            try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ hasProblema: true, auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: `Reportou Problema na Prateleira: ${msg}` }) }); alert("Alerta enviado ao painel do Administrador!"); navegarEstoque('estoqueDash'); } catch(e) {}
+            try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ hasProblema: true, auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: `Reportou Problema na Prateleira: ${msg}` }) }); alert("Alerta enviado ao painel do Administrador!"); voltarAoDash(); } catch(e) {}
         }
 
         async function concluirSeparacaoFisica() {
             try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separado' }); alert("✅ Separação concluída! O carrinho pode ir para a Fila de Conferência."); abrirFilaSeparacao(); } catch(e) {}
         }
 
-        function abrirFilaConferencia() { navegarEstoque('estoqueFilaConferencia'); carregarFilaConferenciaDaNuvem(); }
+        // ====================================================
+        // ESTOQUE: FILA DE CONFERÊNCIA (BANCADA)
+        // ====================================================
+        function abrirFilaConferencia() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaConferencia'); carregarFilaConferenciaDaNuvem(); }
 
         async function carregarFilaConferenciaDaNuvem() {
             const container = document.getElementById('containerFilaConferencia'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando fila de conferência...</p>';
@@ -1716,6 +1642,7 @@
             for(let ean in itensBipagemOV) itensBipagemOV[ean].bipado = 0; for(let ean in itensBipagemRMA) itensBipagemRMA[ean].bipado = 0;
             desenharCards('OV', itensBipagemOV); if(existeFaseRMA) desenharCards('RMA', itensBipagemRMA);
             document.getElementById('listaVolumesCaixas').innerHTML = ''; contadorVolumesInterno = 0; adicionarCaixaEmbalagem();
+            mudarViewLayerGlobal('viewEstoque');
             navegarEstoque('estoqueConferencia'); setTimeout(() => document.getElementById('bipOV').focus(), 100);
         }
 
@@ -1733,7 +1660,7 @@
             else if (ean) { 
                 const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}); const msg = `Bipou código não pertencente à esta etapa: ${ean}`;
                 db.collection("estoque_ovs").doc(idOvGlobal).update({ auditoriaLogs: firebase.firestore.FieldValue.arrayUnion({ hora: hora, mensagem: msg }) });
-                document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
+                document.getElementById('txtErroEstoque').innerText = "O erro já foi gravado na nuvem. A contagem foi zerada."; document.getElementById('erroModal').style.display = 'flex'; input.value = ''; 
             }
         }
 
@@ -1759,6 +1686,7 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
+            // Abate do mapa de estoque (FEFO)
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
@@ -1777,9 +1705,9 @@
         }
 
         // ====================================================
-        // ESTOQUE: COTAÇÃO DE FRETES (CARDS)
+        // ESTOQUE: COTAÇÃO DE FRETES
         // ====================================================
-        function abrirFilaCotacao() { navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
+        function abrirFilaCotacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
 
         async function carregarFilaCotacaoDaNuvem() {
             const container = document.getElementById('containerFilaCotacao'); container.innerHTML = '<p style="color: var(--volt-green);">Buscando pedidos aguardando cotação...</p>';
@@ -1803,7 +1731,7 @@
             } catch (error) {}
         }
 
-        async function abrirFazerCotacao(id_doc, numero) { idOvGlobal = id_doc; document.getElementById('cotacaoOvNumero').innerText = numero; cotacoesAtuais = []; atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em cotação' }); navegarEstoque('estoqueFazerCotacao'); }
+        async function abrirFazerCotacao(id_doc, numero) { idOvGlobal = id_doc; document.getElementById('cotacaoOvNumero').innerText = numero; cotacoesAtuais = []; atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em cotação' }); mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFazerCotacao'); }
         function adicionarCotacaoLinha() { const transp = document.getElementById('cotTransp').value; const preco = document.getElementById('cotPreco').value; const prazo = document.getElementById('cotPrazo').value; if(!transp || !preco || !prazo) return alert("Preencha Transportadora, Preço e Prazo."); cotacoesAtuais.push({ transportadora: transp, preco: preco, prazo: prazo }); atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; }
         function atualizarListaCotacoes() { const container = document.getElementById('listaCotacoesTabela'); container.innerHTML = ''; if(cotacoesAtuais.length === 0) { container.innerHTML = '<p id="txtCotVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">Nenhuma cotação inserida.</p>'; return; } cotacoesAtuais.forEach((cot, idx) => { container.innerHTML += `<div class="item-listado"><div><strong>${cot.transportadora}</strong></div><div>R$ ${cot.preco} <span style="color:#666; margin: 0 10px;">|</span> ${cot.prazo} Dias <button style="background:transparent; border:none; color:var(--error-red); cursor:pointer; margin-left: 10px;" onclick="removerCotacao(${idx})">✖</button></div></div>`; }); }
         function removerCotacao(idx) { cotacoesAtuais.splice(idx, 1); atualizarListaCotacoes(); }
