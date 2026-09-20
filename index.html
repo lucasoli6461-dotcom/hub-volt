@@ -16,8 +16,17 @@
         /* ========================================== */
         /* 1. VARIÁVEIS E BASE GERAL                  */
         /* ========================================== */
-        :root { --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        :root { 
+            --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; 
+            --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; 
+            --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; 
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-light); 
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; 
+        }
         .container { width: 100%; max-width: 1150px; padding: 20px; box-sizing: border-box; }
         
         .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -111,15 +120,14 @@
         .brinde-label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: var(--text-light); }
         .brinde-chk { accent-color: var(--volt-green); transform: scale(1.2); }
 
-        /* NOVO: ALERTA FLUTUANTE DE CONFERÊNCIA */
+        /* ALERTA FLUTUANTE DE CONFERÊNCIA */
         .floating-alert { position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #000; border: 2px solid var(--volt-green); padding: 20px; border-radius: 12px; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: none; }
         @keyframes slideIn { from { transform: translateX(120%); opacity: 0;} to { transform: translateX(0); opacity: 1; } }
         .floating-alert.show { display: block; }
-        
         .caixa-sugerida { background: rgba(0, 170, 255, 0.1); border-left: 4px solid var(--blue-action); padding: 15px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; color: var(--text-light); font-size: 15px;}
 
         /* ========================================== */
-        /* 4. MODULOS E TELAS                         */
+        /* 4. MODULOS E TELAS ESTÁTICAS               */
         /* ========================================== */
         .greeting { text-align: center; margin-bottom: 40px; }
         .greeting h1 { font-size: 32px; font-weight: 600; margin: 0; }
@@ -147,6 +155,7 @@
         .item-grade { background: #161616; border: 1px solid #333; padding: 10px; border-radius: 6px; text-align: center; transition: 0.2s; }
         .item-grade:hover { border-color: var(--volt-green); }
         .item-grade strong { display: block; font-size: 13px; color: white; margin-bottom: 8px; }
+        .item-grade input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: var(--volt-green); text-align: center; border-radius: 4px; box-sizing: border-box; font-weight: bold;}
 
         .mini-card { background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; position: relative; transition: 0.2s; }
         .mini-card:hover { border-color: var(--volt-green); }
@@ -192,6 +201,7 @@
         .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;}
         .badge-familia { background: rgba(0, 170, 255, 0.1); color: var(--blue-action); border: 1px solid rgba(0, 170, 255, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px;}
 
+        /* MODAIS E OVERLAYS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
         .erro-box { background: #1a0000; border: 2px solid var(--error-red); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);}
@@ -202,7 +212,11 @@
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
 
+        /* ESTOQUE PREP */
         .prep-box { text-align: center; padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: #111; margin-top: 30px; }
+        .btn-download { background: #222; border: 1px solid #444; color: white; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin: 10px; }
+        .btn-download:hover { background: #333; border-color: var(--volt-green); color: var(--volt-green); }
+
         .fase-section { background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
         .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
         .fase-section.concluida { opacity: 1; pointer-events: none; border-color: #333; }
@@ -221,7 +235,7 @@
         .caixa-obs { background: rgba(0, 170, 255, 0.1); border-left: 4px solid var(--blue-action); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; text-align: left;}
         .caixa-brindes { background: rgba(196, 240, 0, 0.1); border-left: 4px solid var(--volt-green); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; text-align: left;}
 
-        /* Graficos Dashboard */
+        /* DASHBOARD TECH GRID */
         .dashboard-panel { background: linear-gradient(180deg, #111 0%, #050505 100%); border: 1px solid #222; border-radius: 16px; padding: 30px; position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 15px 30px rgba(0,0,0,0.5); }
         .metric-box-tech { background: linear-gradient(145deg, #161616, #0a0a0a); border: 1px solid #2a2a2a; border-top: 1px solid rgba(196, 240, 0, 0.2); border-radius: 12px; padding: 25px 20px; text-align: center; transition: all 0.3s ease; position: relative; }
         .metric-box-tech:hover { transform: translateY(-5px); border-top-color: var(--volt-green); box-shadow: 0 10px 25px rgba(196, 240, 0, 0.08); }
@@ -253,7 +267,7 @@
         </div>
     </div>
 
-    <!-- ALERTA FLUTUANTE DE CONFERÊNCIA (NOVO) -->
+    <!-- ALERTA FLUTUANTE DE CONFERÊNCIA -->
     <div id="floatingAviso" class="floating-alert">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <strong style="color: var(--volt-green); font-size: 16px;">⚠️ Avisos da Ordem</strong>
@@ -296,13 +310,13 @@
                 <h2 style="font-size: 20px; color: var(--warning-yellow);">Corrigir OV - <span id="editOvNum" style="color: white;">OV-0000</span></h2>
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEditarOV').style.display='none'">✖ Fechar</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Você pode alterar tanto as quantidades quanto o nome dos produtos (SKUs). Se remover toda a quantidade, o item será apagado.</p>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Altere as quantidades ou o nome dos SKUs. Zere a qtd. para remover o item.</p>
             <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
             <div style="text-align: right;"><button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correções</button></div>
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DE LOTE DO INBOUND (ADMIN) -->
+    <!-- MODAL DE EDIÇÃO DE LOTE DO INBOUND -->
     <div id="modalEditarInbound" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--blue-action);">
             <h3 style="color: var(--blue-action); margin-top: 0; margin-bottom: 20px;">Editar Lote / Estoque</h3>
@@ -312,13 +326,21 @@
             </div>
             <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
                 <div class="form-group"><label>Data de Entrada</label><input type="date" id="editInboundData" class="input-dark"></div>
-                <div class="form-group"><label>Família</label><select id="editInboundFamilia" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option></select></div>
+                <div class="form-group">
+                    <label>Família</label>
+                    <select id="editInboundFamilia" class="input-dark">
+                        <option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option>
+                    </select>
+                </div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalEditarInbound').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px; background-color: var(--blue-action);" onclick="salvarEdicaoInboundNuvem()">💾 Salvar Correção</button></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalEditarInbound').style.display = 'none'">Cancelar</button>
+                <button class="btn-volt" style="flex: 1; padding: 10px; background-color: var(--blue-action);" onclick="salvarEdicaoInboundNuvem()">💾 Salvar Correção</button>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL FATURAMENTO / AVALIAR FRETE -->
+    <!-- MODAL FATURAMENTO -->
     <div id="modalEscolhaFrete" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 900px; border-color: var(--volt-green); max-height: 90vh; overflow-y: auto; padding: 40px;">
             <div class="modulo-header" style="border-bottom-color: #333; margin-bottom: 20px;">
@@ -370,7 +392,7 @@
         </div>
     </div>
 
-    <!-- MODAL AUDITORIA LOGS (ERRO) -->
+    <!-- MODAL AUDITORIA LOGS -->
     <div id="modalAuditoria" class="modal-overlay">
         <div class="auditoria-box">
             <div class="auditoria-header"><h3 style="margin: 0; color: white; font-size: 20px;">Erros Registrados: <span id="modalOVAuditoria">#0000</span></h3><span style="color: var(--text-muted); font-size: 14px;">Operador: <strong id="modalOperador" style="color: white;">Nome</strong></span></div>
@@ -379,16 +401,47 @@
         </div>
     </div>
 
+    <!-- MODAIS CADASTRO -->
+    <div id="modalNovoUsuario" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
+            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
+            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
+                <div class="form-group"><label>Nome</label><input type="text" id="novoNome" class="input-dark" placeholder="Nome"></div>
+                <div class="form-group"><label>Cargo / Função</label><input type="text" id="novoFuncao" class="input-dark" placeholder="Ex: Operador"></div>
+            </div>
+            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;">
+                <div class="form-group"><label>Nível de Acesso</label><select id="novoRole" class="input-dark"><option value="estoque">Operador (Estoque)</option><option value="admin">Administrador</option></select></div>
+                <div class="form-group"><label>Senha Inicial</label><input type="text" id="novoSenha" class="input-dark" placeholder="Senha"></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button></div>
+        </div>
+    </div>
+
+    <div id="modalNovoSKU" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
+            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU</h3>
+            <div class="form-group"><label>Nome / SKU (Ex: CP20BK)</label><input type="text" id="cadSkuNovo" class="input-dark" placeholder="Nome do Produto"></div>
+            <div class="form-group"><label>Código de Barras Unitário (EAN)</label><input type="text" id="cadEanNovo" class="input-dark" placeholder="Bipar EAN da caixinha"></div>
+            <div class="grid-2" style="gap: 10px;">
+                <div class="form-group"><label>EAN Master (Opcional)</label><input type="text" id="cadMasterNovo" class="input-dark" placeholder="Bipar EAN da Master"></div>
+                <div class="form-group"><label>Qtd por Master</label><input type="number" id="cadQtdMasterNovo" class="input-dark" value="100"></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CONTAINER PRINCIPAL DAS TELAS              -->
+    <!-- ========================================== -->
     <div class="container">
+        
         <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
             <div class="login-grid" id="gridUsuariosLogin"></div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW LAYER 2: INTERFACE DO ADMINISTRADOR   -->
-        <!-- ========================================== -->
+        <!-- TELA DO ADMINISTRADOR -->
         <div id="viewAdmin" class="view-layer">
             <div id="adminDash" class="sub-screen active">
                 <div class="greeting"><h1 id="saudacaoAdmin">Boa noite, <span>Usuário</span></h1><p>Módulos de Gestão e Logística Avançada</p></div>
@@ -405,7 +458,6 @@
                     <div class="hub-card hub-card-green" style="min-height: 140px; padding: 20px;" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">📈 Dashboard</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action">Ver Dashboard ➔</div></div>
                 </div>
 
-                <!-- ACESSO DIRETO À OPERAÇÃO PELO ADMIN -->
                 <h3 style="color: var(--text-light); margin-top: 40px; margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 10px;">Acesso à Operação Física (Estoque)</h3>
                 <div class="grid-3">
                     <div class="hub-card hub-card-neutral" style="min-height: 120px; padding: 20px;" onclick="abrirFilaSeparacao()"><div><h3 style="font-size: 16px;">🛒 Fila de Separação</h3><p style="font-size: 12px; margin-bottom: 10px;">Acessar roteiros e carrinhos.</p></div><div class="action">Ver Pendentes ➔</div></div>
@@ -414,30 +466,13 @@
                 </div>
             </div>
 
-            <!-- Subtelas Admin... -->
             <div id="adminResumoEstoque" class="sub-screen">
                 <div class="modulo-box dashboard-panel">
-                    <div class="modulo-header" style="margin-bottom: 20px; border-bottom: none;">
-                        <div><h2 style="font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">Visão Geral <span style="color:white; font-weight: 300;">do Estoque</span></h2><p style="color: var(--text-muted); font-size: 13px; margin-top: 5px;">Métricas em tempo real calculadas a partir do módulo de Endereçamento.</p></div>
-                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
-                    </div>
-
-                    <div class="grid-4" id="cardsResumoNumeros" style="margin-bottom: 30px;">
-                        <div class="metric-box-tech"><div class="metric-icon">📦</div><div class="metric-label-tech">Total de Caixas</div><div class="metric-value-tech" id="resumoCx">-</div></div>
-                        <div class="metric-box-tech"><div class="metric-icon">⚡</div><div class="metric-label-tech">Unidades no Galpão</div><div class="metric-value-tech" id="resumoUn">-</div></div>
-                        <div class="metric-box-tech"><div class="metric-icon">🏷️</div><div class="metric-label-tech">SKUs Cadastrados</div><div class="metric-value-tech" id="resumoSkus">-</div></div>
-                        <div class="metric-box-tech" style="border-top-color: var(--volt-green); background: linear-gradient(145deg, rgba(196,240,0,0.05), #0d0d0d);"><div class="metric-icon">📈</div><div class="metric-label-tech">Valuation Estimado</div><div class="metric-value-tech" style="font-size: 18px; margin-top: 15px; color: white; display: flex; align-items: center; justify-content: center; text-shadow: none;"><span class="status-pulse"></span> Monitoramento Ativo</div></div>
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="chart-container-tech"><h4 class="chart-title-tech">Distribuição por Família</h4><canvas id="chartFamilias"></canvas></div>
-                        <div class="chart-container-tech"><h4 class="chart-title-tech">Top 5 Produtos (Unidades)</h4><canvas id="chartTopSkus"></canvas></div>
-                    </div>
-
+                    <div class="modulo-header" style="margin-bottom: 20px; border-bottom: none;"><div><h2 style="font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">Visão Geral <span style="color:white; font-weight: 300;">do Estoque</span></h2><p style="color: var(--text-muted); font-size: 13px; margin-top: 5px;">Métricas em tempo real calculadas a partir do módulo de Endereçamento.</p></div><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
+                    <div class="grid-4" id="cardsResumoNumeros" style="margin-bottom: 30px;"><div class="metric-box-tech"><div class="metric-icon">📦</div><div class="metric-label-tech">Total de Caixas</div><div class="metric-value-tech" id="resumoCx">-</div></div><div class="metric-box-tech"><div class="metric-icon">⚡</div><div class="metric-label-tech">Unidades no Galpão</div><div class="metric-value-tech" id="resumoUn">-</div></div><div class="metric-box-tech"><div class="metric-icon">🏷️</div><div class="metric-label-tech">SKUs Cadastrados</div><div class="metric-value-tech" id="resumoSkus">-</div></div><div class="metric-box-tech" style="border-top-color: var(--volt-green); background: linear-gradient(145deg, rgba(196,240,0,0.05), #0d0d0d);"><div class="metric-icon">📈</div><div class="metric-label-tech">Valuation Estimado</div><div class="metric-value-tech" style="font-size: 18px; margin-top: 15px; color: white; display: flex; align-items: center; justify-content: center; text-shadow: none;"><span class="status-pulse"></span> Monitoramento Ativo</div></div></div>
+                    <div class="grid-2"><div class="chart-container-tech"><h4 class="chart-title-tech">Distribuição por Família</h4><canvas id="chartFamilias"></canvas></div><div class="chart-container-tech"><h4 class="chart-title-tech">Top 5 Produtos (Unidades)</h4><canvas id="chartTopSkus"></canvas></div></div>
                     <h3 style="color: var(--text-light); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Posições de Estoque por Produto</h3>
                     <div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;"></div>
-
-                    <!-- HISTÓRICO DE SAÍDAS (TECH GRID) -->
                     <div class="modulo-box" style="border-color: var(--error-red); box-shadow: 0 0 30px rgba(255, 51, 51, 0.05); margin-top: 40px; padding: 20px;">
                         <div class="modulo-header" style="border-bottom-color: #222; margin-bottom: 15px;"><div><h2 style="color: var(--error-red); font-size: 20px;">Histórico de Saídas (Expedição)</h2><p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Rastreabilidade de itens abatidos do estoque físico.</p></div></div>
                         <div class="search-wrapper" style="margin-bottom: 15px;"><div style="flex: 1; max-width: 400px; position: relative;"><input type="text" id="filtroSaidas" class="input-dark" placeholder="🔍 Buscar por SKU ou N° da OV..." style="margin: 0; border-color: #333;" onkeyup="filtrarHistoricoSaidas()"></div><div style="display: flex; gap: 10px;"><div class="metric-box-tech" style="padding: 10px 20px; margin: 0; border-color: #222;"><span style="font-size: 10px; color: #888; font-weight: bold;">ITENS EXIBIDOS</span><div id="histTotalSaidas" style="font-size: 18px; color: white; font-weight: bold;">0</div></div></div></div>
@@ -449,7 +484,6 @@
             <div id="adminCatalogo" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header" style="margin-bottom: 10px;"><h2>Catálogo de SKUs e Caixas Master</h2><div><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 10px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div></div>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 20px;">Adicione o código da Caixa Master de cada produto.</p>
                     <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th style="padding: 15px;">Produto / SKU</th><th style="padding: 15px;">EAN Unitário (Caixinha)</th><th style="padding: 15px;">EAN Master (Opcional)</th><th style="padding: 15px;">Qtd por Master</th><th style="padding: 15px; text-align: right;">Ação</th></tr></thead><tbody id="tabelaCatalogoConfig"><tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr></tbody></table></div>
                 </div>
             </div>
@@ -474,7 +508,6 @@
             <div id="adminTransferencia" class="sub-screen">
                 <div class="modulo-box" style="border-color: var(--warning-yellow);">
                     <div class="modulo-header" style="border-bottom-color: #333;"><h2 style="color: var(--warning-yellow);">Movimentação de Estoque</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Transfira saldo de mercadorias de um endereço físico para outro.</p>
                     <div class="grid-2" style="background: #0a0a0a; padding: 20px; border-radius: 12px; border: 1px solid #222;">
                         <div>
                             <h4 style="color: var(--error-red); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🔴 Retirar De (Origem)</h4>
@@ -501,7 +534,7 @@
                             <div class="form-group"><label>CLIENTE / DESTINATÁRIO</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
                             <div class="form-group"><label>VOLUMES (PREVISÃO)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
                             <div class="form-group" style="background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333;">
-                                <label style="color: var(--volt-green);">🎁 Incluir Brindes (Check-list para o Estoque)</label>
+                                <label style="color: var(--volt-green);">🎁 Incluir Brindes</label>
                                 <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;"><label class="brinde-label"><input type="checkbox" class="brinde-chk" value="Boné"> Boné</label><label class="brinde-label"><input type="checkbox" class="brinde-chk" value="Caneta"> Caneta</label><label class="brinde-label"><input type="checkbox" class="brinde-chk" value="Copo"> Copo</label><label class="brinde-label"><input type="checkbox" class="brinde-chk" value="Sacolas Volt"> Sacolas Volt</label><label class="brinde-label"><input type="checkbox" class="brinde-chk" value="Cordão"> Cordão</label></div>
                             </div>
                             <div class="form-group"><label style="color: var(--warning-yellow);">⚠️ Observações do Vendedor</label><textarea id="ovObservacao" class="input-dark" rows="3" placeholder="Ex: Cliente tem urgência..."></textarea></div>
@@ -516,7 +549,9 @@
                         <input type="text" id="filtroProdutosLancamento" class="input-dark" style="margin-bottom: 15px; border-color: #555;" placeholder="🔍 Buscar produto por nome ou SKU..." onkeyup="filtrarGradeLancamento()">
                         <div class="grid-lancamento" id="gridProdutosLancamento"><p style="color: var(--volt-green); font-size: 12px; text-align: center; grid-column: 1 / -1;">Carregando Matriz...</p></div>
                         <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 25px; align-items: center; justify-content: flex-end; padding-bottom: 20px; border-bottom: 1px solid #222;">
-                            <label style="margin: 0;">DESTINO DESTES ITENS:</label><select id="addTipoLote" class="input-dark" style="width: 250px; margin: 0;"><option value="OV">Para Ordem Principal</option><option value="RMA">Para Remessa (RMA)</option></select><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green); padding: 12px 20px;" onclick="adicionarLoteItens()">+ INSERIR NA LISTA</button>
+                            <label style="margin: 0;">DESTINO DESTES ITENS:</label>
+                            <select id="addTipoLote" class="input-dark" style="width: 250px; margin: 0;"><option value="OV">Para Ordem Principal</option><option value="RMA">Para Remessa (RMA)</option></select>
+                            <button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green); padding: 12px 20px;" onclick="adicionarLoteItens()">+ INSERIR SELECIONADOS NA LISTA</button>
                         </div>
                         <label>RESUMO DOS ITENS ADICIONADOS:</label>
                         <div id="listaProdutosManual" style="background: #050505; border: 1px solid #222; border-radius: 6px; padding: 10px; min-height: 80px;"><p id="txtListaVazia" style="color: #666; font-size: 12px; text-align: center; margin: 20px 0;">A lista do pedido está vazia no momento.</p></div>
@@ -537,7 +572,7 @@
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box" style="border-color: #00aaff; box-shadow: 0 0 30px rgba(0, 170, 255, 0.05);">
                     <div class="modulo-header" style="border-bottom-color: #222;">
-                        <div><h2 style="color: #00aaff;">Banco de Dados: Expedição</h2><p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Rastreabilidade completa de todas as ordens faturadas e despachadas.</p></div>
+                        <div><h2 style="color: #00aaff;">Banco de Dados: Expedição</h2></div>
                         <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
                     </div>
                     <div class="search-wrapper">
@@ -552,6 +587,8 @@
                 <div class="modulo-box">
                     <div class="modulo-header"><h2>Gestão de Equipe e Desempenho</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
                     <div class="grid-equipe" id="containerDesempenhoEquipe" style="margin-bottom: 40px;"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><h3 style="color: var(--text-light); font-size: 16px; margin:0;">Usuários Cadastrados</h3><button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="document.getElementById('modalNovoUsuario').style.display = 'flex'">+ Novo Perfil</button></div>
+                    <table><thead><tr><th>Nome</th><th>Nível</th><th>Status</th><th>Senha</th><th style="text-align: right;">Ações</th></tr></thead><tbody id="tabelaEquipeUsuarios"></tbody></table>
                 </div>
             </div>
         </div>
@@ -589,7 +626,6 @@
                     <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Roteiro de Separação - <span id="prepOvNumero">OV-0000</span></h2>
                     <div id="boxObsBrindes" style="display: none;"></div>
                     <div id="boxCaixaSugeridaSep" style="display: none;"></div>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Siga a rota abaixo pelos corredores.</p>
                     <div id="roteiroPickingHtml" style="text-align: left; margin-bottom: 30px;"></div>
                     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;"><button class="btn-download" id="btnDownloadOv">📄 Baixar Ordem Principal</button><button class="btn-download" id="btnDownloadRma" style="display:none;">🔄 Baixar Remessa</button></div>
                     <div style="margin-top: 20px;"><button class="btn-outline" style="border-color: var(--warning-yellow); color: var(--warning-yellow);" onclick="reportarErroOV()">⚠️ Relatar Problema</button></div>
@@ -606,7 +642,7 @@
                     <div id="boxCaixaSugeridaConf" style="display: none;"></div>
                     <div id="listaVolumesCaixas"></div>
                     <button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Nova Caixa</button>
-                    <div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;"><button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicaoNuvem()">ENVIAR PARA COTAÇÃO</button></div>
+                    <div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;"><button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicaoNuvem()">ENVIAR PARA COTAÇÃO DE FRETE</button></div>
                 </div>
             </div>
 
@@ -631,14 +667,8 @@
                     <div class="modulo-header"><h2>Guardar Mercadoria (Inbound)</h2><button class="btn-voltar" onclick="voltarAoDash()">⟵ VOLTAR AO HUB</button></div>
                     <div class="grid-2" style="gap: 30px;">
                         <div>
-                            <div class="grid-2">
-                                <div class="form-group"><label>1. ENDEREÇO FÍSICO</label><input type="text" id="inboundAddressEstoque" class="input-bip" style="color: white; border-color: #555;"></div>
-                                <div class="form-group"><label>2. LOTE</label><input type="text" id="inboundLotEstoque" class="input-bip" style="color: white; border-color: #555;"></div>
-                            </div>
-                            <div class="grid-2">
-                                <div class="form-group"><label>3. DATA DE ENTRADA</label><input type="date" id="inboundDataEstoque" class="input-dark"></div>
-                                <div class="form-group"><label>4. FAMÍLIA</label><select id="inboundFamiliaEstoque" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option></select></div>
-                            </div>
+                            <div class="grid-2"><div class="form-group"><label>1. ENDEREÇO FÍSICO</label><input type="text" id="inboundAddressEstoque" class="input-bip" style="color: white; border-color: #555;"></div><div class="form-group"><label>2. LOTE</label><input type="text" id="inboundLotEstoque" class="input-bip" style="color: white; border-color: #555;"></div></div>
+                            <div class="grid-2"><div class="form-group"><label>3. DATA DE ENTRADA</label><input type="date" id="inboundDataEstoque" class="input-dark"></div><div class="form-group"><label>4. FAMÍLIA</label><select id="inboundFamiliaEstoque" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option></select></div></div>
                         </div>
                         <div>
                             <div class="form-group"><label>5. QTD CAIXAS</label><input type="number" id="inboundMultiplierEstoque" class="input-dark" value="1" min="1"></div>
@@ -655,7 +685,6 @@
             <div id="estoqueTransferencia" class="sub-screen">
                 <div class="modulo-box" style="border-color: var(--warning-yellow);">
                     <div class="modulo-header" style="border-bottom-color: #333;"><h2 style="color: var(--warning-yellow);">Movimentação de Estoque</h2><button class="btn-voltar" onclick="voltarAoDash()">⟵ VOLTAR AO HUB</button></div>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Transfira saldo de mercadorias de um endereço físico para outro.</p>
                     <div class="grid-2" style="background: #0a0a0a; padding: 20px; border-radius: 12px; border: 1px solid #222;">
                         <div>
                             <h4 style="color: var(--error-red); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🔴 Retirar De (Origem)</h4>
@@ -673,6 +702,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- ========================================== -->
@@ -743,7 +773,6 @@
         let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
-        // NOVO: Algoritmo de Cubagem (Previsão de Caixas)
         const dimensoesCaixas = [
             { nome: 'Caixa P (15x15x15 cm)', volMax: 3375 },
             { nome: 'Caixa M (25x25x20 cm)', volMax: 12500 },
@@ -757,15 +786,11 @@
                 if(!itensDict) return;
                 for(let k in itensDict) {
                     let sku = itensDict[k].sku.toUpperCase(); let qtd = itensDict[k].alvo;
-                    let volUnit = 100; // Cabo
-                    if(sku.includes('CH')) volUnit = 150; 
-                    if(sku.includes('MP') || sku.includes('CP')) volUnit = 250; 
-                    if(sku.includes('PS') || sku.includes('SA') || sku.includes('SP') || sku.includes('DCP')) volUnit = 400; 
+                    let volUnit = 100; if(sku.includes('CH')) volUnit = 150; if(sku.includes('MP') || sku.includes('CP')) volUnit = 250; if(sku.includes('PS') || sku.includes('SA') || sku.includes('SP') || sku.includes('DCP')) volUnit = 400; 
                     volumeTotalEstimado += (volUnit * qtd);
                 }
             };
             calcularPara(itensPrincipais); calcularPara(itensRma);
-
             if(volumeTotalEstimado === 0) return '';
             let volumeComFolga = volumeTotalEstimado * 1.2;
             for(let c of dimensoesCaixas) { if(c.volMax >= volumeComFolga) { return `📦 Use a ${c.nome}`; } }
@@ -1098,8 +1123,7 @@
                     const ov = doc.data();
                     if (['Concluído', 'Faturado'].includes(ov.status)) { 
                         contador++; let totalItens = 0;
-                        if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
-                        if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
+                        if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo); if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
                         const freteInfo = ov.freteEscolhido ? `🚚 ${ov.freteEscolhido.transportadora} <span style="color:#aaa; font-weight:normal; margin-left:5px;">(R$ ${ov.freteEscolhido.preco})</span>` : 'Não registrado';
                         tbody.innerHTML += `<tr class="hist-row"><td><span class="badge-data">${ov.dataConclusao}</span></td><td><strong style="color: white; font-size: 15px;" class="hist-ov">${ov.numero}</strong></td><td style="color: #ddd;" class="hist-cli">${ov.cliente}</td><td><span style="color: #aaa;">📦 ${ov.volumesReais || '-'} cx</span> <span style="color:#666; margin:0 5px;">|</span> <span style="color: var(--volt-green);">${totalItens} un</span></td><td><span class="badge-frete">${freteInfo}</span></td><td style="text-align: right;"><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff; background: rgba(0, 170, 255, 0.05);" onclick="abrirResumoCompleto('${doc.id}')">Ver Dossiê</button></td></tr>`;
                     }
