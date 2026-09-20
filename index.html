@@ -38,67 +38,32 @@
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
         /* ========================================== */
-        /* 2. DESIGN TECH GRID (CARDS PADRONIZADOS)   */
+        /* 2. DESIGN TECH GRID E CARDS                */
         /* ========================================== */
-        
-        /* Menu Principal e Atalhos (Hub Cards) */
-        .hub-card { 
-            background: linear-gradient(145deg, #161616, #0a0a0a); 
-            border: 1px solid #2a2a2a; 
-            border-top: 1px solid rgba(196, 240, 0, 0.2); 
-            border-radius: 12px; 
-            padding: 25px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            min-height: 140px; 
-            position: relative;
-        }
-        .hub-card:hover { 
-            border-top-color: var(--volt-green); 
-            transform: translateY(-5px); 
-            box-shadow: 0 10px 25px rgba(196, 240, 0, 0.08); 
-        }
+        .hub-card { background: linear-gradient(145deg, #161616, #0a0a0a); border: 1px solid #2a2a2a; border-top: 1px solid rgba(196, 240, 0, 0.2); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; position: relative;}
+        .hub-card:hover { border-top-color: var(--volt-green); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(196, 240, 0, 0.08); }
         .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 18px; font-weight: bold; letter-spacing: 0.5px;}
         .hub-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;}
         .hub-card .action { font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;}
 
-        /* Modificadores Visuais Hub Card */
         .hub-card-blue { border-top-color: rgba(0, 170, 255, 0.2); }
         .hub-card-blue:hover { border-top-color: #00aaff; box-shadow: 0 10px 25px rgba(0, 170, 255, 0.08); }
         .hub-card-blue .action { color: #00aaff; }
-
         .hub-card-green { border-top-color: rgba(196, 240, 0, 0.5); }
         .hub-card-green:hover { border-top-color: var(--volt-green); box-shadow: 0 10px 25px rgba(196, 240, 0, 0.15); }
         .hub-card-green .action { color: var(--volt-green); }
-
         .hub-card-neutral { border-top-color: #333; }
         .hub-card-neutral:hover { border-top-color: #555; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.03); }
         .hub-card-neutral .action { color: #aaa; }
+        .hub-card-warning { border-top-color: rgba(255, 204, 0, 0.5); }
+        .hub-card-warning:hover { border-top-color: var(--warning-yellow); box-shadow: 0 10px 25px rgba(255, 204, 0, 0.15); }
+        .hub-card-warning .action { color: var(--warning-yellow); }
 
-        /* Cards das Filas de Operação (Estoque) */
         .fila-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 10px; }
-        .fila-card { 
-            background: linear-gradient(145deg, #161616, #0a0a0a); 
-            border: 1px solid #2a2a2a; 
-            border-top: 2px solid #333; 
-            border-radius: 12px; 
-            padding: 20px; 
-            transition: all 0.3s ease; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
-        .fila-card:hover { 
-            border-top-color: var(--volt-green); 
-            transform: translateY(-4px); 
-            box-shadow: 0 8px 20px rgba(196, 240, 0, 0.06); 
-        }
+        .fila-card { background: linear-gradient(145deg, #161616, #0a0a0a); border: 1px solid #2a2a2a; border-top: 2px solid #333; border-radius: 12px; padding: 20px; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; }
+        .fila-card:hover { border-top-color: var(--volt-green); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(196, 240, 0, 0.06); }
         .fila-card.warning { border-top-color: var(--warning-yellow); }
         .fila-card.warning:hover { box-shadow: 0 8px 20px rgba(255, 204, 0, 0.06); }
-        
         .fila-card-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 15px; }
         .fila-card-title { font-size: 22px; font-weight: bold; color: var(--text-light); margin: 0; }
         .fila-card-body { margin-bottom: 20px; flex-grow: 1; font-size: 13px; color: var(--text-muted); line-height: 1.6;}
@@ -108,38 +73,14 @@
         .fila-card.warning .fila-card-btn { background: rgba(255, 204, 0, 0.05); color: var(--warning-yellow); border-color: rgba(255, 204, 0, 0.3); }
         .fila-card.warning .fila-card-btn:hover { background: var(--warning-yellow); color: #000; }
 
-        /* Cards de Equipe / Acessos */
-        .equipe-card { 
-            background: linear-gradient(145deg, #121212, #080808); 
-            border: 1px solid #222; 
-            border-left: 4px solid #444; 
-            padding: 20px; 
-            border-radius: 8px; 
-            transition: all 0.3s ease; 
-        }
-        .equipe-card:hover { 
-            border-left-color: var(--volt-green); 
-            box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); 
-            transform: translateX(4px);
-        }
+        .equipe-card { background: linear-gradient(145deg, #121212, #080808); border: 1px solid #222; border-left: 4px solid #444; padding: 20px; border-radius: 8px; transition: all 0.3s ease; }
+        .equipe-card:hover { border-left-color: var(--volt-green); box-shadow: 0 5px 15px rgba(196, 240, 0, 0.05); transform: translateX(4px);}
         .equipe-nome { font-size: 18px; font-weight: bold; color: white; margin-bottom: 15px; display: flex; justify-content: space-between;}
         .equipe-stats { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); }
 
-        /* Cards de Produtos (Bancada de Conferência) */
         .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .produto-card { 
-            background: linear-gradient(145deg, #111, #050505); 
-            border: 1px solid #222; 
-            border-radius: 8px; 
-            padding: 20px 15px; 
-            text-align: center; 
-            transition: all 0.3s ease; 
-        }
-        .produto-card.ativo { 
-            border-color: var(--volt-green); 
-            box-shadow: 0 0 15px rgba(196, 240, 0, 0.15); 
-            transform: scale(1.03);
-        }
+        .produto-card { background: linear-gradient(145deg, #111, #050505); border: 1px solid #222; border-radius: 8px; padding: 20px 15px; text-align: center; transition: all 0.3s ease; }
+        .produto-card.ativo { border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.15); transform: scale(1.03);}
         .produto-sku { font-size: 16px; font-weight: bold; color: var(--text-light); }
         .produto-qtd { font-size: 32px; font-weight: bold; color: var(--text-muted); margin-top: 15px; transition: color 0.3s;}
         .produto-card.ativo .produto-qtd { color: var(--volt-green); }
@@ -179,6 +120,13 @@
         .brinde-label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: var(--text-light); }
         .brinde-chk { accent-color: var(--volt-green); transform: scale(1.2); }
 
+        /* NOVO: ALERTA FLUTUANTE DE CONFERÊNCIA */
+        .floating-alert { position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #000; border: 2px solid var(--volt-green); padding: 20px; border-radius: 12px; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: none; }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0;} to { transform: translateX(0); opacity: 1; } }
+        .floating-alert.show { display: block; }
+        
+        .caixa-sugerida { background: rgba(0, 170, 255, 0.1); border-left: 4px solid var(--blue-action); padding: 15px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; color: var(--text-light); font-size: 15px;}
+
         /* ========================================== */
         /* 4. MODULOS E TELAS                         */
         /* ========================================== */
@@ -208,8 +156,6 @@
         .item-grade { background: #161616; border: 1px solid #333; padding: 10px; border-radius: 6px; text-align: center; transition: 0.2s; }
         .item-grade:hover { border-color: var(--volt-green); }
         .item-grade strong { display: block; font-size: 13px; color: white; margin-bottom: 8px; }
-        .item-grade input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: var(--volt-green); text-align: center; border-radius: 4px; box-sizing: border-box; font-weight: bold;}
-        .item-grade input:focus { border-color: var(--volt-green); outline: none; }
 
         .mini-card { background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; position: relative; transition: 0.2s; }
         .mini-card:hover { border-color: var(--volt-green); }
@@ -227,7 +173,7 @@
         .btn-del-mini:hover { transform: scale(1.3); }
 
         /* ========================================== */
-        /* 5. TABELAS, DOSSIÊ E BADGES                */
+        /* 5. TABELAS E COMPONENTES TECH              */
         /* ========================================== */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; }
@@ -251,16 +197,9 @@
         .badge-papel { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #333;}
         .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); }
         .badge-erro { background: rgba(255, 51, 51, 0.1); color: var(--error-red); padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid rgba(255, 51, 51, 0.3); display: inline-block; cursor: pointer; transition: 0.2s;}
-        .badge-erro:hover { background: rgba(255, 51, 51, 0.2); transform: scale(1.05); }
-        .badge-ok { background: rgba(0, 204, 102, 0.1); color: #00cc66; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-block;}
         .badge-lote { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;}
         .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;}
         .badge-familia { background: rgba(0, 170, 255, 0.1); color: var(--blue-action); border: 1px solid rgba(0, 170, 255, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px;}
-        
-        .tabela-senha-box { display: flex; align-items: center; gap: 10px; }
-        .senha-input { background: transparent; border: none; color: white; width: 80px; font-size: 14px; font-family: monospace; }
-        .senha-input:focus { outline: none; }
-        .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
@@ -272,13 +211,7 @@
         .log-item { background: #000; border-left: 3px solid var(--error-red); padding: 12px 15px; margin-bottom: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #ddd; display: flex; flex-direction: column;}
         .log-hora { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace;}
 
-        /* ========================================== */
-        /* 6. TELAS DO ESTOQUE E CONFERÊNCIA          */
-        /* ========================================== */
         .prep-box { text-align: center; padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: #111; margin-top: 30px; }
-        .btn-download { background: #222; border: 1px solid #444; color: white; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin: 10px; }
-        .btn-download:hover { background: #333; border-color: var(--volt-green); color: var(--volt-green); }
-
         .fase-section { background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 20px; transition: 0.3s; opacity: 0.4; pointer-events: none; }
         .fase-section.ativa { opacity: 1; pointer-events: auto; border-color: var(--volt-green); box-shadow: 0 0 15px rgba(196, 240, 0, 0.05); }
         .fase-section.concluida { opacity: 1; pointer-events: none; border-color: #333; }
@@ -329,6 +262,15 @@
         </div>
     </div>
 
+    <!-- ALERTA FLUTUANTE DE CONFERÊNCIA (NOVO) -->
+    <div id="floatingAviso" class="floating-alert">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong style="color: var(--volt-green); font-size: 16px;">⚠️ Avisos da Ordem</strong>
+            <button style="background:transparent; border:none; color:#888; cursor:pointer;" onclick="document.getElementById('floatingAviso').classList.remove('show')">✖</button>
+        </div>
+        <div id="floatingConteudo" style="font-size: 14px; line-height: 1.5; color: white;"></div>
+    </div>
+
     <!-- ========================================== -->
     <!-- MODAIS DE CAMADA SUPERIOR                  -->
     <!-- ========================================== -->
@@ -356,7 +298,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DE OV (ADMIN) COM SKUS EDITAVEIS -->
+    <!-- MODAL DE EDIÇÃO DE OV (ADMIN) -->
     <div id="modalEditarOV" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 600px; border-color: var(--warning-yellow); max-height: 90vh; overflow-y: auto;">
             <div class="modulo-header" style="margin-bottom: 15px;">
@@ -365,9 +307,7 @@
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Você pode alterar tanto as quantidades quanto o nome dos produtos (SKUs). Se remover toda a quantidade, o item será apagado.</p>
             
-            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <!-- Preenchido via JS -->
-            </div>
+            <div id="listaEdicaoItens" style="background: #0a0a0a; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
 
             <div style="text-align: right;">
                 <button class="btn-volt" style="width: auto; background-color: var(--warning-yellow); color: #000;" onclick="salvarEdicaoOVAdmin()">💾 Salvar Correções</button>
@@ -410,6 +350,7 @@
                 <button class="btn-outline" style="border:none;" onclick="document.getElementById('modalEscolhaFrete').style.display='none'">✖ Fechar</button>
             </div>
             
+            <!-- EXIBIÇÃO DE BRINDES E OBSERVAÇÕES NO FATURAMENTO -->
             <div id="freteObsBrindes"></div>
 
             <div class="grid-3" style="background: #0a0a0a; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -553,9 +494,7 @@
         <!-- TELA DE LOGIN -->
         <div id="viewLogin" class="view-layer active">
             <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
-            <div class="login-grid" id="gridUsuariosLogin">
-                <!-- Fallback offline renderizado direto pelo JS no OnLoad -->
-            </div>
+            <div class="login-grid" id="gridUsuariosLogin"></div>
         </div>
 
         <!-- ========================================== -->
@@ -564,6 +503,7 @@
         <div id="viewAdmin" class="view-layer">
             <div id="adminDash" class="sub-screen active">
                 <div class="greeting"><h1 id="saudacaoAdmin">Boa noite, <span>Lucas</span></h1><p>Módulos de Gestão e Logística Avançada</p></div>
+                
                 <div class="grid-3" style="margin-bottom: 20px;">
                     <div class="hub-card hub-card-neutral" onclick="abrirModuloLancamentos()"><div><h3>📋 Lançar Ordem</h3><p>Use a Grade Rápida para preencher a OV e liberar para separação.</p></div><div class="action">Abrir Módulo ➔</div></div>
                     <div class="hub-card hub-card-green" onclick="abrirModuloFaturamento()"><div><h3>💰 Faturamento</h3><p>Aprove cotações, corrija volumes e fature as OVs já separadas.</p></div><div class="action">Ver Fila ➔</div></div>
@@ -572,11 +512,13 @@
                 <div class="grid-4">
                     <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()"><div><h3 style="font-size: 16px;">🏷️ Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div><div class="action">Configurar SKUs ➔</div></div>
                     <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()"><div><h3 style="font-size: 16px;">📥 Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div><div class="action">Guardar Estoque ➔</div></div>
-                    <div class="hub-card hub-card-green" style="min-height: 140px; padding: 20px;" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px;">📈 Gráficos e Estoque</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action">Ver Dashboard ➔</div></div>
-                    <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEquipe()"><div><h3 style="font-size: 16px;">👥 Equipe e Acessos</h3><p style="font-size: 12px;">Relatórios de produtividade.</p></div><div class="action">Abrir Painel ➔</div></div>
+                    
+                    <!-- NOVO: BOTÃO DE TRANSFERÊNCIA DE ESTOQUE -->
+                    <div class="hub-card hub-card-warning" style="min-height: 140px; padding: 20px;" onclick="abrirModuloTransferencia('admin')"><div><h3 style="font-size: 16px;">🔄 Movimentar</h3><p style="font-size: 12px;">Transfira saldo entre endereços.</p></div><div class="action">Fazer Transferência ➔</div></div>
+                    
+                    <div class="hub-card hub-card-green" style="min-height: 140px; padding: 20px;" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">📈 Dashboard</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action">Ver Dashboard ➔</div></div>
                 </div>
 
-                <!-- ACESSO DIRETO À OPERAÇÃO PELO ADMIN -->
                 <h3 style="color: var(--text-light); margin-top: 40px; margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 10px;">Acesso à Operação Física (Estoque)</h3>
                 <div class="grid-3">
                     <div class="hub-card hub-card-neutral" style="min-height: 120px; padding: 20px;" onclick="abrirFilaSeparacao()">
@@ -588,13 +530,13 @@
                         <div class="action">Ver Pendentes ➔</div>
                     </div>
                     <div class="hub-card hub-card-green" style="min-height: 120px; padding: 20px;" onclick="abrirFilaCotacao()">
-                        <div><h3 style="font-size: 16px;">💲 Cotação de Frete</h3><p style="font-size: 12px; margin-bottom: 10px;">Lançar preços de envio.</p></div>
-                        <div class="action">Fazer Cotações ➔</div>
+                        <div><h3 style="font-size: 16px; color: white;">💲 Cotação de Frete</h3><p style="font-size: 12px; margin-bottom: 10px;">Lançar preços de envio.</p></div>
+                        <div class="action" style="color: var(--volt-green);">Fazer Cotações ➔</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Subtela: NOVO DASHBOARD GRÁFICO (RESUMO DE ESTOQUE) -->
+            <!-- Subtelas Admin... -->
             <div id="adminResumoEstoque" class="sub-screen">
                 <div class="modulo-box dashboard-panel">
                     <div class="modulo-header" style="margin-bottom: 20px; border-bottom: none;">
@@ -642,11 +584,8 @@
                     </div>
 
                     <h3 style="color: var(--text-light); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Posições de Estoque por Produto</h3>
-                    <div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;">
-                        <!-- Cards de produtos serão injetados aqui -->
-                    </div>
+                    <div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;"></div>
 
-                    <!-- HISTÓRICO DE SAÍDAS (TECH GRID) -->
                     <div class="modulo-box" style="border-color: var(--error-red); box-shadow: 0 0 30px rgba(255, 51, 51, 0.05); margin-top: 40px; padding: 20px;">
                         <div class="modulo-header" style="border-bottom-color: #222; margin-bottom: 15px;">
                             <div>
@@ -678,7 +617,6 @@
                 </div>
             </div>
 
-            <!-- Subtela: CATÁLOGO -->
             <div id="adminCatalogo" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header" style="margin-bottom: 10px;">
@@ -709,7 +647,6 @@
                 </div>
             </div>
 
-            <!-- Subtela: ENTRADA DE ESTOQUE / ENDEREÇAMENTO (INBOUND) -->
             <div id="adminEnderecamento" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -769,7 +706,38 @@
                 </div>
             </div>
 
-            <!-- Subtela Admin: Lançamento de OVs (COM BRINDES E OBS E BUSCA) -->
+            <!-- NOVO: TELA DE TRANSFERÊNCIA DE ESTOQUE (ADMIN) -->
+            <div id="adminTransferencia" class="sub-screen">
+                <div class="modulo-box" style="border-color: var(--warning-yellow);">
+                    <div class="modulo-header" style="border-bottom-color: #333;">
+                        <h2 style="color: var(--warning-yellow);">Movimentação de Estoque</h2>
+                        <button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Transfira saldo de mercadorias de um endereço físico para outro.</p>
+                    
+                    <div class="grid-2" style="background: #0a0a0a; padding: 20px; border-radius: 12px; border: 1px solid #222;">
+                        <!-- ORIGEM -->
+                        <div>
+                            <h4 style="color: var(--error-red); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🔴 Retirar De (Origem)</h4>
+                            <div class="form-group"><label>Endereço de Origem</label><input type="text" id="transfOrigemEnd" class="input-dark" placeholder="Ex: A-01-01" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>Lote Origem</label><input type="text" id="transfOrigemLote" class="input-dark" placeholder="Ex: NOV-2023" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>SKU (Produto)</label><input type="text" id="transfOrigemSku" class="input-dark" placeholder="Ex: CH20WH" style="text-transform: uppercase;"></div>
+                        </div>
+
+                        <!-- DESTINO E QTD -->
+                        <div>
+                            <h4 style="color: var(--success-green); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🟢 Mover Para (Destino)</h4>
+                            <div class="form-group"><label>Endereço de Destino</label><input type="text" id="transfDestinoEnd" class="input-dark" placeholder="Ex: B-02-05" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>Quantidade para Mover (Unidades)</label><input type="number" id="transfQtd" class="input-dark" placeholder="0" min="1"></div>
+                            
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button class="btn-volt" style="background: var(--warning-yellow); color: #000;" onclick="executarTransferenciaEstoque('admin')">🔄 CONFIRMAR TRANSFERÊNCIA</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="adminLancamentos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header">
@@ -783,7 +751,6 @@
                             <div class="form-group"><label>CLIENTE / DESTINATÁRIO</label><input type="text" id="ovCliente" class="input-dark" placeholder="Nome do cliente"></div>
                             <div class="form-group"><label>VOLUMES (PREVISÃO)</label><input type="number" id="ovVolumes" class="input-dark" value="1"></div>
                             
-                            <!-- BRINDES E OBSERVAÇÕES -->
                             <div class="form-group" style="background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333;">
                                 <label style="color: var(--volt-green);">🎁 Incluir Brindes (Check-list para o Estoque)</label>
                                 <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
@@ -807,10 +774,7 @@
 
                     <div class="form-group">
                         <label style="font-size: 14px; color: var(--volt-green); margin-bottom: 15px;">DADOS DA SEPARAÇÃO (GRADE RÁPIDA)</label>
-                        
-                        <!-- FILTRO DE BUSCA -->
                         <input type="text" id="filtroProdutosLancamento" class="input-dark" style="margin-bottom: 15px; border-color: #555;" placeholder="🔍 Buscar produto por nome ou SKU..." onkeyup="filtrarGradeLancamento()">
-                        
                         <div class="grid-lancamento" id="gridProdutosLancamento"><p style="color: var(--volt-green); font-size: 12px; text-align: center; grid-column: 1 / -1;">Carregando Matriz...</p></div>
                         <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 25px; align-items: center; justify-content: flex-end; padding-bottom: 20px; border-bottom: 1px solid #222;">
                             <label style="margin: 0;">DESTINO DESTES ITENS:</label>
@@ -833,7 +797,6 @@
                 </div>
             </div>
 
-            <!-- TABELA DE HISTÓRICO REFORMULADA (TECH) -->
             <div id="adminHistorico" class="sub-screen">
                 <div class="modulo-box" style="border-color: #00aaff; box-shadow: 0 0 30px rgba(0, 170, 255, 0.05);">
                     <div class="modulo-header" style="border-bottom-color: #222;">
@@ -887,10 +850,16 @@
                     <div class="hub-card hub-card-neutral" onclick="abrirFilaConferencia()"><div><h3>🔍 Fila de Conferência</h3><p>Leve os carrinhos e faça a leitura cega dos códigos.</p></div><div class="action">Ver Pendentes ➔</div></div>
                     <div class="hub-card hub-card-green" onclick="abrirFilaCotacao()"><div><h3 style="color: white;">💲 Cotação de Frete</h3><p>Caixas prontas. Lance o preço e envie para Faturamento.</p></div><div class="action" style="color: var(--volt-green);">Fazer Cotações ➔</div></div>
                 </div>
-                <div class="grid-1" style="margin-top: 20px;">
+                <div class="grid-2" style="margin-top: 20px;">
                     <div class="hub-card hub-card-neutral" style="min-height: 80px; padding: 20px;" onclick="abrirModuloEnderecamentoEstoque()">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div><h3 style="font-size: 16px; margin: 0;">📥 Guardar Mercadoria (Inbound)</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Bipar endereço físico, lote e caixa para alimentar o estoque FEFO.</p></div><div class="action">Abrir ➔</div>
+                            <div><h3 style="font-size: 16px; margin: 0;">📥 Guardar Mercadoria (Inbound)</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Bipar endereço físico, lote e caixa.</p></div><div class="action">Abrir ➔</div>
+                        </div>
+                    </div>
+                    <!-- NOVO: TRANSFERÊNCIA DE ESTOQUE (OPERADOR) -->
+                    <div class="hub-card hub-card-warning" style="min-height: 80px; padding: 20px;" onclick="abrirModuloTransferencia('estoque')">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div><h3 style="font-size: 16px; margin: 0; color: var(--warning-yellow);">🔄 Movimentar Estoque</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Transferir saldo entre endereços.</p></div><div class="action" style="color: var(--warning-yellow);">Abrir ➔</div>
                         </div>
                     </div>
                 </div>
@@ -908,6 +877,9 @@
                     <h2 style="color: var(--volt-green); margin-top: 0; font-size: 28px;">Roteiro de Separação - <span id="prepOvNumero">OV-0000</span></h2>
                     
                     <div id="boxObsBrindes" style="display: none;"></div>
+                    
+                    <!-- NOVO: CAIXA SUGERIDA (CUBAGEM) -->
+                    <div id="boxCaixaSugeridaSep" style="display: none;"></div>
 
                     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Siga a rota abaixo pelos corredores. Pegue exatamente os lotes indicados (Garantia mais antiga primeiro).</p>
                     
@@ -923,7 +895,14 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;"><button class="btn-outline" style="border:none; padding-left: 0; color: var(--volt-green);" onclick="abrirFilaConferencia()">⟵ PAUSAR CONFERÊNCIA</button><h2 style="margin: 0; font-size: 24px; color: white;">Conferência - <span style="color: var(--volt-green);" id="confOvNumero">OV-0000</span></h2><div style="width: 150px;"></div></div>
                 <div id="faseOV" class="fase-section ativa"><h3>1. Itens Ordem Principal <span id="statusOV" style="font-size: 14px; font-weight: normal;">Lendo</span></h3><div class="produtos-grid" id="containerOV"></div><div class="form-group" style="margin-top: 20px;"><input type="text" id="bipOV" class="input-bip" autofocus onkeypress="if(event.key === 'Enter') processarBipagem('OV')"><div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('OV')">✔ VALIDAR ITENS</button></div></div></div>
                 <div id="faseRMA" class="fase-section"><h3>2. Remessa (RMA/Brindes) <span id="statusRMA" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3><div class="produtos-grid" id="containerRMA"></div><div class="form-group" style="margin-top: 20px;"><input type="text" id="bipRMA" class="input-bip" disabled onkeypress="if(event.key === 'Enter') processarBipagem('RMA')"><div style="text-align: right; margin-top: 15px;"><button class="btn-outline" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="validarFase('RMA')">✔ VALIDAR REMESSA</button></div></div></div>
-                <div id="faseLogistica" class="fase-section"><h3>3. Fechamento de Volumes <span id="statusLog" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3><div id="listaVolumesCaixas"></div><button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Nova Caixa</button><div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;"><button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicaoNuvem()">ENVIAR PARA COTAÇÃO DE FRETE</button></div></div>
+                <div id="faseLogistica" class="fase-section">
+                    <h3>3. Fechamento de Volumes <span id="statusLog" style="font-size: 14px; font-weight: normal;">Bloqueado</span></h3>
+                    <!-- NOVO: CAIXA SUGERIDA (CUBAGEM) -->
+                    <div id="boxCaixaSugeridaConf" style="display: none;"></div>
+                    <div id="listaVolumesCaixas"></div>
+                    <button class="btn-outline" onclick="adicionarCaixaEmbalagem()">+ Adicionar Nova Caixa</button>
+                    <div style="text-align: right; margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;"><button class="btn-volt" style="width: auto; padding: 15px 40px;" onclick="concluirExpedicaoNuvem()">ENVIAR PARA COTAÇÃO DE FRETE</button></div>
+                </div>
             </div>
 
             <div id="estoqueFazerCotacao" class="sub-screen">
@@ -966,6 +945,38 @@
                     <div><h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3><div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th>Endereço</th><th>Produto / SKU</th><th>Família</th><th>Lote (Entrada)</th><th>Caixas</th><th>Total Un.</th><th>Ação</th></tr></thead><tbody id="tabelaMapaEstoqueOp"></tbody></table></div></div>
                 </div>
             </div>
+
+            <!-- NOVO: TELA DE TRANSFERÊNCIA DE ESTOQUE (OPERADOR) -->
+            <div id="estoqueTransferencia" class="sub-screen">
+                <div class="modulo-box" style="border-color: var(--warning-yellow);">
+                    <div class="modulo-header" style="border-bottom-color: #333;">
+                        <h2 style="color: var(--warning-yellow);">Movimentação de Estoque</h2>
+                        <button class="btn-voltar" onclick="voltarAoDash()">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Transfira saldo de mercadorias de um endereço físico para outro.</p>
+                    
+                    <div class="grid-2" style="background: #0a0a0a; padding: 20px; border-radius: 12px; border: 1px solid #222;">
+                        <!-- ORIGEM -->
+                        <div>
+                            <h4 style="color: var(--error-red); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🔴 Retirar De (Origem)</h4>
+                            <div class="form-group"><label>Endereço de Origem</label><input type="text" id="transfOrigemEndOp" class="input-dark" placeholder="Ex: A-01-01" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>Lote Origem</label><input type="text" id="transfOrigemLoteOp" class="input-dark" placeholder="Ex: NOV-2023" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>SKU (Produto)</label><input type="text" id="transfOrigemSkuOp" class="input-dark" placeholder="Ex: CH20WH" style="text-transform: uppercase;"></div>
+                        </div>
+
+                        <!-- DESTINO E QTD -->
+                        <div>
+                            <h4 style="color: var(--success-green); margin-top: 0; border-bottom: 1px dashed #333; padding-bottom: 10px;">🟢 Mover Para (Destino)</h4>
+                            <div class="form-group"><label>Endereço de Destino</label><input type="text" id="transfDestinoEndOp" class="input-dark" placeholder="Ex: B-02-05" style="text-transform: uppercase;"></div>
+                            <div class="form-group"><label>Quantidade para Mover (Unidades)</label><input type="number" id="transfQtdOp" class="input-dark" placeholder="0" min="1"></div>
+                            
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button class="btn-volt" style="background: var(--warning-yellow); color: #000;" onclick="executarTransferenciaEstoque('op')">🔄 CONFIRMAR TRANSFERÊNCIA</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -985,7 +996,6 @@
             } 
         }
 
-        // Memória para uso do Modal de Detalhes dos Produtos
         let globalEstoqueData = [];
 
         // Inicialização do Firebase
@@ -1002,9 +1012,7 @@
         try {
             firebase.initializeApp(firebaseConfig); 
             db = firebase.firestore();
-        } catch(e) {
-            console.warn("Erro ao iniciar Firebase", e);
-        }
+        } catch(e) { console.warn("Erro ao iniciar Firebase", e); }
 
         const baseCatalogoVOLT = [
             {sku: "CH20WH", ean: "7898996240394"}, {sku: "CH20BK", ean: "7898974018038"}, {sku: "CH30WH", ean: "7898974018021"}, {sku: "CH30BK", ean: "7898974018014"},
@@ -1025,25 +1033,58 @@
         let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
+        // NOVO: Algoritmo de Cubagem (Previsão de Caixas)
+        const dimensoesCaixas = [
+            { nome: 'Caixa P (15x15x15 cm)', volMax: 3375 },
+            { nome: 'Caixa M (25x25x20 cm)', volMax: 12500 },
+            { nome: 'Caixa G (40x30x30 cm)', volMax: 36000 },
+            { nome: 'Caixa GG (50x40x40 cm)', volMax: 80000 }
+        ];
+
+        function calcularCaixaSugerida(itensPrincipais, itensRma) {
+            let volumeTotalEstimado = 0;
+            const calcularPara = (itensDict) => {
+                if(!itensDict) return;
+                for(let k in itensDict) {
+                    let sku = itensDict[k].sku.toUpperCase();
+                    let qtd = itensDict[k].alvo;
+                    // Volume médio aproximado por família (em cm cúbicos)
+                    let volUnit = 100; // Padrão: Cabo
+                    if(sku.includes('CH')) volUnit = 150; // Fontes
+                    if(sku.includes('MP') || sku.includes('CP')) volUnit = 250; // Fones Headset
+                    if(sku.includes('PS') || sku.includes('SA') || sku.includes('SP') || sku.includes('DCP')) volUnit = 400; // PowerBanks/Displays
+                    
+                    volumeTotalEstimado += (volUnit * qtd);
+                }
+            };
+            calcularPara(itensPrincipais);
+            calcularPara(itensRma);
+
+            if(volumeTotalEstimado === 0) return '';
+            
+            // Adiciona 20% de margem de segurança (folga para plástico bolha/brindes)
+            let volumeComFolga = volumeTotalEstimado * 1.2;
+
+            for(let c of dimensoesCaixas) {
+                if(c.volMax >= volumeComFolga) {
+                    return `📦 Use a ${c.nome}`;
+                }
+            }
+            return `📦 Volumes Múltiplos (Excede Caixa GG)`;
+        }
+
+
         function getBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
         function baixarArquivoBase64(base64Str, fileName) { const link = document.createElement('a'); link.href = base64Str; link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
-        // ====================================================
-        // INICIALIZAÇÃO DA PÁGINA 
-        // ====================================================
         window.onload = function() { 
-            bdUsuariosLogistica = { 
-                'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 
-                'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } 
-            };
+            bdUsuariosLogistica = { 'Lucas': { role: 'admin', senha: '123', status: 'ativo' }, 'Luiz': { role: 'estoque', senha: '123', status: 'ativo' } };
             renderLoginGrid();
-
             const today = new Date().toISOString().split('T')[0];
             if(document.getElementById('inboundData')) document.getElementById('inboundData').value = today;
             if(document.getElementById('inboundDataEstoque')) document.getElementById('inboundDataEstoque').value = today;
 
             const savedUser = localStorage.getItem('hubVoltUser'); const savedRole = localStorage.getItem('hubVoltRole');
-            
             if (savedUser && savedRole && bdUsuariosLogistica[savedUser]) {
                 usuarioLogado = savedUser; papelLogado = savedRole;
                 document.getElementById('headerNomeUser').innerHTML = `Usuário: <strong style="color:white;">${usuarioLogado}</strong>`; 
@@ -1052,18 +1093,11 @@
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
             } else { document.getElementById('headerNomeUser').innerText = "Identifique-se"; }
 
-            setTimeout(() => {
-                if(db) { carregarUsuariosDaNuvem(); inicializarCatalogoMestre(); }
-            }, 500);
+            setTimeout(() => { if(db) { carregarUsuariosDaNuvem(); inicializarCatalogoMestre(); } }, 500);
         };
 
-        // ====================================================
-        // SISTEMA DE LOGIN 
-        // ====================================================
         function renderLoginGrid() {
-            const grid = document.getElementById('gridUsuariosLogin');
-            if(!grid) return;
-            grid.innerHTML = '';
+            const grid = document.getElementById('gridUsuariosLogin'); if(!grid) return; grid.innerHTML = '';
             for (let nome in bdUsuariosLogistica) {
                 const user = bdUsuariosLogistica[nome];
                 if (user.status !== 'inativo') {
@@ -1072,29 +1106,12 @@
                     const borderCor = isEstoque ? '#444' : 'var(--border-color)';
                     const badgeCor = isEstoque ? '#888' : 'var(--volt-green)';
                     const txtPapel = isEstoque ? 'ESTOQUE' : 'ADMIN';
-                    
-                    grid.innerHTML += `
-                    <div class="user-card" onclick="abrirModalSenha('${nome}')">
-                        <div class="user-avatar" style="color: ${colorCor}; border-color: ${borderCor};">${nome.charAt(0)}</div>
-                        <h3 style="margin:0; margin-top:10px;">${nome}</h3>
-                        <span style="font-size: 11px; color: ${badgeCor};">${txtPapel}</span>
-                    </div>`;
+                    grid.innerHTML += `<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="color: ${colorCor}; border-color: ${borderCor};">${nome.charAt(0)}</div><h3 style="margin:0; margin-top:10px;">${nome}</h3><span style="font-size: 11px; color: ${badgeCor};">${txtPapel}</span></div>`;
                 }
             }
         }
 
-        async function carregarUsuariosDaNuvem() {
-            try {
-                const snapshot = await db.collection("usuarios").get(); 
-                if (!snapshot.empty) {
-                    let tempBd = {};  
-                    snapshot.forEach((doc) => { tempBd[doc.id] = doc.data(); });
-                    bdUsuariosLogistica = tempBd;
-                    renderLoginGrid(); 
-                }
-            } catch (error) { console.warn("Modo offline ou banco vazio. Mantendo base de segurança."); }
-        }
-
+        async function carregarUsuariosDaNuvem() { try { const snapshot = await db.collection("usuarios").get(); if (!snapshot.empty) { let tempBd = {}; snapshot.forEach((doc) => { tempBd[doc.id] = doc.data(); }); bdUsuariosLogistica = tempBd; renderLoginGrid(); } } catch (error) {} }
         function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; document.getElementById('nomeLogin').innerText = `Acesso: ${nome}`; document.getElementById('inputSenha').value = ''; document.getElementById('erroSenha').style.display = 'none'; document.getElementById('modalSenha').style.display = 'flex'; setTimeout(() => document.getElementById('inputSenha').focus(), 150); }
         function fecharSenhaModal() { document.getElementById('modalSenha').style.display = 'none'; }
         
@@ -1112,98 +1129,34 @@
         function fazerLogout() { localStorage.removeItem('hubVoltUser'); localStorage.removeItem('hubVoltRole'); location.reload(); }
 
         // ====================================================
-        // NAVEGAÇÃO E LAYERS
-        // ====================================================
-        function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; document.getElementById('saudacaoAdmin').innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
-        function mudarViewLayerGlobal(viewId) { document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active')); document.getElementById(viewId).classList.add('active'); }
-        function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); document.getElementById(subScreenId).classList.add('active'); }
-        function voltarLogoHome() { if (usuarioLogado) mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque'); }
-
-        // ====================================================
-        // MATRIZ DE CATÁLOGO (ADMIN)
+        // MATRIZ DE CATÁLOGO (ADMIN) E INBOUND
         // ====================================================
         async function inicializarCatalogoMestre() {
-            catalogoCompleto = [...baseCatalogoVOLT];
-            catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
-            try {
-                const snapshot = await db.collection("catalogo_produtos").get();
-                snapshot.forEach(doc => {
-                    const data = doc.data(); 
-                    let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario);
-                    if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; } 
-                    else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); }
-                });
-            } catch(e) {}
+            catalogoCompleto = [...baseCatalogoVOLT]; catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; });
+            try { const snapshot = await db.collection("catalogo_produtos").get(); snapshot.forEach(doc => { const data = doc.data(); let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario); if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; } else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); } }); } catch(e) {}
             catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku));
         }
 
         async function abrirModuloCatalogo() {
-            navegarAdmin('adminCatalogo'); const tbody = document.getElementById('tabelaCatalogoConfig');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
+            navegarAdmin('adminCatalogo'); const tbody = document.getElementById('tabelaCatalogoConfig'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
             try {
                 const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {}; snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
-                
                 tbody.innerHTML = '';
-                catalogoCompleto.forEach(prod => {
-                    const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100;
-                    
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #222;">
-                            <td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td>
-                            <td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td>
-                            <td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td>
-                            <td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td>
-                            <td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td>
-                        </tr>`;
-                });
+                catalogoCompleto.forEach(prod => { const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td><td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td><td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td><td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td><td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td></tr>`; });
             } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro de conexão.</td></tr>'; }
         }
 
-        async function salvarProdutoCatalogo(eanUnitario, sku) {
-            const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value;
-            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); }
-        }
+        async function salvarProdutoCatalogo(eanUnitario, sku) { const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value; try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); } }
+        async function salvarNovoSKUNuvem() { const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim(); const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value; if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios."); try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) }); alert(`✅ Novo produto criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none'; await inicializarCatalogoMestre(); abrirModuloCatalogo(); } catch(e) { alert("Erro ao criar produto."); } }
 
-        async function salvarNovoSKUNuvem() {
-            const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim();
-            const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value;
-            if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios.");
-            try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) }); alert(`✅ Novo produto criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none'; await inicializarCatalogoMestre(); abrirModuloCatalogo(); } catch(e) { alert("Erro ao criar produto."); }
-        }
-
-        // ====================================================
-        // ENDEREÇAMENTO DE ESTOQUE (INBOUND COM DATA E FAMILIA)
-        // ====================================================
         function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
         function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
 
         async function carregarMapaEstoque(perfil) {
-            const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp');
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
+            const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp'); tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
             try {
                 const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); tbody.innerHTML = ''; let contador = 0;
-                snapshot.forEach(doc => {
-                    const item = doc.data();
-                    if(item.quantidade > 0) {
-                        contador++;
-                        const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-';
-                        tbody.innerHTML += `
-                            <tr style="border-bottom: 1px solid #222;">
-                                <td><span class="badge-endereco">${item.endereco}</span></td>
-                                <td><strong>${item.sku}</strong></td>
-                                <td><span class="badge-familia">${item.familia || '-'}</span></td>
-                                <td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px; color:#888;">${dEnt}</span></td>
-                                <td>${item.caixas} cx</td>
-                                <td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td>
-                                <td>
-                                    <button class="btn-outline-2" style="border-color: var(--blue-action); color: var(--blue-action); margin-right: 5px;" onclick="abrirEdicaoInbound('${doc.id}', '${perfil}')">✏️</button>
-                                    <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">✖</button>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
+                snapshot.forEach(doc => { const item = doc.data(); if(item.quantidade > 0) { contador++; const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-'; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-familia">${item.familia || '-'}</span></td><td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px; color:#888;">${dEnt}</span></td><td>${item.caixas} cx</td><td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color: var(--blue-action); color: var(--blue-action); margin-right: 5px;" onclick="abrirEdicaoInbound('${doc.id}', '${perfil}')">✏️</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">✖</button></td></tr>`; } });
                 if(contador === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhum produto alocado nos endereços ainda.</td></tr>';
             } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar mapa.</td></tr>'; }
         }
@@ -1214,45 +1167,105 @@
 
             if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto.");
             let produtoEncontrado = null; let isMaster = false;
-            for(let prod of catalogoCompleto) {
-                if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; }
-                if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; }
-            }
+            for(let prod of catalogoCompleto) { if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; } if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; } }
             if(!produtoEncontrado) { document.getElementById(fieldProduct).value = ''; return alert("Código não encontrado no Catálogo. Cadastre-o primeiro."); }
 
             const qtdAdicionar = (isMaster ? produtoEncontrado.qtdMaster : 1) * mult; const caixasAdicionar = (isMaster ? 1 : 0) * mult; 
             document.getElementById(fieldProduct).value = ''; document.getElementById(fieldProduct).focus(); document.getElementById(fieldMultiplier).value = '1';
 
-            try {
-                const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; 
-                const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get();
-                if (docSnap.exists) { await docRef.update({ quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar), caixas: firebase.firestore.FieldValue.increment(caixasAdicionar), dataEntrada: dataEnt, familia: fam }); } 
-                else { await docRef.set({ endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku, quantidade: qtdAdicionar, caixas: caixasAdicionar, dataEntrada: dataEnt, familia: fam, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }
-                carregarMapaEstoque(perfil);
-            } catch(e) { alert("Erro ao guardar estoque."); }
+            try { const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get(); if (docSnap.exists) { await docRef.update({ quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar), caixas: firebase.firestore.FieldValue.increment(caixasAdicionar), dataEntrada: dataEnt, familia: fam }); } else { await docRef.set({ endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku, quantidade: qtdAdicionar, caixas: caixasAdicionar, dataEntrada: dataEnt, familia: fam, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } carregarMapaEstoque(perfil); } catch(e) { alert("Erro ao guardar estoque."); }
         }
 
         async function zerarPosicaoEstoque(id, perfil) { if(confirm("Tem certeza que deseja apagar este saldo do mapa?")) { await db.collection("estoque_posicoes").doc(id).delete(); carregarMapaEstoque(perfil); } }
-
-        async function abrirEdicaoInbound(id_doc, perfil) {
-            idEditLoteGlobal = { id: id_doc, perfil: perfil };
-            try {
-                const doc = await db.collection("estoque_posicoes").doc(id_doc).get(); const data = doc.data();
-                document.getElementById('editInboundAddress').value = data.endereco; document.getElementById('editInboundLot').value = data.lote; document.getElementById('editInboundData').value = data.dataEntrada || ''; document.getElementById('editInboundFamilia').value = data.familia || 'Cabo';
-                document.getElementById('modalEditarInbound').style.display = 'flex';
-            } catch(e) { alert("Erro ao carregar dados."); }
-        }
-
-        async function salvarEdicaoInboundNuvem() {
-            const end = document.getElementById('editInboundAddress').value.toUpperCase(); const lot = document.getElementById('editInboundLot').value.toUpperCase(); const dat = document.getElementById('editInboundData').value; const fam = document.getElementById('editInboundFamilia').value;
-            try {
-                await db.collection("estoque_posicoes").doc(idEditLoteGlobal.id).update({ endereco: end, lote: lot, dataEntrada: dat, familia: fam });
-                alert("Dados corrigidos!"); document.getElementById('modalEditarInbound').style.display = 'none'; carregarMapaEstoque(idEditLoteGlobal.perfil);
-            } catch(e) { alert("Erro ao atualizar."); }
-        }
+        async function abrirEdicaoInbound(id_doc, perfil) { idEditLoteGlobal = { id: id_doc, perfil: perfil }; try { const doc = await db.collection("estoque_posicoes").doc(id_doc).get(); const data = doc.data(); document.getElementById('editInboundAddress').value = data.endereco; document.getElementById('editInboundLot').value = data.lote; document.getElementById('editInboundData').value = data.dataEntrada || ''; document.getElementById('editInboundFamilia').value = data.familia || 'Cabo'; document.getElementById('modalEditarInbound').style.display = 'flex'; } catch(e) { alert("Erro ao carregar dados."); } }
+        async function salvarEdicaoInboundNuvem() { const end = document.getElementById('editInboundAddress').value.toUpperCase(); const lot = document.getElementById('editInboundLot').value.toUpperCase(); const dat = document.getElementById('editInboundData').value; const fam = document.getElementById('editInboundFamilia').value; try { await db.collection("estoque_posicoes").doc(idEditLoteGlobal.id).update({ endereco: end, lote: lot, dataEntrada: dat, familia: fam }); alert("Dados corrigidos!"); document.getElementById('modalEditarInbound').style.display = 'none'; carregarMapaEstoque(idEditLoteGlobal.perfil); } catch(e) { alert("Erro ao atualizar."); } }
 
         // ====================================================
-        // DASHBOARD GRÁFICO 
+        // NOVO: MOVIMENTAÇÃO DE ESTOQUE (TRANSFERÊNCIA)
+        // ====================================================
+        function abrirModuloTransferencia(perfil) {
+            document.getElementById('transfOrigemEnd').value = ''; document.getElementById('transfOrigemEndOp').value = '';
+            document.getElementById('transfOrigemLote').value = ''; document.getElementById('transfOrigemLoteOp').value = '';
+            document.getElementById('transfOrigemSku').value = ''; document.getElementById('transfOrigemSkuOp').value = '';
+            document.getElementById('transfDestinoEnd').value = ''; document.getElementById('transfDestinoEndOp').value = '';
+            document.getElementById('transfQtd').value = ''; document.getElementById('transfQtdOp').value = '';
+            
+            if(perfil === 'admin') { navegarAdmin('adminTransferencia'); } 
+            else { navegarEstoque('estoqueTransferencia'); }
+        }
+
+        async function executarTransferenciaEstoque(perfil) {
+            const suf = perfil === 'admin' ? '' : 'Op';
+            const endOrigem = document.getElementById('transfOrigemEnd'+suf).value.trim().toUpperCase();
+            const loteOrigem = document.getElementById('transfOrigemLote'+suf).value.trim().toUpperCase();
+            const skuOrigem = document.getElementById('transfOrigemSku'+suf).value.trim().toUpperCase();
+            const endDestino = document.getElementById('transfDestinoEnd'+suf).value.trim().toUpperCase();
+            const qtdMover = parseInt(document.getElementById('transfQtd'+suf).value);
+
+            if(!endOrigem || !loteOrigem || !skuOrigem || !endDestino || !qtdMover) return alert("Preencha todos os campos da transferência!");
+            if(endOrigem === endDestino) return alert("O endereço de destino deve ser diferente da origem.");
+
+            let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === skuOrigem);
+            if(!prodInfo) return alert("SKU não encontrado no sistema. Verifique a digitação.");
+
+            const docIdOrigem = `${endOrigem}_${loteOrigem}_${prodInfo.ean}`;
+            const docIdDestino = `${endDestino}_${loteOrigem}_${prodInfo.ean}`; // Mantém o mesmo lote e produto, só muda endereço
+
+            try {
+                const docSnapOrigem = await db.collection("estoque_posicoes").doc(docIdOrigem).get();
+                if(!docSnapOrigem.exists) return alert("Não há registro deste Lote/SKU no endereço de Origem.");
+                
+                const dataOrigem = docSnapOrigem.data();
+                if(dataOrigem.quantidade < qtdMover) return alert(`Saldo insuficiente! A origem possui apenas ${dataOrigem.quantidade} unidades.`);
+
+                // Calcula caixas aproximadas sendo movidas
+                let caixasMovidas = Math.floor(qtdMover / prodInfo.qtdMaster);
+                if(caixasMovidas === 0 && qtdMover >= prodInfo.qtdMaster) caixasMovidas = 1; //fallback
+
+                // Operação de Banco de Dados (Subtrai da Origem, Soma no Destino)
+                // Remove da Origem
+                if(dataOrigem.quantidade === qtdMover) {
+                    await db.collection("estoque_posicoes").doc(docIdOrigem).delete(); // Remove tudo
+                } else {
+                    await db.collection("estoque_posicoes").doc(docIdOrigem).update({
+                        quantidade: firebase.firestore.FieldValue.increment(-qtdMover),
+                        caixas: firebase.firestore.FieldValue.increment(-caixasMovidas)
+                    });
+                }
+
+                // Adiciona ao Destino
+                const docSnapDestino = await db.collection("estoque_posicoes").doc(docIdDestino).get();
+                if(docSnapDestino.exists) {
+                    await db.collection("estoque_posicoes").doc(docIdDestino).update({
+                        quantidade: firebase.firestore.FieldValue.increment(qtdMover),
+                        caixas: firebase.firestore.FieldValue.increment(caixasMovidas)
+                    });
+                } else {
+                    await db.collection("estoque_posicoes").doc(docIdDestino).set({
+                        endereco: endDestino,
+                        lote: loteOrigem,
+                        ean: prodInfo.ean,
+                        sku: prodInfo.sku,
+                        quantidade: qtdMover,
+                        caixas: caixasMovidas,
+                        dataEntrada: dataOrigem.dataEntrada,
+                        familia: dataOrigem.familia,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`✅ Transferência concluída! ${qtdMover} un de ${skuOrigem} foram movidas para ${endDestino}.`);
+                voltarAoDash();
+
+            } catch(error) {
+                alert("Erro ao realizar transferência. Verifique a conexão.");
+                console.log(error);
+            }
+        }
+
+
+        // ====================================================
+        // DASHBOARD GRÁFICO (REMOVIDO "OUTROS" + CARDS DE PRODUTO)
         // ====================================================
         let chartFamInst = null; let chartSkuInst = null;
 
@@ -1264,8 +1277,7 @@
                 const snapshot = await db.collection("estoque_posicoes").get();
                 let totalCx = 0; let totalUn = 0; let skusSet = new Set();
                 let familyData = { 'Cabo': 0, 'Fonte': 0, 'Fone de ouvido': 0, 'Power bank': 0 };
-                let skuData = {}; let skuMap = {}; 
-                globalEstoqueData = [];
+                let skuData = {}; let skuMap = {}; globalEstoqueData = [];
 
                 snapshot.forEach(doc => {
                     const item = doc.data();
@@ -1293,107 +1305,44 @@
 
                 if(chartFamInst) chartFamInst.destroy();
                 const ctxFam = document.getElementById('chartFamilias').getContext('2d');
-                chartFamInst = new Chart(ctxFam, {
-                    type: 'doughnut',
-                    data: { labels: Object.keys(familyData), datasets: [{ data: Object.values(familyData), backgroundColor: ['#c4f000', '#00aaff', '#ff3333', '#ffcc00'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: {color: '#aaa', usePointStyle: true, padding: 20} } } }
-                });
+                chartFamInst = new Chart(ctxFam, { type: 'doughnut', data: { labels: Object.keys(familyData), datasets: [{ data: Object.values(familyData), backgroundColor: ['#c4f000', '#00aaff', '#ff3333', '#ffcc00'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: {color: '#aaa', usePointStyle: true, padding: 20} } } } });
 
                 if(chartSkuInst) chartSkuInst.destroy();
                 let sortSkus = Object.keys(skuData).map(k => ({sku: k, qtd: skuData[k]})).sort((a,b) => b.qtd - a.qtd).slice(0, 5);
                 const ctxSku = document.getElementById('chartTopSkus').getContext('2d');
-                chartSkuInst = new Chart(ctxSku, {
-                    type: 'bar',
-                    data: { labels: sortSkus.map(i => i.sku), datasets: [{ label: 'Unidades', data: sortSkus.map(i => i.qtd), backgroundColor: 'rgba(196, 240, 0, 0.8)', hoverBackgroundColor: '#c4f000', borderRadius: 6, borderSkipped: false }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: {color: '#222'}, ticks: {color: '#888'} }, x: { grid: {display: false}, ticks: {color: 'white'} } } }
-                });
+                chartSkuInst = new Chart(ctxSku, { type: 'bar', data: { labels: sortSkus.map(i => i.sku), datasets: [{ label: 'Unidades', data: sortSkus.map(i => i.qtd), backgroundColor: 'rgba(196, 240, 0, 0.8)', hoverBackgroundColor: '#c4f000', borderRadius: 6, borderSkipped: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: {color: '#222'}, ticks: {color: '#888'} }, x: { grid: {display: false}, ticks: {color: 'white'} } } } });
 
                 const containerCards = document.getElementById('cardsEstoqueDashboard'); containerCards.innerHTML = '';
                 let sortedSkusMap = Object.values(skuMap).sort((a,b) => b.qtd - a.qtd);
-                sortedSkusMap.forEach(s => {
-                    const locaisStr = Array.from(s.locs).join(', ');
-                    containerCards.innerHTML += `<div class="hub-card hub-card-neutral" style="min-height: auto; padding: 15px;" onclick="abrirDetalhesProduto('${s.sku}')"><h3 style="font-size: 18px; color: var(--volt-green); margin-bottom: 5px;">${s.sku}</h3><p style="font-size: 14px; color: white; margin-bottom: 5px;">Total: <strong>${s.qtd} un</strong></p><p style="font-size: 11px; color: #888; margin: 0; line-height: 1.3;">Endereços: ${locaisStr}</p></div>`;
-                });
+                sortedSkusMap.forEach(s => { const locaisStr = Array.from(s.locs).join(', '); containerCards.innerHTML += `<div class="hub-card hub-card-neutral" style="min-height: auto; padding: 15px;" onclick="abrirDetalhesProduto('${s.sku}')"><h3 style="font-size: 18px; color: var(--volt-green); margin-bottom: 5px;">${s.sku}</h3><p style="font-size: 14px; color: white; margin-bottom: 5px;">Total: <strong>${s.qtd} un</strong></p><p style="font-size: 11px; color: #888; margin: 0; line-height: 1.3;">Endereços: ${locaisStr}</p></div>`; });
 
-                const tbodySaidas = document.getElementById('tabelaHistoricoSaidas');
-                const totalSaidasCounter = document.getElementById('histTotalSaidas');
+                const tbodySaidas = document.getElementById('tabelaHistoricoSaidas'); const totalSaidasCounter = document.getElementById('histTotalSaidas');
                 tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--error-red); padding: 30px;">Calculando saídas...</td></tr>';
                 
                 const ovsSnap = await db.collection("estoque_ovs").where("status", "in", ["Conferido", "Em cotação", "Aguardando Cotação", "Aguardando Faturamento", "Faturado", "Concluído"]).get(); 
                 let saidas = [];
-                ovsSnap.forEach(doc => {
-                    const ov = doc.data(); const dataFim = ov.dataConclusao || ov.data || '-';
-                    if (ov.itensOV) { Object.values(ov.itensOV).forEach(i => { saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'Principal', ts: ov.timestamp }); }); }
-                    if (ov.itensRMA) { Object.values(ov.itensRMA).forEach(i => { saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'RMA', ts: ov.timestamp }); }); }
-                });
+                ovsSnap.forEach(doc => { const ov = doc.data(); const dataFim = ov.dataConclusao || ov.data || '-'; if (ov.itensOV) { Object.values(ov.itensOV).forEach(i => { saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'Principal', ts: ov.timestamp }); }); } if (ov.itensRMA) { Object.values(ov.itensRMA).forEach(i => { saidas.push({ data: dataFim, ov: ov.numero, sku: i.sku, qtd: i.alvo, tipo: 'RMA', ts: ov.timestamp }); }); } });
 
                 tbodySaidas.innerHTML = '';
                 if (saidas.length > 0) {
                     saidas.sort((a,b) => { const tA = a.ts ? a.ts.toMillis() : 0; const tB = b.ts ? b.ts.toMillis() : 0; return tB - tA; });
                     const saidasRecentes = saidas.slice(0, 100);
-                    saidasRecentes.forEach(s => {
-                        let tipoBadge = s.tipo === 'RMA' ? `<span style="color:var(--warning-yellow); font-size:10px; margin-left:5px;">(RMA)</span>` : '';
-                        tbodySaidas.innerHTML += `
-                        <tr class="hist-saida-row">
-                            <td><span class="badge-data">${s.data}</span></td>
-                            <td><strong style="color: white; font-size: 15px;" class="hist-saida-ov">${s.ov}</strong></td>
-                            <td class="hist-saida-sku">${s.sku} ${tipoBadge}</td>
-                            <td><span style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); color: var(--error-red); padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center;">➖ ${s.qtd} un</span></td>
-                        </tr>`;
-                    });
+                    saidasRecentes.forEach(s => { let tipoBadge = s.tipo === 'RMA' ? `<span style="color:var(--warning-yellow); font-size:10px; margin-left:5px;">(RMA)</span>` : ''; tbodySaidas.innerHTML += `<tr class="hist-saida-row"><td><span class="badge-data">${s.data}</span></td><td><strong style="color: white; font-size: 15px;" class="hist-saida-ov">${s.ov}</strong></td><td class="hist-saida-sku">${s.sku} ${tipoBadge}</td><td><span style="background: rgba(255, 51, 51, 0.1); border: 1px solid rgba(255, 51, 51, 0.3); color: var(--error-red); padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center;">➖ ${s.qtd} un</span></td></tr>`; });
                     totalSaidasCounter.innerText = saidasRecentes.length;
-                } else { 
-                    tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888; padding: 30px;">Nenhuma saída registrada.</td></tr>'; 
-                    totalSaidasCounter.innerText = 0;
-                }
+                } else { tbodySaidas.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888; padding: 30px;">Nenhuma saída registrada.</td></tr>'; totalSaidasCounter.innerText = 0; }
 
             } catch(e) { console.log(e); }
         }
 
-        function filtrarHistoricoSaidas() {
-            const termo = document.getElementById('filtroSaidas').value.toLowerCase();
-            const linhas = document.querySelectorAll('#tabelaHistoricoSaidas .hist-saida-row');
-            let exibidos = 0;
-            linhas.forEach(linha => {
-                const ov = linha.querySelector('.hist-saida-ov').innerText.toLowerCase();
-                const sku = linha.querySelector('.hist-saida-sku').innerText.toLowerCase();
-                if(ov.includes(termo) || sku.includes(termo)) { linha.style.display = ''; exibidos++; } 
-                else { linha.style.display = 'none'; }
-            });
-            document.getElementById('histTotalSaidas').innerText = exibidos;
-        }
-
-        function abrirDetalhesProduto(sku) {
-            document.getElementById('detalheSkuNome').innerText = sku;
-            const tbody = document.getElementById('tabelaDetalhesProduto'); tbody.innerHTML = '';
-            const itens = globalEstoqueData.filter(i => i.sku === sku);
-            itens.sort((a, b) => a.endereco.localeCompare(b.endereco)); 
-
-            itens.forEach(item => {
-                const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-';
-                tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><span class="badge-endereco">${item.endereco}</span></td><td style="padding: 10px 15px;"><span class="badge-lote">${item.lote}</span> <span style="font-size:10px;color:#888;margin-left:5px;">${dEnt}</span></td><td style="padding: 10px 15px;">${item.caixas} cx</td><td style="padding: 10px 15px; color: var(--volt-green); font-weight: bold;">${item.quantidade}</td></tr>`;
-            });
-            document.getElementById('modalDetalhesProduto').style.display = 'flex';
-        }
+        function filtrarHistoricoSaidas() { const termo = document.getElementById('filtroSaidas').value.toLowerCase(); const linhas = document.querySelectorAll('#tabelaHistoricoSaidas .hist-saida-row'); let exibidos = 0; linhas.forEach(linha => { const ov = linha.querySelector('.hist-saida-ov').innerText.toLowerCase(); const sku = linha.querySelector('.hist-saida-sku').innerText.toLowerCase(); if(ov.includes(termo) || sku.includes(termo)) { linha.style.display = ''; exibidos++; } else { linha.style.display = 'none'; } }); document.getElementById('histTotalSaidas').innerText = exibidos; }
+        function abrirDetalhesProduto(sku) { document.getElementById('detalheSkuNome').innerText = sku; const tbody = document.getElementById('tabelaDetalhesProduto'); tbody.innerHTML = ''; const itens = globalEstoqueData.filter(i => i.sku === sku); itens.sort((a, b) => a.endereco.localeCompare(b.endereco)); itens.forEach(item => { const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-'; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><span class="badge-endereco">${item.endereco}</span></td><td style="padding: 10px 15px;"><span class="badge-lote">${item.lote}</span> <span style="font-size:10px;color:#888;margin-left:5px;">${dEnt}</span></td><td style="padding: 10px 15px;">${item.caixas} cx</td><td style="padding: 10px 15px; color: var(--volt-green); font-weight: bold;">${item.quantidade}</td></tr>`; }); document.getElementById('modalDetalhesProduto').style.display = 'flex'; }
 
         // ====================================================
         // GRADE DE LANÇAMENTO E FILTRO DE BUSCA
         // ====================================================
         function abrirModuloLancamentos() { navegarAdmin('adminLancamentos'); carregarMiniFilaAdmin(); renderizarGridLancamentos(); }
-
-        function renderizarGridLancamentos() {
-            const grid = document.getElementById('gridProdutosLancamento'); grid.innerHTML = '';
-            catalogoCompleto.forEach(prod => { grid.innerHTML += `<div class="item-grade"><strong>${prod.sku}</strong><input type="number" id="lanca_qtd_${prod.ean}" placeholder="0"></div>`; });
-        }
-
-        function filtrarGradeLancamento() {
-            const termo = document.getElementById('filtroProdutosLancamento').value.toLowerCase();
-            const itens = document.querySelectorAll('#gridProdutosLancamento .item-grade');
-            itens.forEach(item => {
-                const sku = item.querySelector('strong').innerText.toLowerCase();
-                if(sku.includes(termo)) { item.style.display = ''; } else { item.style.display = 'none'; }
-            });
-        }
+        function renderizarGridLancamentos() { const grid = document.getElementById('gridProdutosLancamento'); grid.innerHTML = ''; catalogoCompleto.forEach(prod => { grid.innerHTML += `<div class="item-grade"><strong>${prod.sku}</strong><input type="number" id="lanca_qtd_${prod.ean}" placeholder="0"></div>`; }); }
+        function filtrarGradeLancamento() { const termo = document.getElementById('filtroProdutosLancamento').value.toLowerCase(); const itens = document.querySelectorAll('#gridProdutosLancamento .item-grade'); itens.forEach(item => { const sku = item.querySelector('strong').innerText.toLowerCase(); if(sku.includes(termo)) { item.style.display = ''; } else { item.style.display = 'none'; } }); }
 
         document.getElementById('fileOV').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneOV').classList.add('concluido'); document.getElementById('dropTitleOV').innerText = "✅ OV Anexada"; document.getElementById('dropTitleOV').style.color = "var(--success-green)"; }});
         document.getElementById('fileRMA').addEventListener('change', function() { if(this.files.length) { document.getElementById('dropzoneRMA').classList.add('concluido'); document.getElementById('dropTitleRMA').innerText = "✅ Remessa Anexada"; document.getElementById('dropTitleRMA').style.color = "var(--success-green)"; }});
@@ -1437,9 +1386,7 @@
                 if(temArquivoOV) base64OV = await getBase64(fileOvInput.files[0]); if(temArquivoRMA) base64RMA = await getBase64(fileRmaInput.files[0]);
                 const d = new Date(); const dataF = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
                 
-                await db.collection("estoque_ovs").add({ 
-                    numero: num, cliente: cli, volumesPrevisao: vol, hasArquivoOV: temArquivoOV, arquivoOV_base64: base64OV, hasArquivoRMA: temArquivoRMA, arquivoRMA_base64: base64RMA, itensOV: itensLancamentoOV, itensRMA: itensLancamentoRMA, observacao: obs, brindes: listaBrindes, status: 'Lançada', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp(), auditoriaLogs: [], hasProblema: false
-                }); 
+                await db.collection("estoque_ovs").add({ numero: num, cliente: cli, volumesPrevisao: vol, hasArquivoOV: temArquivoOV, arquivoOV_base64: base64OV, hasArquivoRMA: temArquivoRMA, arquivoRMA_base64: base64RMA, itensOV: itensLancamentoOV, itensRMA: itensLancamentoRMA, observacao: obs, brindes: listaBrindes, status: 'Lançada', data: dataF, autor: usuarioLogado, timestamp: firebase.firestore.FieldValue.serverTimestamp(), auditoriaLogs: [], hasProblema: false }); 
                 
                 alert(`A OV ${num} foi enviada para a fila de expedição com sucesso!`); 
                 document.getElementById('ovNumero').value = ''; document.getElementById('ovCliente').value = ''; document.getElementById('ovObservacao').value = ''; document.querySelectorAll('.brinde-chk').forEach(c => c.checked = false); document.getElementById('fileOV').value = ''; document.getElementById('fileRMA').value = ''; document.getElementById('dropzoneOV').classList.remove('concluido'); document.getElementById('dropzoneRMA').classList.remove('concluido'); document.getElementById('dropTitleOV').innerText = "📥 Clicar para Anexar arquivo OV"; document.getElementById('dropTitleOV').style.color = "var(--text-light)"; document.getElementById('dropTitleRMA').innerText = "📥 Clicar para Anexar Remessa"; document.getElementById('dropTitleRMA').style.color = "#888"; 
@@ -1484,55 +1431,40 @@
             idOvEditGlobal = id_doc; document.getElementById('editOvNum').innerText = numero; const container = document.getElementById('listaEdicaoItens'); container.innerHTML = '<p style="color: var(--volt-green);">Carregando itens...</p>'; document.getElementById('modalEditarOV').style.display = 'flex';
             try {
                 const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ov = docRef.data(); container.innerHTML = '';
-                if (ov.itensOV) { 
-                    for(let ean in ov.itensOV) { 
-                        container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:#888;">SKU (Principal)</label><input type="text" id="edit_ov_sku_${ean}" class="input-dark" value="${ov.itensOV[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:#888;">Qtd.</label><input type="number" id="edit_ov_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensOV[ean].alvo}" style="padding: 8px;"></div></div>`; 
-                    } 
-                }
-                if (ov.itensRMA) { 
-                    for(let ean in ov.itensRMA) { 
-                        container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:var(--warning-yellow);">SKU (RMA)</label><input type="text" id="edit_rma_sku_${ean}" class="input-dark" value="${ov.itensRMA[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:var(--warning-yellow);">Qtd.</label><input type="number" id="edit_rma_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensRMA[ean].alvo}" style="padding: 8px;"></div></div>`; 
-                    } 
-                }
+                if (ov.itensOV) { for(let ean in ov.itensOV) { container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:#888;">SKU (Principal)</label><input type="text" id="edit_ov_sku_${ean}" class="input-dark" value="${ov.itensOV[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:#888;">Qtd.</label><input type="number" id="edit_ov_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensOV[ean].alvo}" style="padding: 8px;"></div></div>`; } }
+                if (ov.itensRMA) { for(let ean in ov.itensRMA) { container.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: center;"><div style="grid-column: span 2;"><label style="font-size:10px; color:var(--warning-yellow);">SKU (RMA)</label><input type="text" id="edit_rma_sku_${ean}" class="input-dark" value="${ov.itensRMA[ean].sku}" style="padding: 8px;"></div><div><label style="font-size:10px; color:var(--warning-yellow);">Qtd.</label><input type="number" id="edit_rma_qtd_${ean}" class="input-dark edit-qtd-input" value="${ov.itensRMA[ean].alvo}" style="padding: 8px;"></div></div>`; } }
             } catch(e) {}
         }
 
         async function salvarEdicaoOVAdmin() {
             try {
                 const docRef = await db.collection("estoque_ovs").doc(idOvEditGlobal).get(); let ov = docRef.data();
-                
                 let novosItensOV = {};
                 if (ov.itensOV) { 
                     for(let ean in ov.itensOV) { 
                         const newSku = document.getElementById(`edit_ov_sku_${ean}`).value.trim().toUpperCase(); 
                         const newQtd = parseInt(document.getElementById(`edit_ov_qtd_${ean}`).value) || 0; 
-                        
                         if(newQtd > 0) {
                             let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
                             if(!prodInfo) { alert(`Produto Principal "${newSku}" não encontrado no Catálogo. Verifique a digitação.`); return; }
                             let newEan = prodInfo.ean;
-                            if(novosItensOV[newEan]) { novosItensOV[newEan].alvo += newQtd; } 
-                            else { novosItensOV[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                            if(novosItensOV[newEan]) { novosItensOV[newEan].alvo += newQtd; } else { novosItensOV[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
                         }
                     } 
                 }
-                
                 let novosItensRMA = {};
                 if (ov.itensRMA) { 
                     for(let ean in ov.itensRMA) { 
                         const newSku = document.getElementById(`edit_rma_sku_${ean}`).value.trim().toUpperCase(); 
                         const newQtd = parseInt(document.getElementById(`edit_rma_qtd_${ean}`).value) || 0; 
-                        
                         if(newQtd > 0) {
                             let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === newSku);
                             if(!prodInfo) { alert(`Produto de RMA "${newSku}" não encontrado no Catálogo. Verifique a digitação.`); return; }
                             let newEan = prodInfo.ean;
-                            if(novosItensRMA[newEan]) { novosItensRMA[newEan].alvo += newQtd; } 
-                            else { novosItensRMA[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
+                            if(novosItensRMA[newEan]) { novosItensRMA[newEan].alvo += newQtd; } else { novosItensRMA[newEan] = { sku: prodInfo.sku, alvo: newQtd, bipado: 0 }; }
                         }
                     } 
                 }
-
                 await db.collection("estoque_ovs").doc(idOvEditGlobal).update({ itensOV: novosItensOV, itensRMA: novosItensRMA, hasProblema: false });
                 alert("Quantidades corrigidas com sucesso!"); document.getElementById('modalEditarOV').style.display = 'none'; carregarMiniFilaAdmin();
             } catch(e) { alert("Erro ao salvar correção."); }
@@ -1575,6 +1507,15 @@
                 
                 document.getElementById('freteCliente').innerText = ovData.cliente || '-'; document.getElementById('freteData').innerText = ovData.data || '-'; document.getElementById('freteOps').innerText = ovData.operadorSeparacao || '-';
                 
+                const boxObs = document.getElementById('freteObsBrindes');
+                boxObs.innerHTML = '';
+                if(ovData.observacao || (ovData.brindes && ovData.brindes.length > 0)) {
+                    let h = '';
+                    if(ovData.brindes && ovData.brindes.length > 0) h += `<div class="caixa-brindes"><strong style="color:var(--volt-green); font-size:16px;">🎁 BRINDES DA OV:</strong><br>${ovData.brindes.join(', ')}</div>`;
+                    if(ovData.observacao) h += `<div class="caixa-obs"><strong style="color:var(--blue-action); font-size:16px;">⚠️ OBSERVAÇÃO DO VENDEDOR:</strong><br>${ovData.observacao}</div>`;
+                    boxObs.innerHTML = h;
+                }
+
                 let itensHtml = '';
                 if(ovData.itensOV) Object.values(ovData.itensOV).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:#888; font-size:11px;">Principal</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
                 if(ovData.itensRMA) Object.values(ovData.itensRMA).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:var(--warning-yellow); font-size:11px;">RMA</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`);
@@ -1583,45 +1524,21 @@
                 containerDimensoes.innerHTML = '';
                 if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) {
                     ovData.detalhesVolumes.forEach((vol) => { 
-                        containerDimensoes.innerHTML += `
-                        <div class="grid-4" style="margin-bottom: 10px; align-items: end;">
-                            <div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div>
-                            <div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div>
-                            <div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div>
-                            <div style="display: flex; gap: 5px;">
-                                <div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div>
-                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button>
-                            </div>
-                        </div>`; 
+                        containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`; 
                     });
                 } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão registrada.</p>'; }
 
                 containerCotacoes.innerHTML = '';
                 if(ovData.cotacoes && ovData.cotacoes.length > 0) {
                     ovData.cotacoes.forEach((cot, idx) => { 
-                        containerCotacoes.innerHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;">
-                            <div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div>
-                            <div style="text-align: right;">
-                                <strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong>
-                                <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button>
-                                <button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button>
-                            </div>
-                        </div>`; 
+                        containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; 
                     });
                 } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
         }
 
-        async function adicionarCotacaoAdmin() {
-            const transp = document.getElementById('cotTranspAdmin').value; const preco = document.getElementById('cotPrecoAdmin').value; const prazo = document.getElementById('cotPrazoAdmin').value;
-            if(!transp || !preco || !prazo) return alert("Preencha Transportadora, Preço e Prazo.");
-            try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ cotacoes: firebase.firestore.FieldValue.arrayUnion({ transportadora: transp, preco: preco, prazo: prazo }) }); document.getElementById('cotTranspAdmin').value = ''; document.getElementById('cotPrecoAdmin').value = ''; document.getElementById('cotPrazoAdmin').value = ''; carregarCotasEDimensoes(); } catch(e) {}
-        }
-
-        async function excluirCotacaoAdmin(idx) {
-            try { const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); let cotacoes = docRef.data().cotacoes; cotacoes.splice(idx, 1); await db.collection("estoque_ovs").doc(idOvGlobal).update({ cotacoes: cotacoes }); carregarCotasEDimensoes(); } catch(e) {}
-        }
+        async function adicionarCotacaoAdmin() { const transp = document.getElementById('cotTranspAdmin').value; const preco = document.getElementById('cotPrecoAdmin').value; const prazo = document.getElementById('cotPrazoAdmin').value; if(!transp || !preco || !prazo) return alert("Preencha Transportadora, Preço e Prazo."); try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ cotacoes: firebase.firestore.FieldValue.arrayUnion({ transportadora: transp, preco: preco, prazo: prazo }) }); document.getElementById('cotTranspAdmin').value = ''; document.getElementById('cotPrecoAdmin').value = ''; document.getElementById('cotPrazoAdmin').value = ''; carregarCotasEDimensoes(); } catch(e) {} }
+        async function excluirCotacaoAdmin(idx) { try { const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); let cotacoes = docRef.data().cotacoes; cotacoes.splice(idx, 1); await db.collection("estoque_ovs").doc(idOvGlobal).update({ cotacoes: cotacoes }); carregarCotasEDimensoes(); } catch(e) {} }
 
         function adicionarDimensaoAdmin() {
             const container = document.getElementById('listaDimensoesAdmin'); const currentCount = container.querySelectorAll('.grid-4').length;
@@ -1656,11 +1573,7 @@
                     const ov = doc.data();
                     if (['Concluído', 'Faturado', 'Aguardando Cotação', 'Aguardando Faturamento'].includes(ov.status)) {
                         totalExpedidos++; const op = ov.operadorSeparacao || ov.operadorFinal || ov.autor; 
-                        if (op) {
-                            if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0, erros: 0 };
-                            statsPorOperador[op].separados++;
-                            if (ov.auditoriaLogs && ov.auditoriaLogs.length > 0) { statsPorOperador[op].erros += ov.auditoriaLogs.length; }
-                        }
+                        if (op) { if (!statsPorOperador[op]) statsPorOperador[op] = { separados: 0, erros: 0 }; statsPorOperador[op].separados++; if (ov.auditoriaLogs && ov.auditoriaLogs.length > 0) { statsPorOperador[op].erros += ov.auditoriaLogs.length; } }
                     }
                 });
 
@@ -1678,67 +1591,29 @@
         }
 
         async function carregarHistoricoDaNuvem() {
-            const tbody = document.getElementById('tabelaHistorico'); 
-            const totalCounter = document.getElementById('histTotalOvs');
+            const tbody = document.getElementById('tabelaHistorico'); const totalCounter = document.getElementById('histTotalOvs');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #00aaff; padding: 30px;">Processando dados na nuvem...</td></tr>';
             try {
-                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); 
-                tbody.innerHTML = ''; 
-                let contador = 0;
-                
+                const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0;
                 snapshot.forEach((doc) => {
                     const ov = doc.data();
                     if (['Concluído', 'Faturado'].includes(ov.status)) { 
-                        contador++; 
-                        let totalItens = 0;
-                        if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo);
-                        if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
-                        
+                        contador++; let totalItens = 0;
+                        if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo); if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo);
                         const freteInfo = ov.freteEscolhido ? `🚚 ${ov.freteEscolhido.transportadora} <span style="color:#aaa; font-weight:normal; margin-left:5px;">(R$ ${ov.freteEscolhido.preco})</span>` : 'Não registrado';
-                        
-                        tbody.innerHTML += `
-                        <tr class="hist-row">
-                            <td><span class="badge-data">${ov.dataConclusao}</span></td>
-                            <td><strong style="color: white; font-size: 15px;" class="hist-ov">${ov.numero}</strong></td>
-                            <td style="color: #ddd;" class="hist-cli">${ov.cliente}</td>
-                            <td><span style="color: #aaa;">📦 ${ov.volumesReais || '-'} cx</span> <span style="color:#666; margin:0 5px;">|</span> <span style="color: var(--volt-green);">${totalItens} un</span></td>
-                            <td><span class="badge-frete">${freteInfo}</span></td>
-                            <td style="text-align: right;"><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff; background: rgba(0, 170, 255, 0.05);" onclick="abrirResumoCompleto('${doc.id}')">Ver Dossiê</button></td>
-                        </tr>`;
+                        tbody.innerHTML += `<tr class="hist-row"><td><span class="badge-data">${ov.dataConclusao}</span></td><td><strong style="color: white; font-size: 15px;" class="hist-ov">${ov.numero}</strong></td><td style="color: #ddd;" class="hist-cli">${ov.cliente}</td><td><span style="color: #aaa;">📦 ${ov.volumesReais || '-'} cx</span> <span style="color:#666; margin:0 5px;">|</span> <span style="color: var(--volt-green);">${totalItens} un</span></td><td><span class="badge-frete">${freteInfo}</span></td><td style="text-align: right;"><button class="btn-outline-2" style="border-color: #00aaff; color: #00aaff; background: rgba(0, 170, 255, 0.05);" onclick="abrirResumoCompleto('${doc.id}')">Ver Dossiê</button></td></tr>`;
                     }
                 });
-                totalCounter.innerText = contador;
-                if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888; padding: 30px;">Nenhuma expedição faturada encontrada.</td></tr>';
-            } catch (error) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red); padding: 30px;">Erro ao carregar histórico da nuvem.</td></tr>';
-            }
+                totalCounter.innerText = contador; if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888; padding: 30px;">Nenhuma expedição faturada encontrada.</td></tr>';
+            } catch (error) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--error-red); padding: 30px;">Erro ao carregar histórico da nuvem.</td></tr>'; }
         }
 
-        function filtrarHistorico() {
-            const termo = document.getElementById('filtroHistorico').value.toLowerCase();
-            const linhas = document.querySelectorAll('#tabelaHistorico .hist-row');
-            let exibidos = 0;
-            linhas.forEach(linha => {
-                const ov = linha.querySelector('.hist-ov').innerText.toLowerCase();
-                const cli = linha.querySelector('.hist-cli').innerText.toLowerCase();
-                if(ov.includes(termo) || cli.includes(termo)) {
-                    linha.style.display = '';
-                    exibidos++;
-                } else {
-                    linha.style.display = 'none';
-                }
-            });
-            document.getElementById('histTotalOvs').innerText = exibidos;
-        }
+        function filtrarHistorico() { const termo = document.getElementById('filtroHistorico').value.toLowerCase(); const linhas = document.querySelectorAll('#tabelaHistorico .hist-row'); let exibidos = 0; linhas.forEach(linha => { const ov = linha.querySelector('.hist-ov').innerText.toLowerCase(); const cli = linha.querySelector('.hist-cli').innerText.toLowerCase(); if(ov.includes(termo) || cli.includes(termo)) { linha.style.display = ''; exibidos++; } else { linha.style.display = 'none'; } }); document.getElementById('histTotalOvs').innerText = exibidos; }
 
         async function abrirAuditoriaLogs(id_doc, numero, operador, isAlerta = false) {
             document.getElementById('modalOVAuditoria').innerText = `#${numero}`; document.getElementById('modalOperador').innerText = operador;
             const listaLogs = document.getElementById('listaErrosLogs'); listaLogs.innerHTML = '<li class="log-item"><span class="log-hora">Carregando...</span><strong>Buscando logs no Firebase...</strong></li>'; document.getElementById('modalAuditoria').style.display = 'flex';
-            try {
-                const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data(); listaLogs.innerHTML = '';
-                if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) { ovData.auditoriaLogs.forEach(log => { listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Erro/Problema:</strong> ${log.mensagem}</li>`; }); } 
-                else { listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhum registro encontrado.</strong></li>`; }
-            } catch(e) {}
+            try { const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ovData = docRef.data(); listaLogs.innerHTML = ''; if (ovData.auditoriaLogs && ovData.auditoriaLogs.length > 0) { ovData.auditoriaLogs.forEach(log => { listaLogs.innerHTML += `<li class="log-item"><span class="log-hora">${log.hora}</span><strong>Erro/Problema:</strong> ${log.mensagem}</li>`; }); } else { listaLogs.innerHTML = `<li class="log-item" style="border-left-color: var(--success-green);"><span class="log-hora">Sistema</span><strong>Nenhum registro encontrado.</strong></li>`; } } catch(e) {}
         }
 
         async function abrirResumoCompleto(id_doc) {
@@ -1784,15 +1659,11 @@
         }
 
         async function toggleStatusUsuarioNuvem(nome, isAtivo) { if(isAtivo && !confirm(`Desativar o acesso de ${nome}?`)) return; try { await db.collection("usuarios").doc(nome).update({ status: isAtivo ? 'inativo' : 'ativo' }); await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) {} }
-        async function salvarNovoUsuario() {
-            const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim();
-            if(!nome || !senha) return alert("Preencha Nome e Senha.");
-            try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado!`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) {}
-        }
+        async function salvarNovoUsuario() { const nome = document.getElementById('novoNome').value.trim(); const funcao = document.getElementById('novoFuncao').value.trim(); const role = document.getElementById('novoRole').value; const senha = document.getElementById('novoSenha').value.trim(); if(!nome || !senha) return alert("Preencha Nome e Senha."); try { await db.collection("usuarios").doc(nome).set({ role: role, senha: senha, status: 'ativo', funcao: funcao || 'Logística' }); alert(`✅ Perfil de ${nome} gerado!`); document.getElementById('modalNovoUsuario').style.display = 'none'; await carregarUsuariosDaNuvem(); renderizarTabelaAcessosAdmin(); } catch (error) {} }
         function mostrarSenha(inputId) { const input = document.getElementById(inputId); input.type = input.type === "password" ? "text" : "password"; }
 
         // ====================================================
-        // ESTOQUE: WMS E FILAS
+        // ESTOQUE: WMS E FILAS DA OPERAÇÃO
         // ====================================================
         function abrirFilaSeparacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFila'); carregarFilaOperadorDaNuvem(); }
 
@@ -1834,6 +1705,12 @@
                 if(objOvGlobal.observacao) h += `<div class="caixa-obs"><strong style="color:var(--blue-action); font-size:18px;">⚠️ Observação do Pedido:</strong><br><span style="font-size:16px;">${objOvGlobal.observacao}</span></div>`;
                 boxObs.innerHTML = h;
             } else { boxObs.style.display = 'none'; }
+
+            // Lógica de Previsão de Caixas
+            const caixaSugeridaHtml = calcularCaixaSugerida(objOvGlobal.itensOV, objOvGlobal.itensRMA);
+            const boxCaixa = document.getElementById('boxCaixaSugeridaSep');
+            if(caixaSugeridaHtml) { boxCaixa.style.display = 'block'; boxCaixa.innerHTML = `<div class="caixa-sugerida">A IA do WMS sugere a embalagem: <strong>${caixaSugeridaHtml}</strong></div>`; }
+            else { boxCaixa.style.display = 'none'; }
 
             const htmlRoteiro = document.getElementById('roteiroPickingHtml'); htmlRoteiro.innerHTML = '<p style="color: var(--volt-green);">Gerando roteiro lógico FEFO...</p>';
             
@@ -1878,6 +1755,9 @@
             try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separado' }); alert("✅ Separação concluída! O carrinho pode ir para a Fila de Conferência."); abrirFilaSeparacao(); } catch(e) {}
         }
 
+        // ====================================================
+        // ESTOQUE: FILA DE CONFERÊNCIA (BANCADA) E CARD FLUTUANTE
+        // ====================================================
         function abrirFilaConferencia() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaConferencia'); carregarFilaConferenciaDaNuvem(); }
 
         async function carregarFilaConferenciaDaNuvem() {
@@ -1906,6 +1786,26 @@
             idOvGlobal = id_doc; document.getElementById('confOvNumero').innerText = numero;
             await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em conferência' });
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
+
+            // NOVO: ALERTA FLUTUANTE DE BRINDES E OBSERVAÇÕES
+            const floatAlert = document.getElementById('floatingAviso');
+            const floatContent = document.getElementById('floatingConteudo');
+            if(objOvGlobal.observacao || (objOvGlobal.brindes && objOvGlobal.brindes.length > 0)) {
+                let alertHtml = '';
+                if(objOvGlobal.brindes && objOvGlobal.brindes.length > 0) alertHtml += `<div style="margin-bottom: 10px;"><strong style="color:var(--volt-green);">🎁 INCLUIR BRINDES:</strong><br>${objOvGlobal.brindes.join(', ')}</div>`;
+                if(objOvGlobal.observacao) alertHtml += `<div><strong style="color:var(--blue-action);">⚠️ AVISO:</strong><br>${objOvGlobal.observacao}</div>`;
+                floatContent.innerHTML = alertHtml;
+                floatAlert.classList.add('show');
+            } else {
+                floatAlert.classList.remove('show');
+            }
+
+            // Previsão de Caixas no passo 3 da Conferência
+            const caixaSugeridaHtml = calcularCaixaSugerida(objOvGlobal.itensOV, objOvGlobal.itensRMA);
+            const boxCaixaConf = document.getElementById('boxCaixaSugeridaConf');
+            if(caixaSugeridaHtml) { boxCaixaConf.style.display = 'block'; boxCaixaConf.innerHTML = `<div class="caixa-sugerida">Embalagem sugerida pela volumetria do sistema: <strong>${caixaSugeridaHtml}</strong></div>`; }
+            else { boxCaixaConf.style.display = 'none'; }
+
 
             itensBipagemOV = objOvGlobal.itensOV || {}; itensBipagemRMA = objOvGlobal.itensRMA || {};
             const existeFaseRMA = Object.keys(itensBipagemRMA).length > 0; document.getElementById('faseRMA').style.display = existeFaseRMA ? 'block' : 'none';
@@ -1958,6 +1858,7 @@
             if(!confirm(`Confirma o fechamento físico de ${contadorVolumesInterno} volume(s)? O pedido irá para Cotação de Frete.`)) return;
             let detalhesVolumes = []; document.querySelectorAll('.volume-box').forEach((box, index) => { detalhesVolumes.push({ id: index + 1, peso: box.querySelector('.vol-peso').value || 0, comp: box.querySelector('.vol-comp').value || 0, larg: box.querySelector('.vol-larg').value || 0, alt: box.querySelector('.vol-alt').value || 0 }); });
             
+            // Abate do mapa de estoque (FEFO)
             if(objOvGlobal.itensOV) {
                 const mapSnap = await db.collection("estoque_posicoes").get(); let mapa = []; mapSnap.forEach(m => mapa.push({id: m.id, ...m.data()}));
                 for(let ean in objOvGlobal.itensOV) {
@@ -1972,11 +1873,16 @@
                     }
                 }
             }
-            try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Conferido', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes }); alert("📦 Conferência finalizada! Pedido enviado para Cotação."); abrirFilaConferencia(); } catch(error) {}
+            try { 
+                await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Conferido', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes }); 
+                alert("📦 Conferência finalizada! Pedido enviado para Cotação."); 
+                document.getElementById('floatingAviso').classList.remove('show');
+                abrirFilaConferencia(); 
+            } catch(error) {}
         }
 
         // ====================================================
-        // ESTOQUE: COTAÇÃO DE FRETES
+        // ESTOQUE: COTAÇÃO DE FRETES (CARDS)
         // ====================================================
         function abrirFilaCotacao() { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFilaCotacao'); carregarFilaCotacaoDaNuvem(); }
 
