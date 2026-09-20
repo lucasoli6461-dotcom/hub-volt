@@ -107,9 +107,19 @@
         .input-bip:disabled { background-color: #111; color: #555; border-color: #222; cursor: not-allowed; }
         .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
         .input-editavel:focus { border-color: var(--volt-green); outline: none; }
+        
+        .input-mini { width: 45px; background: #000; border: 1px solid #333; color: white; padding: 4px; border-radius: 4px; text-align: center; font-size: 12px; }
+        .input-mini:focus { border-color: var(--volt-green); outline: none; }
 
         .brinde-label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: var(--text-light); }
         .brinde-chk { accent-color: var(--volt-green); transform: scale(1.2); }
+
+        /* TABS NO CATÁLOGO */
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 20px; cursor: pointer; font-weight: bold; border-bottom: 2px solid transparent; transition: 0.3s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: var(--volt-green); border-bottom-color: var(--volt-green); }
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
 
         /* ALERTA FLUTUANTE DE CONFERÊNCIA */
         .floating-alert { position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #000; border: 2px solid var(--volt-green); padding: 20px; border-radius: 12px; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: none; }
@@ -240,6 +250,7 @@
         
         @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(196, 240, 0, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(196, 240, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(196, 240, 0, 0); } }
         .status-pulse { display: inline-block; width: 10px; height: 10px; background-color: var(--volt-green); border-radius: 50%; animation: pulseGlow 2s infinite; margin-right: 8px; }
+
     </style>
 </head>
 <body>
@@ -267,7 +278,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- MODAIS GERAIS DO SISTEMA                   -->
+    <!-- MODAIS DE CAMADA SUPERIOR                  -->
     <!-- ========================================== -->
     <div id="modalSenha" class="modal-overlay">
         <div class="senha-box">
@@ -395,6 +406,7 @@
         </div>
     </div>
 
+    <!-- MODAIS CADASTRO -->
     <div id="modalNovoUsuario" class="modal-overlay">
         <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
@@ -410,16 +422,40 @@
         </div>
     </div>
 
+    <!-- MODAL NOVO SKU (AGORA COM DIMENSÕES) -->
     <div id="modalNovoSKU" class="modal-overlay">
-        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
+        <div class="modulo-box" style="width: 100%; max-width: 500px; border-color: var(--volt-green);">
             <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU</h3>
-            <div class="form-group"><label>Nome / SKU (Ex: CP20BK)</label><input type="text" id="cadSkuNovo" class="input-dark" placeholder="Nome do Produto"></div>
-            <div class="form-group"><label>Código de Barras Unitário (EAN)</label><input type="text" id="cadEanNovo" class="input-dark" placeholder="Bipar EAN da caixinha"></div>
+            <div class="grid-2" style="gap: 10px;">
+                <div class="form-group"><label>Nome / SKU (Ex: CP20BK)</label><input type="text" id="cadSkuNovo" class="input-dark" placeholder="Nome do Produto"></div>
+                <div class="form-group"><label>Código EAN (Caixinha)</label><input type="text" id="cadEanNovo" class="input-dark" placeholder="Bipar EAN"></div>
+            </div>
             <div class="grid-2" style="gap: 10px;">
                 <div class="form-group"><label>EAN Master (Opcional)</label><input type="text" id="cadMasterNovo" class="input-dark" placeholder="Bipar EAN da Master"></div>
                 <div class="form-group"><label>Qtd por Master</label><input type="number" id="cadQtdMasterNovo" class="input-dark" value="100"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Cadastrar no Catálogo</button></div>
+            <label style="display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; font-weight: bold;">Dimensões da Caixinha Unitária</label>
+            <div class="grid-4" style="gap: 10px; margin-top: 5px;">
+                <div class="form-group"><label style="color:#aaa;">Peso (kg)</label><input type="number" id="cadPesoNovo" class="input-dark" value="0.100" step="0.001"></div>
+                <div class="form-group"><label style="color:#aaa;">Comp (cm)</label><input type="number" id="cadCompNovo" class="input-dark" value="0"></div>
+                <div class="form-group"><label style="color:#aaa;">Larg (cm)</label><input type="number" id="cadLargNovo" class="input-dark" value="0"></div>
+                <div class="form-group"><label style="color:#aaa;">Alt (cm)</label><input type="number" id="cadAltNovo" class="input-dark" value="0"></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Salvar SKU</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL NOVA CAIXA -->
+    <div id="modalNovaCaixa" class="modal-overlay">
+        <div class="modulo-box" style="width: 100%; max-width: 400px; border-color: var(--warning-yellow);">
+            <h3 style="color: var(--warning-yellow); margin-top: 0; margin-bottom: 20px;">Cadastrar Nova Embalagem</h3>
+            <div class="form-group"><label>Nome da Caixa (Ex: Caixa P)</label><input type="text" id="cadCaixaNome" class="input-dark" placeholder="Nome da Caixa"></div>
+            <div class="grid-3" style="gap: 10px;">
+                <div class="form-group"><label>Comp (cm)</label><input type="number" id="cadCaixaComp" class="input-dark" value="0"></div>
+                <div class="form-group"><label>Larg (cm)</label><input type="number" id="cadCaixaLarg" class="input-dark" value="0"></div>
+                <div class="form-group"><label>Alt (cm)</label><input type="number" id="cadCaixaAlt" class="input-dark" value="0"></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovaCaixa').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px; background-color: var(--warning-yellow); color: #000;" onclick="salvarNovaCaixaNuvem()">Criar Caixa</button></div>
         </div>
     </div>
 
@@ -449,7 +485,7 @@
 
                 <h3 style="color: var(--text-light); margin-top: 20px; margin-bottom: 20px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">WMS e Estoque Físico</h3>
                 <div class="grid-4" style="margin-bottom: 30px;">
-                    <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()"><div><h3 style="font-size: 16px;">🏷️ Catálogo</h3><p style="font-size: 12px;">Cadastre Caixas Master.</p></div><div class="action">Configurar SKUs ➔</div></div>
+                    <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()"><div><h3 style="font-size: 16px;">🏷️ Catálogo & Caixas</h3><p style="font-size: 12px;">Engenharia de SKUs e embalagens.</p></div><div class="action">Configurar ➔</div></div>
                     <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()"><div><h3 style="font-size: 16px;">📥 Inbound</h3><p style="font-size: 12px;">Guarde mercadorias físicas.</p></div><div class="action">Guardar Estoque ➔</div></div>
                     <div class="hub-card hub-card-warning" style="min-height: 140px; padding: 20px;" onclick="abrirModuloTransferenciaAdmin()"><div><h3 style="font-size: 16px;">🔄 Movimentar</h3><p style="font-size: 12px;">Aprove e transfira saldos.</p></div><div class="action">Ver Solicitações ➔</div></div>
                     <div class="hub-card hub-card-green" style="min-height: 140px; padding: 20px;" onclick="abrirModuloResumoEstoque()"><div><h3 style="font-size: 16px; color:white;">📈 Dashboard</h3><p style="font-size: 12px;">Resumo visual do galpão.</p></div><div class="action">Ver Dashboard ➔</div></div>
@@ -482,10 +518,67 @@
                 </div>
             </div>
 
+            <!-- NOVO: CATÁLOGO DIVIDIDO EM ABAS (SKUS e CAIXAS) -->
             <div id="adminCatalogo" class="sub-screen">
                 <div class="modulo-box">
-                    <div class="modulo-header" style="margin-bottom: 10px;"><h2>Catálogo de SKUs e Caixas Master</h2><div><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 10px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div></div>
-                    <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th style="padding: 15px;">Produto / SKU</th><th style="padding: 15px;">EAN Unitário (Caixinha)</th><th style="padding: 15px;">EAN Master (Opcional)</th><th style="padding: 15px;">Qtd por Master</th><th style="padding: 15px; text-align: right;">Ação</th></tr></thead><tbody id="tabelaCatalogoConfig"><tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr></tbody></table></div>
+                    <div class="modulo-header" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 0;">
+                        <div style="display: flex; gap: 20px;">
+                            <button class="tab-btn active" onclick="mudarAbaCatalogo('produtos', this)">📦 Produtos (SKUs)</button>
+                            <button class="tab-btn" onclick="mudarAbaCatalogo('caixas', this)">🟫 Caixas de Envio</button>
+                        </div>
+                        <button class="btn-voltar" style="margin-bottom: 15px;" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
+                    </div>
+                    
+                    <!-- ABA PRODUTOS -->
+                    <div id="tabProdutosCatalogo" class="tab-content active" style="padding-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Adicione EANs Master e as dimensões físicas dos produtos.</p>
+                            <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button>
+                        </div>
+                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                            <table style="margin-top: 0; min-width: 900px;">
+                                <thead style="background: #000;">
+                                    <tr>
+                                        <th style="padding: 15px;">Produto / SKU</th>
+                                        <th style="padding: 15px;">EAN Unitário</th>
+                                        <th style="padding: 15px;">EAN Master</th>
+                                        <th style="padding: 15px; text-align: center;">Qtd/M</th>
+                                        <th style="padding: 15px; text-align: center;">Dimensões Unitárias (C x L x A) cm</th>
+                                        <th style="padding: 15px; text-align: center;">Peso (kg)</th>
+                                        <th style="padding: 15px; text-align: right;">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaCatalogoConfig">
+                                    <tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando matriz do sistema...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ABA CAIXAS -->
+                    <div id="tabCaixasCatalogo" class="tab-content" style="padding-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Gerencie os tamanhos de embalagens que a inteligência de Cubagem irá sugerir.</p>
+                            <button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; background: var(--warning-yellow);" onclick="document.getElementById('modalNovaCaixa').style.display='flex'">+ Cadastrar Nova Caixa</button>
+                        </div>
+                        <div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;">
+                            <table style="margin-top: 0;">
+                                <thead style="background: #000;">
+                                    <tr>
+                                        <th style="padding: 15px;">Nome da Embalagem</th>
+                                        <th style="padding: 15px; text-align: center;">Comp. (cm)</th>
+                                        <th style="padding: 15px; text-align: center;">Larg. (cm)</th>
+                                        <th style="padding: 15px; text-align: center;">Alt. (cm)</th>
+                                        <th style="padding: 15px; text-align: center;">Vol. Máx (cm³)</th>
+                                        <th style="padding: 15px; text-align: right;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaCaixasWMS">
+                                    <tr><td colspan="6" style="text-align: center; color: var(--warning-yellow);">Carregando caixas...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -506,7 +599,6 @@
                 </div>
             </div>
 
-            <!-- TRANSFERÊNCIA DE ESTOQUE E APROVAÇÕES -->
             <div id="adminTransferencia" class="sub-screen">
                 <div class="modulo-box" style="border-color: var(--warning-yellow);">
                     <div class="modulo-header" style="border-bottom-color: #333;"><h2 style="color: var(--warning-yellow);">Movimentação de Estoque (Direta)</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
@@ -590,7 +682,6 @@
                 </div>
             </div>
 
-            <!-- NOVA ABA: ACESSOS -->
             <div id="adminAcessos" class="sub-screen">
                 <div class="modulo-box">
                     <div class="modulo-header"><h2>Gestão de Acessos</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
@@ -599,7 +690,6 @@
                 </div>
             </div>
 
-            <!-- NOVA ABA: DESEMPENHO -->
             <div id="adminDesempenho" class="sub-screen">
                 <div class="modulo-box" style="border-color: #00aaff;">
                     <div class="modulo-header"><div><h2 style="color:#00aaff;">Desempenho Operacional (SLA)</h2><p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Métricas de produtividade e tempo de ciclo da equipe.</p></div><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div>
@@ -699,7 +789,7 @@
                 </div>
             </div>
 
-            <!-- TELA DE TRANSFERÊNCIA DE ESTOQUE (OPERADOR FAZ SOLICITAÇÃO) -->
+            <!-- TELA DE TRANSFERÊNCIA DE ESTOQUE -->
             <div id="estoqueTransferencia" class="sub-screen">
                 <div class="modulo-box" style="border-color: var(--warning-yellow);">
                     <div class="modulo-header" style="border-bottom-color: #333;">
@@ -724,7 +814,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- ========================================== -->
@@ -737,7 +826,6 @@
             else { mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueDash'); } 
         }
 
-        // Troca de Telas Blindada
         function mudarViewLayerGlobal(viewId) { const layers = document.querySelectorAll('.view-layer'); layers.forEach(el => el.classList.remove('active')); const target = document.getElementById(viewId); if(target) target.classList.add('active'); }
         function navegarAdmin(subScreenId) { document.querySelectorAll('#viewAdmin .sub-screen').forEach(el => el.classList.remove('active')); const target = document.getElementById(subScreenId); if(target) target.classList.add('active'); }
         function navegarEstoque(subScreenId) { document.querySelectorAll('#viewEstoque .sub-screen').forEach(el => el.classList.remove('active')); const target = document.getElementById(subScreenId); if(target) target.classList.add('active'); }
@@ -745,7 +833,6 @@
 
         let globalEstoqueData = [];
 
-        // Inicialização do Firebase
         const firebaseConfig = { apiKey: "AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU", authDomain: "hub-volt.firebaseapp.com", projectId: "hub-volt", storageBucket: "hub-volt.firebasestorage.app", messagingSenderId: "483817757628", appId: "1:483817757628:web:076e4aa5f16ffcab00e9b9" };
         let db = null; try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch(e) {}
 
@@ -766,16 +853,54 @@
         let itensLancamentoOV = {}; let itensLancamentoRMA = {}; let itensBipagemOV = {}; let itensBipagemRMA = {};
         let cotacoesAtuais = []; let auditoriaLogsSessao = [];
 
-        const dimensoesCaixas = [{ nome: 'Caixa P (15x15x15 cm)', volMax: 3375 }, { nome: 'Caixa M (25x25x20 cm)', volMax: 12500 }, { nome: 'Caixa G (40x30x30 cm)', volMax: 36000 }, { nome: 'Caixa GG (50x40x40 cm)', volMax: 80000 }];
+        // NOVO: LISTA DE CAIXAS DO BANCO
+        let listaCaixasGlobais = [];
+
+        async function carregarCaixasNuvem() {
+            try {
+                const snapshot = await db.collection("wms_caixas").get();
+                if(snapshot.empty) {
+                    listaCaixasGlobais = [
+                        { id: 'P', nome: 'Caixa P (15x15x15 cm)', volMax: 3375, comp: 15, larg: 15, alt: 15 },
+                        { id: 'M', nome: 'Caixa M (25x25x20 cm)', volMax: 12500, comp: 25, larg: 25, alt: 20 },
+                        { id: 'G', nome: 'Caixa G (40x30x30 cm)', volMax: 36000, comp: 40, larg: 30, alt: 30 },
+                        { id: 'GG', nome: 'Caixa GG (50x40x40 cm)', volMax: 80000, comp: 50, larg: 40, alt: 40 }
+                    ];
+                } else {
+                    listaCaixasGlobais = [];
+                    snapshot.forEach(doc => { let c = doc.data(); c.id = doc.id; listaCaixasGlobais.push(c); });
+                }
+            } catch(e) {}
+        }
 
         function calcularCaixaSugerida(itensPrincipais, itensRma) {
             let volumeTotalEstimado = 0;
-            const calcularPara = (itensDict) => { if(!itensDict) return; for(let k in itensDict) { let sku = itensDict[k].sku.toUpperCase(); let qtd = itensDict[k].alvo; let volUnit = 100; if(sku.includes('CH')) volUnit = 150; if(sku.includes('MP') || sku.includes('CP')) volUnit = 250; if(sku.includes('PS') || sku.includes('SA') || sku.includes('SP') || sku.includes('DCP')) volUnit = 400; volumeTotalEstimado += (volUnit * qtd); } };
+            const calcularPara = (itensDict) => {
+                if(!itensDict) return;
+                for(let k in itensDict) {
+                    let sku = itensDict[k].sku.toUpperCase(); let qtd = itensDict[k].alvo;
+                    
+                    let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === sku);
+                    let volUnit = 100; // Padrão
+                    
+                    if (prodInfo && prodInfo.comp && prodInfo.larg && prodInfo.alt && prodInfo.comp > 0) {
+                        volUnit = prodInfo.comp * prodInfo.larg * prodInfo.alt;
+                    } else {
+                        if(sku.includes('CH')) volUnit = 150; 
+                        if(sku.includes('MP') || sku.includes('CP')) volUnit = 250; 
+                        if(sku.includes('PS') || sku.includes('SA') || sku.includes('SP') || sku.includes('DCP')) volUnit = 400; 
+                    }
+                    volumeTotalEstimado += (volUnit * qtd);
+                }
+            };
             calcularPara(itensPrincipais); calcularPara(itensRma);
             if(volumeTotalEstimado === 0) return '';
+            
             let volumeComFolga = volumeTotalEstimado * 1.2;
-            for(let c of dimensoesCaixas) { if(c.volMax >= volumeComFolga) { return `📦 Use a ${c.nome}`; } }
-            return `📦 Volumes Múltiplos (Excede Caixa GG)`;
+            let sortedBoxes = [...listaCaixasGlobais].sort((a, b) => a.volMax - b.volMax);
+            
+            for(let c of sortedBoxes) { if(c.volMax >= volumeComFolga) { return `📦 Use a ${c.nome}`; } }
+            return `📦 Volumes Múltiplos (Excede Maior Caixa Cadastrada)`;
         }
 
         function formatarTempo(ms) { if(!ms || ms < 0) return "N/D"; let totalSegundos = Math.floor(ms / 1000); let minutos = Math.floor(totalSegundos / 60); let segundos = totalSegundos % 60; return `${minutos}m ${segundos}s`; }
@@ -799,7 +924,8 @@
                 atualizarSaudacao(); mudarViewLayerGlobal(papelLogado === 'admin' ? 'viewAdmin' : 'viewEstoque');
                 if(papelLogado === 'admin') { renderizarTabelaAcessosAdmin(); }
             } else { const userEl = document.getElementById('headerNomeUser'); if(userEl) userEl.innerText = "Identifique-se"; }
-            setTimeout(() => { if(db) { carregarUsuariosDaNuvem(); inicializarCatalogoMestre(); } }, 500);
+            
+            setTimeout(() => { if(db) { carregarUsuariosDaNuvem(); inicializarCatalogoMestre(); carregarCaixasNuvem(); } }, 500);
         };
 
         function renderLoginGrid() {
@@ -814,7 +940,6 @@
         }
 
         async function carregarUsuariosDaNuvem() { try { const snapshot = await db.collection("usuarios").get(); if (!snapshot.empty) { let tempBd = {}; snapshot.forEach((doc) => { tempBd[doc.id] = doc.data(); }); bdUsuariosLogistica = tempBd; renderLoginGrid(); } } catch (error) {} }
-        
         function abrirModalSenha(nome) { usuarioSelecionadoTemp = nome; const nLog = document.getElementById('nomeLogin'); if(nLog) nLog.innerText = `Acesso: ${nome}`; const iSen = document.getElementById('inputSenha'); if(iSen) iSen.value = ''; const eSen = document.getElementById('erroSenha'); if(eSen) eSen.style.display = 'none'; const mSen = document.getElementById('modalSenha'); if(mSen) mSen.style.display = 'flex'; setTimeout(() => { const i = document.getElementById('inputSenha'); if(i) i.focus(); }, 150); }
         function fecharSenhaModal() { const m = document.getElementById('modalSenha'); if(m) m.style.display = 'none'; }
         
@@ -835,15 +960,129 @@
         function fazerLogout() { localStorage.removeItem('hubVoltUser'); localStorage.removeItem('hubVoltRole'); location.reload(); }
         function atualizarSaudacao() { const hora = new Date().getHours(); let texto = "Boa noite"; if (hora >= 5 && hora < 12) texto = "Bom dia"; else if (hora >= 12 && hora < 18) texto = "Boa tarde"; const saud = document.getElementById('saudacaoAdmin'); if(saud) saud.innerHTML = `${texto}, <span>${usuarioLogado || 'Usuário'}</span>`; }
 
-        async function inicializarCatalogoMestre() { catalogoCompleto = [...baseCatalogoVOLT]; catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; }); try { const snapshot = await db.collection("catalogo_produtos").get(); snapshot.forEach(doc => { const data = doc.data(); let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario); if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; } else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100}); } }); } catch(e) {} catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku)); }
-        async function abrirModuloCatalogo() { navegarAdmin('adminCatalogo'); const tbody = document.getElementById('tabelaCatalogoConfig'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>'; try { const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {}; snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); }); tbody.innerHTML = ''; catalogoCompleto.forEach(prod => { const salvo = nuvemDados[prod.ean] || {}; const masterVal = salvo.eanMaster || ''; const masterQtd = salvo.qtdMaster || 100; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td><td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td><td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="Bipar EAN Master" value="${masterVal}"></td><td style="padding: 10px 15px; width: 100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align: center;" value="${masterQtd}"></td><td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td></tr>`; }); } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-red); padding: 20px;">Erro de conexão.</td></tr>'; } }
-        async function salvarProdutoCatalogo(eanUnitario, sku) { const masterEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const masterQtd = document.getElementById(`qtd_${eanUnitario}`).value; try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: masterEan, qtdMaster: Number(masterQtd) }, {merge: true}); let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = masterEan; p.qtdMaster = Number(masterQtd); } alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); } catch(e) { alert("Erro ao salvar produto."); } }
-        async function salvarNovoSKUNuvem() { const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim(); const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value; if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios."); try { await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster) }); alert(`✅ Novo produto criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none'; await inicializarCatalogoMestre(); abrirModuloCatalogo(); } catch(e) { alert("Erro ao criar produto."); } }
+        // ====================================================
+        // CATÁLOGO E CAIXAS
+        // ====================================================
+        async function inicializarCatalogoMestre() { 
+            catalogoCompleto = [...baseCatalogoVOLT]; catalogoCompleto.forEach(p => { p.masterEan = ''; p.qtdMaster = 100; p.comp = 0; p.larg = 0; p.alt = 0; p.peso = 0; }); 
+            try { const snapshot = await db.collection("catalogo_produtos").get(); snapshot.forEach(doc => { const data = doc.data(); let prod = catalogoCompleto.find(p => p.ean === data.eanUnitario); if(prod) { prod.masterEan = data.eanMaster || ''; prod.qtdMaster = data.qtdMaster || 100; prod.comp = data.comp || 0; prod.larg = data.larg || 0; prod.alt = data.alt || 0; prod.peso = data.peso || 0; } else { catalogoCompleto.push({sku: data.sku, ean: data.eanUnitario, masterEan: data.eanMaster || '', qtdMaster: data.qtdMaster || 100, comp: data.comp || 0, larg: data.larg || 0, alt: data.alt || 0, peso: data.peso || 0 }); } }); } catch(e) {} 
+            catalogoCompleto.sort((a, b) => a.sku.localeCompare(b.sku)); 
+        }
+
+        function mudarAbaCatalogo(aba, btn) {
+            document.querySelectorAll('#adminCatalogo .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tabProdutosCatalogo').style.display = aba === 'produtos' ? 'block' : 'none';
+            document.getElementById('tabCaixasCatalogo').style.display = aba === 'caixas' ? 'block' : 'none';
+            if(aba === 'caixas') renderizarTabelaCaixas();
+        }
+
+        async function abrirModuloCatalogo() {
+            navegarAdmin('adminCatalogo'); 
+            document.getElementById('tabProdutosCatalogo').style.display = 'block';
+            document.getElementById('tabCaixasCatalogo').style.display = 'none';
+            document.querySelectorAll('#adminCatalogo .tab-btn')[0].classList.add('active');
+            document.querySelectorAll('#adminCatalogo .tab-btn')[1].classList.remove('active');
+
+            const tbody = document.getElementById('tabelaCatalogoConfig'); tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando base de dados na nuvem...</td></tr>';
+            try {
+                const snapshot = await db.collection("catalogo_produtos").get(); let nuvemDados = {}; snapshot.forEach(doc => { nuvemDados[doc.id] = doc.data(); });
+                tbody.innerHTML = '';
+                catalogoCompleto.forEach(prod => { 
+                    const salvo = nuvemDados[prod.ean] || {}; 
+                    const mEan = salvo.eanMaster || ''; const mQtd = salvo.qtdMaster || 100; 
+                    const cp = salvo.comp || 0; const lg = salvo.larg || 0; const al = salvo.alt || 0; const pe = salvo.peso || 0;
+                    tbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #222;">
+                            <td style="padding: 10px 15px;"><strong style="color: white; font-size: 14px;">${prod.sku}</strong></td>
+                            <td style="padding: 10px 15px; color: #aaa; font-family: monospace; font-size: 13px;">${prod.ean}</td>
+                            <td style="padding: 10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" style="width: 120px;" placeholder="EAN Master" value="${mEan}"></td>
+                            <td style="padding: 10px 15px; text-align: center;"><input type="number" id="qtd_${prod.ean}" class="input-mini" value="${mQtd}"></td>
+                            <td style="padding: 10px 15px; text-align: center;">
+                                <input type="number" id="cp_${prod.ean}" class="input-mini" value="${cp}" title="Comprimento"> x 
+                                <input type="number" id="lg_${prod.ean}" class="input-mini" value="${lg}" title="Largura"> x 
+                                <input type="number" id="al_${prod.ean}" class="input-mini" value="${al}" title="Altura">
+                            </td>
+                            <td style="padding: 10px 15px; text-align: center;"><input type="number" id="pe_${prod.ean}" class="input-mini" style="width:60px;" value="${pe}" step="0.001" title="Peso Kg"></td>
+                            <td style="padding: 10px 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}', '${prod.sku}')">Salvar</button></td>
+                        </tr>`; 
+                });
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red); padding: 20px;">Erro de conexão.</td></tr>'; }
+        }
+
+        async function salvarProdutoCatalogo(eanUnitario, sku) { 
+            const mEan = document.getElementById(`master_${eanUnitario}`).value.trim(); const mQtd = document.getElementById(`qtd_${eanUnitario}`).value; 
+            const cp = document.getElementById(`cp_${eanUnitario}`).value; const lg = document.getElementById(`lg_${eanUnitario}`).value; const al = document.getElementById(`al_${eanUnitario}`).value; const pe = document.getElementById(`pe_${eanUnitario}`).value;
+            try { 
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: mEan, qtdMaster: Number(mQtd), comp: Number(cp), larg: Number(lg), alt: Number(al), peso: Number(pe) }, {merge: true}); 
+                let p = catalogoCompleto.find(x => x.ean === eanUnitario); if(p) { p.masterEan = mEan; p.qtdMaster = Number(mQtd); p.comp = Number(cp); p.larg = Number(lg); p.alt = Number(al); p.peso = Number(pe); } 
+                alert(`Catálogo da ${sku} salvo na nuvem com sucesso!`); 
+            } catch(e) { alert("Erro ao salvar produto."); } 
+        }
+
+        async function salvarNovoSKUNuvem() { 
+            const sku = document.getElementById('cadSkuNovo').value.trim(); const eanUnitario = document.getElementById('cadEanNovo').value.trim(); 
+            const eanMaster = document.getElementById('cadMasterNovo').value.trim(); const qtdMaster = document.getElementById('cadQtdMasterNovo').value; 
+            const cp = document.getElementById('cadCompNovo').value; const lg = document.getElementById('cadLargNovo').value; const al = document.getElementById('cadAltNovo').value; const pe = document.getElementById('cadPesoNovo').value;
+            if(!sku || !eanUnitario) return alert("SKU e EAN Unitário são obrigatórios."); 
+            try { 
+                await db.collection("catalogo_produtos").doc(eanUnitario).set({ sku: sku, eanUnitario: eanUnitario, eanMaster: eanMaster, qtdMaster: Number(qtdMaster), comp: Number(cp), larg: Number(lg), alt: Number(al), peso: Number(pe) }); 
+                alert(`✅ Novo produto criado no sistema!`); document.getElementById('modalNovoSKU').style.display = 'none'; await inicializarCatalogoMestre(); abrirModuloCatalogo(); 
+            } catch(e) { alert("Erro ao criar produto."); } 
+        }
+
+        function renderizarTabelaCaixas() {
+            const tbody = document.getElementById('tabelaCaixasWMS'); tbody.innerHTML = '';
+            if(listaCaixasGlobais.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888; padding: 20px;">Nenhuma caixa cadastrada.</td></tr>'; return; }
+            listaCaixasGlobais.sort((a,b) => a.volMax - b.volMax).forEach(c => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 15px;"><strong style="color: white; font-size: 14px;">${c.nome}</strong></td>
+                        <td style="padding: 15px; text-align: center;">${c.comp}</td>
+                        <td style="padding: 15px; text-align: center;">${c.larg}</td>
+                        <td style="padding: 15px; text-align: center;">${c.alt}</td>
+                        <td style="padding: 15px; text-align: center; color: var(--warning-yellow); font-weight: bold;">${c.volMax}</td>
+                        <td style="padding: 15px; text-align: right;"><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="excluirCaixaNuvem('${c.id}')">✖ Excluir</button></td>
+                    </tr>`;
+            });
+        }
+
+        async function salvarNovaCaixaNuvem() {
+            const nome = document.getElementById('cadCaixaNome').value.trim(); const cp = parseInt(document.getElementById('cadCaixaComp').value) || 0; const lg = parseInt(document.getElementById('cadCaixaLarg').value) || 0; const al = parseInt(document.getElementById('cadCaixaAlt').value) || 0;
+            if(!nome || cp === 0 || lg === 0 || al === 0) return alert("Preencha todos os campos da caixa com valores maiores que zero.");
+            const vol = cp * lg * al;
+            try { await db.collection("wms_caixas").add({ nome: nome, comp: cp, larg: lg, alt: al, volMax: vol }); alert("Embalagem cadastrada com sucesso!"); document.getElementById('modalNovaCaixa').style.display = 'none'; document.getElementById('cadCaixaNome').value = ''; await carregarCaixasNuvem(); renderizarTabelaCaixas(); } catch(e) { alert("Erro ao salvar caixa."); }
+        }
+
+        async function excluirCaixaNuvem(id) { if(confirm("Deseja excluir esta embalagem do algoritmo?")) { try { await db.collection("wms_caixas").doc(id).delete(); await carregarCaixasNuvem(); renderizarTabelaCaixas(); } catch(e) {} } }
 
         function abrirModuloEnderecamento() { navegarAdmin('adminEnderecamento'); carregarMapaEstoque('Admin'); }
         function abrirModuloEnderecamentoEstoque() { navegarEstoque('estoqueEnderecamento'); carregarMapaEstoque('Op'); }
-        async function carregarMapaEstoque(perfil) { const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp'); tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>'; try { const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); tbody.innerHTML = ''; let contador = 0; snapshot.forEach(doc => { const item = doc.data(); if(item.quantidade > 0) { contador++; const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-'; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-familia">${item.familia || '-'}</span></td><td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px; color:#888;">${dEnt}</span></td><td>${item.caixas} cx</td><td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color: var(--blue-action); color: var(--blue-action); margin-right: 5px;" onclick="abrirEdicaoInbound('${doc.id}', '${perfil}')">✏️</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">✖</button></td></tr>`; } }); if(contador === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhum produto alocado nos endereços ainda.</td></tr>'; } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar mapa.</td></tr>'; } }
-        async function guardarEstoqueNuvem(perfil = 'Admin') { const fieldAddress = perfil === 'Admin' ? 'inboundAddress' : 'inboundAddressEstoque'; const fieldLot = perfil === 'Admin' ? 'inboundLot' : 'inboundLotEstoque'; const fieldProduct = perfil === 'Admin' ? 'inboundProduct' : 'inboundProductEstoque'; const fieldMultiplier = perfil === 'Admin' ? 'inboundMultiplier' : 'inboundMultiplierEstoque'; const fieldData = perfil === 'Admin' ? 'inboundData' : 'inboundDataEstoque'; const fieldFamilia = perfil === 'Admin' ? 'inboundFamilia' : 'inboundFamiliaEstoque'; const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase(); const lote = document.getElementById(fieldLot).value.trim().toUpperCase(); const eanBipado = document.getElementById(fieldProduct).value.trim(); const mult = parseInt(document.getElementById(fieldMultiplier).value) || 1; const dataEnt = document.getElementById(fieldData).value; const fam = document.getElementById(fieldFamilia).value; if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto."); let produtoEncontrado = null; let isMaster = false; for(let prod of catalogoCompleto) { if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; } if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; } } if(!produtoEncontrado) { document.getElementById(fieldProduct).value = ''; return alert("Código não encontrado no Catálogo. Cadastre-o primeiro."); } const qtdAdicionar = (isMaster ? produtoEncontrado.qtdMaster : 1) * mult; const caixasAdicionar = (isMaster ? 1 : 0) * mult; document.getElementById(fieldProduct).value = ''; document.getElementById(fieldProduct).focus(); document.getElementById(fieldMultiplier).value = '1'; try { const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get(); if (docSnap.exists) { await docRef.update({ quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar), caixas: firebase.firestore.FieldValue.increment(caixasAdicionar), dataEntrada: dataEnt, familia: fam }); } else { await docRef.set({ endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku, quantidade: qtdAdicionar, caixas: caixasAdicionar, dataEntrada: dataEnt, familia: fam, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } carregarMapaEstoque(perfil); } catch(e) { alert("Erro ao guardar estoque."); } }
+
+        async function carregarMapaEstoque(perfil) {
+            const tbody = document.getElementById(perfil === 'Admin' ? 'tabelaMapaEstoque' : 'tabelaMapaEstoqueOp'); tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 20px;">Buscando mapa do estoque...</td></tr>';
+            try {
+                const snapshot = await db.collection("estoque_posicoes").orderBy("endereco", "asc").get(); tbody.innerHTML = ''; let contador = 0;
+                snapshot.forEach(doc => { const item = doc.data(); if(item.quantidade > 0) { contador++; const dEnt = item.dataEntrada ? new Date(item.dataEntrada).toLocaleDateString('pt-BR') : '-'; tbody.innerHTML += `<tr style="border-bottom: 1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-familia">${item.familia || '-'}</span></td><td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px; color:#888;">${dEnt}</span></td><td>${item.caixas} cx</td><td style="color: var(--volt-green); font-weight: bold; font-size: 16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color: var(--blue-action); color: var(--blue-action); margin-right: 5px;" onclick="abrirEdicaoInbound('${doc.id}', '${perfil}')">✏️</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red);" onclick="zerarPosicaoEstoque('${doc.id}', '${perfil}')">✖</button></td></tr>`; } });
+                if(contador === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #888;">Nenhum produto alocado nos endereços ainda.</td></tr>';
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red);">Erro ao carregar mapa.</td></tr>'; }
+        }
+
+        async function guardarEstoqueNuvem(perfil = 'Admin') {
+            const fieldAddress = perfil === 'Admin' ? 'inboundAddress' : 'inboundAddressEstoque'; const fieldLot = perfil === 'Admin' ? 'inboundLot' : 'inboundLotEstoque'; const fieldProduct = perfil === 'Admin' ? 'inboundProduct' : 'inboundProductEstoque'; const fieldMultiplier = perfil === 'Admin' ? 'inboundMultiplier' : 'inboundMultiplierEstoque'; const fieldData = perfil === 'Admin' ? 'inboundData' : 'inboundDataEstoque'; const fieldFamilia = perfil === 'Admin' ? 'inboundFamilia' : 'inboundFamiliaEstoque';
+            const endereco = document.getElementById(fieldAddress).value.trim().toUpperCase(); const lote = document.getElementById(fieldLot).value.trim().toUpperCase(); const eanBipado = document.getElementById(fieldProduct).value.trim(); const mult = parseInt(document.getElementById(fieldMultiplier).value) || 1; const dataEnt = document.getElementById(fieldData).value; const fam = document.getElementById(fieldFamilia).value;
+
+            if(!endereco || !lote || !eanBipado) return alert("Preencha Endereço, Lote e bipe o Produto.");
+            let produtoEncontrado = null; let isMaster = false;
+            for(let prod of catalogoCompleto) { if(prod.ean === eanBipado) { produtoEncontrado = prod; isMaster = false; break; } if(prod.masterEan && prod.masterEan === eanBipado) { produtoEncontrado = prod; isMaster = true; break; } }
+            if(!produtoEncontrado) { document.getElementById(fieldProduct).value = ''; return alert("Código não encontrado no Catálogo. Cadastre-o primeiro."); }
+
+            const qtdAdicionar = (isMaster ? produtoEncontrado.qtdMaster : 1) * mult; const caixasAdicionar = (isMaster ? 1 : 0) * mult; 
+            document.getElementById(fieldProduct).value = ''; document.getElementById(fieldProduct).focus(); document.getElementById(fieldMultiplier).value = '1';
+
+            try { const docId = `${endereco}_${lote}_${produtoEncontrado.ean}`; const docRef = db.collection("estoque_posicoes").doc(docId); const docSnap = await docRef.get(); if (docSnap.exists) { await docRef.update({ quantidade: firebase.firestore.FieldValue.increment(qtdAdicionar), caixas: firebase.firestore.FieldValue.increment(caixasAdicionar), dataEntrada: dataEnt, familia: fam }); } else { await docRef.set({ endereco: endereco, lote: lote, ean: produtoEncontrado.ean, sku: produtoEncontrado.sku, quantidade: qtdAdicionar, caixas: caixasAdicionar, dataEntrada: dataEnt, familia: fam, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } carregarMapaEstoque(perfil); } catch(e) { alert("Erro ao guardar estoque."); }
+        }
+
         async function zerarPosicaoEstoque(id, perfil) { if(confirm("Tem certeza que deseja apagar este saldo do mapa?")) { await db.collection("estoque_posicoes").doc(id).delete(); carregarMapaEstoque(perfil); } }
         async function abrirEdicaoInbound(id_doc, perfil) { idEditLoteGlobal = { id: id_doc, perfil: perfil }; try { const doc = await db.collection("estoque_posicoes").doc(id_doc).get(); const data = doc.data(); document.getElementById('editInboundAddress').value = data.endereco; document.getElementById('editInboundLot').value = data.lote; document.getElementById('editInboundData').value = data.dataEntrada || ''; document.getElementById('editInboundFamilia').value = data.familia || 'Cabo'; document.getElementById('modalEditarInbound').style.display = 'flex'; } catch(e) { alert("Erro ao carregar dados."); } }
         async function salvarEdicaoInboundNuvem() { const end = document.getElementById('editInboundAddress').value.toUpperCase(); const lot = document.getElementById('editInboundLot').value.toUpperCase(); const dat = document.getElementById('editInboundData').value; const fam = document.getElementById('editInboundFamilia').value; try { await db.collection("estoque_posicoes").doc(idEditLoteGlobal.id).update({ endereco: end, lote: lot, dataEntrada: dat, familia: fam }); alert("Dados corrigidos!"); document.getElementById('modalEditarInbound').style.display = 'none'; carregarMapaEstoque(idEditLoteGlobal.perfil); } catch(e) { alert("Erro ao atualizar."); } }
@@ -945,7 +1184,10 @@
         function removerItemLancamento(ean, tipo) { if(tipo === 'OV') delete itensLancamentoOV[ean]; else delete itensLancamentoRMA[ean]; atualizarListaManualAdmin(); }
 
         async function salvarNovaOV() {
-            const num = document.getElementById('ovNumero').value.trim(); const cli = document.getElementById('ovCliente').value.trim() || 'Sem Nome'; const vol = document.getElementById('ovVolumes').value; const fileOvInput = document.getElementById('fileOV'); const fileRmaInput = document.getElementById('fileRMA'); const temArquivoOV = fileOvInput.files.length > 0; const temArquivoRMA = fileRmaInput.files.length > 0; const obs = document.getElementById('ovObservacao').value.trim(); const brindesChk = document.querySelectorAll('.brinde-chk:checked'); let listaBrindes = []; brindesChk.forEach(c => listaBrindes.push(c.value));
+            const num = document.getElementById('ovNumero').value.trim(); const cli = document.getElementById('ovCliente').value.trim() || 'Sem Nome'; const vol = document.getElementById('ovVolumes').value;
+            const fileOvInput = document.getElementById('fileOV'); const fileRmaInput = document.getElementById('fileRMA');
+            const temArquivoOV = fileOvInput.files.length > 0; const temArquivoRMA = fileRmaInput.files.length > 0;
+            const obs = document.getElementById('ovObservacao').value.trim(); const brindesChk = document.querySelectorAll('.brinde-chk:checked'); let listaBrindes = []; brindesChk.forEach(c => listaBrindes.push(c.value));
             if(!num) return alert("O número da OV é obrigatório."); if(Object.keys(itensLancamentoOV).length === 0) return alert("Adicione pelo menos 1 item na Ordem Principal.");
             document.getElementById('dropTitleOV').innerText = "⏳ Lançando..."; let base64OV = null; let base64RMA = null;
             try { 
@@ -985,18 +1227,29 @@
         function abrirModuloFaturamento() { navegarAdmin('adminFaturamento'); carregarFilaFaturamentoNuvem(); }
         async function carregarFilaFaturamentoNuvem() { const tbody = document.getElementById('tabelaFaturamento'); tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Buscando fila de faturamento...</td></tr>'; try { const snapshot = await db.collection("estoque_ovs").orderBy("timestamp", "desc").get(); tbody.innerHTML = ''; let contador = 0; snapshot.forEach((doc) => { const ov = doc.data(); const id = doc.id; if (ov.status === 'Aguardando Faturamento') { contador++; let totalItens = 0; if(ov.itensOV) Object.values(ov.itensOV).forEach(item => totalItens += item.alvo); if(ov.itensRMA) Object.values(ov.itensRMA).forEach(item => totalItens += item.alvo); tbody.innerHTML += `<tr><td><strong>${ov.numero}</strong></td><td>${ov.cliente}</td><td>${ov.volumesReais} cx</td><td>${totalItens} itens</td><td><button class="btn-outline-2" style="border-color: var(--volt-green); color: var(--volt-green);" onclick="abrirModalEscolhaFrete('${id}', '${ov.numero}')">Avaliar e Faturar</button></td></tr>`; } }); if(contador === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nenhuma OV aguardando faturamento.</td></tr>'; } catch (error) {} }
 
-        async function abrirModalEscolhaFrete(id_doc, numero) { idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero; document.getElementById('modalEscolhaFrete').style.display = 'flex'; document.getElementById('freteCliente').innerText = "-"; document.getElementById('freteData').innerText = "-"; document.getElementById('freteOps').innerText = "-"; document.getElementById('freteItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>'; carregarCotasEDimensoes(); }
+        async function abrirModalEscolhaFrete(id_doc, numero) {
+            idOvGlobal = id_doc; document.getElementById('freteOvNum').innerText = numero; document.getElementById('modalEscolhaFrete').style.display = 'flex';
+            document.getElementById('freteCliente').innerText = "-"; document.getElementById('freteData').innerText = "-"; document.getElementById('freteOps').innerText = "-"; document.getElementById('freteItensList').innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
+            carregarCotasEDimensoes();
+        }
+
         async function carregarCotasEDimensoes() {
             const containerCotacoes = document.getElementById('listaCotacoesAdmin'); const containerDimensoes = document.getElementById('listaDimensoesAdmin');
             containerCotacoes.innerHTML = '<p style="color: var(--volt-green);">Carregando opções...</p>'; containerDimensoes.innerHTML = '<p style="color: var(--text-muted); font-size: 12px;">Buscando dimensões da caixa...</p>';
             try {
                 const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data();
                 document.getElementById('freteCliente').innerText = ovData.cliente || '-'; document.getElementById('freteData').innerText = ovData.data || '-'; document.getElementById('freteOps').innerText = ovData.operadorSeparacao || '-';
+                
                 const boxObs = document.getElementById('freteObsBrindes'); boxObs.innerHTML = '';
                 if(ovData.observacao || (ovData.brindes && ovData.brindes.length > 0)) { let h = ''; if(ovData.brindes && ovData.brindes.length > 0) h += `<div class="caixa-brindes"><strong style="color:var(--volt-green); font-size:16px;">🎁 BRINDES DA OV:</strong><br>${ovData.brindes.join(', ')}</div>`; if(ovData.observacao) h += `<div class="caixa-obs"><strong style="color:var(--blue-action); font-size:16px;">⚠️ OBSERVAÇÃO DO VENDEDOR:</strong><br>${ovData.observacao}</div>`; boxObs.innerHTML = h; }
+
                 let itensHtml = ''; if(ovData.itensOV) Object.values(ovData.itensOV).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:#888; font-size:11px;">Principal</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`); if(ovData.itensRMA) Object.values(ovData.itensRMA).forEach(i => itensHtml += `<tr><td style="padding: 6px; border-bottom: 1px solid #222;">${i.sku}</td><td style="padding: 6px; border-bottom: 1px solid #222; color:var(--warning-yellow); font-size:11px;">RMA</td><td style="padding: 6px; border-bottom: 1px solid #222;"><strong>${i.alvo}x</strong></td></tr>`); document.getElementById('freteItensList').innerHTML = itensHtml || '<tr><td colspan="3" style="padding: 10px;">Nenhum item registrado.</td></tr>';
-                containerDimensoes.innerHTML = ''; if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) { ovData.detalhesVolumes.forEach((vol) => { containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`; }); } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão registrada.</p>'; }
-                containerCotacoes.innerHTML = ''; if(ovData.cotacoes && ovData.cotacoes.length > 0) { ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; }); } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
+
+                containerDimensoes.innerHTML = '';
+                if(ovData.detalhesVolumes && ovData.detalhesVolumes.length > 0) { ovData.detalhesVolumes.forEach((vol) => { containerDimensoes.innerHTML += `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${vol.id} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="${vol.peso}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="${vol.comp}" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="${vol.larg}" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="${vol.alt}" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`; }); } else { containerDimensoes.innerHTML = '<p style="color: #666; font-size: 12px;">Nenhuma dimensão registrada.</p>'; }
+
+                containerCotacoes.innerHTML = '';
+                if(ovData.cotacoes && ovData.cotacoes.length > 0) { ovData.cotacoes.forEach((cot, idx) => { containerCotacoes.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 15px; border-bottom: 1px solid #222; border-radius: 4px; margin-bottom: 10px;"><div><strong style="font-size: 16px;">${cot.transportadora}</strong><br><span style="color: var(--text-muted); font-size: 12px;">Prazo: ${cot.prazo} Dias</span></div><div style="text-align: right;"><strong style="font-size: 18px; color: white; margin-right: 15px;">R$ ${cot.preco}</strong><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px; margin-right: 5px;" onclick="confirmarFreteFaturamento(${idx})">Escolher (Faturar)</button><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px;" onclick="excluirCotacaoAdmin(${idx})" title="Excluir Cotação Errada">✖</button></div></div>`; }); } else { containerCotacoes.innerHTML = '<p style="color: var(--error-red);">Nenhuma cotação registrada.</p>'; }
             } catch(e) {}
         }
 
@@ -1004,6 +1257,7 @@
         async function excluirCotacaoAdmin(idx) { try { const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); let cotacoes = docRef.data().cotacoes; cotacoes.splice(idx, 1); await db.collection("estoque_ovs").doc(idOvGlobal).update({ cotacoes: cotacoes }); carregarCotasEDimensoes(); } catch(e) {} }
         function adicionarDimensaoAdmin() { const container = document.getElementById('listaDimensoesAdmin'); const currentCount = container.querySelectorAll('.grid-4').length; const txtVazio = container.querySelector('p'); if (txtVazio) txtVazio.remove(); container.insertAdjacentHTML('beforeend', `<div class="grid-4" style="margin-bottom: 10px; align-items: end;"><div><label style="font-size: 10px; color: #888;">Vol 0${currentCount + 1} - Peso (Kg)</label><input type="number" class="input-dark edit-peso" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Compr. (cm)</label><input type="number" class="input-dark edit-comp" value="" style="padding: 8px;"></div><div><label style="font-size: 10px; color: #888;">Larg. (cm)</label><input type="number" class="input-dark edit-larg" value="" style="padding: 8px;"></div><div style="display: flex; gap: 5px;"><div style="flex: 1;"><label style="font-size: 10px; color: #888;">Alt. (cm)</label><input type="number" class="input-dark edit-alt" value="" style="padding: 8px;"></div><button class="btn-outline-2" style="border-color: var(--error-red); color: var(--error-red); padding: 8px; margin-bottom: 5px; height: 35px;" onclick="this.parentElement.parentElement.remove()">✖</button></div></div>`); }
         async function salvarDimensoesAdmin() { const containerDimensoes = document.getElementById('listaDimensoesAdmin'); const linhas = containerDimensoes.querySelectorAll('.grid-4'); let novosDetalhes = []; linhas.forEach((linha, index) => { novosDetalhes.push({ id: index + 1, peso: linha.querySelector('.edit-peso').value, comp: linha.querySelector('.edit-comp').value, larg: linha.querySelector('.edit-larg').value, alt:  linha.querySelector('.edit-alt').value }); }); try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ detalhesVolumes: novosDetalhes, volumesReais: novosDetalhes.length }); alert("💾 Dimensões salvas e corrigidas!"); carregarFilaFaturamentoNuvem(); } catch(e) {} }
+        
         async function confirmarFreteFaturamento(idxCotacao) { if(!confirm(`Confirma a escolha deste frete e o faturamento da OV?`)) return; const d = new Date(); const dataFaturamento = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); try { const docRef = await db.collection("estoque_ovs").doc(idOvGlobal).get(); const ovData = docRef.data(); const freteEscolhido = ovData.cotacoes[idxCotacao]; await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Faturado', dataConclusao: dataFaturamento, freteEscolhido: freteEscolhido, operadorFinal: usuarioLogado }); alert("✅ OV Faturada e Concluída com Sucesso!"); document.getElementById('modalEscolhaFrete').style.display = 'none'; carregarFilaFaturamentoNuvem(); } catch(e) {} }
 
         // ====================================================
@@ -1140,9 +1394,7 @@
         async function iniciarPreparacao(id_doc, numero) {
             idOvGlobal = id_doc; document.getElementById('prepOvNumero').innerText = numero; 
             document.getElementById('btnDownloadOv').style.display = 'none'; document.getElementById('btnDownloadRma').style.display = 'none';
-            // SLA: Inicia o tempo de separação aqui (se já não estiver iniciado)
             await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em separação', operadorSeparacao: usuarioLogado });
-            
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
             if(!objOvGlobal.startSeparacao) { await db.collection("estoque_ovs").doc(id_doc).update({ startSeparacao: Date.now() }); }
             
@@ -1199,7 +1451,6 @@
         }
 
         async function concluirSeparacaoFisica() {
-            // SLA: Finaliza tempo de separação
             try { await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Separado', endSeparacao: Date.now() }); alert("✅ Separação concluída! O carrinho pode ir para a Fila de Conferência."); abrirFilaSeparacao(); } catch(e) {}
         }
 
@@ -1229,7 +1480,6 @@
 
         async function abrirBipagemOficial(id_doc, numero) {
             idOvGlobal = id_doc; document.getElementById('confOvNumero').innerText = numero;
-            // SLA: Inicia o tempo de conferência
             await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em conferência' });
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); objOvGlobal = docRef.data(); 
             if(!objOvGlobal.startConferencia) { await db.collection("estoque_ovs").doc(id_doc).update({ startConferencia: Date.now() }); }
@@ -1317,7 +1567,6 @@
                 }
             }
             try { 
-                // SLA: Finaliza o tempo de conferência
                 await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Conferido', volumesReais: contadorVolumesInterno, detalhesVolumes: detalhesVolumes, endConferencia: Date.now() }); 
                 alert("📦 Conferência finalizada! Pedido enviado para Cotação."); 
                 document.getElementById('floatingAviso').classList.remove('show');
@@ -1354,12 +1603,9 @@
 
         async function abrirFazerCotacao(id_doc, numero) { 
             idOvGlobal = id_doc; document.getElementById('cotacaoOvNumero').innerText = numero; cotacoesAtuais = []; atualizarListaCotacoes(); document.getElementById('cotTransp').value = ''; document.getElementById('cotPreco').value = ''; document.getElementById('cotPrazo').value = ''; 
-            
-            // SLA: Inicia o tempo de cotação
             const docRef = await db.collection("estoque_ovs").doc(id_doc).get(); const ov = docRef.data();
             if(!ov.startCotacao) { await db.collection("estoque_ovs").doc(id_doc).update({ startCotacao: Date.now() }); }
             await db.collection("estoque_ovs").doc(id_doc).update({ status: 'Em cotação' }); 
-            
             mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueFazerCotacao'); 
         }
 
@@ -1370,7 +1616,6 @@
         async function salvarCotacoesNuvem() { 
             if(cotacoesAtuais.length === 0) return alert("Adicione pelo menos 1 cotação."); 
             try { 
-                // SLA: Finaliza tempo de cotação
                 await db.collection("estoque_ovs").doc(idOvGlobal).update({ status: 'Aguardando Faturamento', cotacoes: cotacoesAtuais, endCotacao: Date.now() }); 
                 alert("🚚 Cotações enviadas para Faturamento!"); 
                 abrirFilaCotacao(); 
