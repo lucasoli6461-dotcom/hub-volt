@@ -1,548 +1,293 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>VOLT WMS - Ponto & Auditoria</title>
-    <link rel="icon" type="image/png" href="icone_volt.png">
-    
-    <!-- FIREBASE & CHART.JS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
-    <style>
-        /* ========================================== */
-        /* ESTILOS E BASE GERAL COMPACTADA            */
-        /* ========================================== */
-        :root { --bg-color: #0d0d0d; --card-bg: #161616; --volt-green: #c4f000; --text-light: #ffffff; --text-muted: #888888; --border-color: #2a2a2a; --error-red: #ff3333; --success-green: #00cc66; --warning-yellow: #ffcc00; --blue-action: #00aaff; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .container { width: 100%; max-width: 1150px; padding: 20px; box-sizing: border-box; }
-        .view-layer, .sub-screen { display: none; animation: fadeIn 0.3s ease-in-out; } .view-layer.active, .sub-screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; } .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; } .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        
-        .hub-card { background: linear-gradient(145deg, #161616, #0a0a0a); border: 1px solid #2a2a2a; border-top: 1px solid rgba(196, 240, 0, 0.2); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; }
-        .hub-card:hover { border-top-color: var(--volt-green); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(196, 240, 0, 0.08); }
-        .hub-card h3 { margin: 0 0 10px 0; color: var(--text-light); font-size: 18px; font-weight: bold;} .hub-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; flex-grow: 1; margin: 0 0 20px 0;} .hub-card .action { font-weight: bold; font-size: 12px; text-transform: uppercase;}
-        .hub-card-blue { border-top-color: rgba(0, 170, 255, 0.2); } .hub-card-blue:hover { border-top-color: #00aaff; } .hub-card-blue .action { color: #00aaff; }
-        .hub-card-green { border-top-color: rgba(196, 240, 0, 0.5); } .hub-card-green:hover { border-top-color: var(--volt-green); } .hub-card-green .action { color: var(--volt-green); }
-        .hub-card-neutral { border-top-color: #333; } .hub-card-neutral:hover { border-top-color: #555; } .hub-card-neutral .action { color: #aaa; }
-        .hub-card-warning { border-top-color: rgba(255, 204, 0, 0.5); } .hub-card-warning:hover { border-top-color: var(--warning-yellow); } .hub-card-warning .action { color: var(--warning-yellow); }
-
-        .header { width: 100%; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; background: #000; }
-        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; } .logo-text { font-size: 26px; font-weight: 900; color: white; display: flex; align-items: center; } .logo-text svg { margin-left: 4px; fill: var(--volt-green); width: 16px; height: 24px; }
-        .btn-volt { padding: 12px 25px; background-color: var(--volt-green); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; width: 100%;} .btn-volt:hover { opacity: 0.9; transform: scale(1.02); }
-        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;} .btn-outline:hover { border-color: var(--volt-green); color: var(--volt-green); }
-        .btn-outline-2 { background: transparent; border: 1px solid var(--text-muted); color: var(--text-light); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s;} .btn-outline-2:hover { border-color: var(--volt-green); color: var(--volt-green); }
-        .btn-voltar { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase;} .btn-voltar:hover { color: white; border-color: white; }
-        .btn-logout { background: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 5px 15px; border-radius: 4px; cursor: pointer; display: none; font-size: 11px;} .btn-logout:hover { background: rgba(255, 51, 51, 0.1); }
-        
-        .form-group { margin-bottom: 20px; } .form-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: bold;}
-        .input-dark { width: 100%; padding: 12px; margin-top: 5px; background-color: #050505; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px;} .input-dark:focus { border-color: var(--volt-green); outline: none; }
-        .input-bip { width: 100%; padding: 15px; font-size: 20px; background-color: #000; border: 1px solid var(--border-color); color: var(--volt-green); border-radius: 8px; box-sizing: border-box; margin-top: 5px;} .input-bip:focus { outline: 1px solid var(--volt-green); box-shadow: 0 0 10px rgba(196, 240, 0, 0.2); }
-        .input-editavel { background: #000; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box;}
-        
-        .modulo-box { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
-        .modulo-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; } .modulo-header h2 { margin: 0; color: var(--volt-green); font-size: 24px;}
-        .login-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 40px auto; }
-        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; } .user-card:hover { border-color: var(--volt-green); transform: translateY(-5px); }
-        .user-avatar { width: 60px; height: 60px; background: #222; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--volt-green); border: 2px solid var(--border-color);}
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; } th, td { border-bottom: 1px solid var(--border-color); padding: 15px 10px; text-align: left; } th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: normal; } td { font-size: 14px; }
-        .tech-table-wrapper { background: #0a0a0a; border: 1px solid #222; border-radius: 8px; overflow-x: auto; margin-top: 20px;} .tech-table { width: 100%; border-collapse: collapse; text-align: left; margin: 0;} .tech-table th { background: #050505; color: var(--text-muted); font-size: 11px; padding: 15px 20px; border-bottom: 2px solid #222; } .tech-table td { padding: 15px 20px; border-bottom: 1px solid #1a1a1a; color: #ddd; font-size: 13px; } .tech-table tr:hover td { background: rgba(196, 240, 0, 0.03); border-bottom-color: rgba(196, 240, 0, 0.2); }
-        .badge-endereco { background: #222; padding: 4px 10px; border-radius: 4px; font-family: monospace; font-size: 14px; color: white; letter-spacing: 1px;} .badge-lote { background: rgba(255, 204, 0, 0.1); color: var(--warning-yellow); border: 1px solid rgba(255, 204, 0, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;}
-        .badge-admin { color: var(--volt-green); border-color: rgba(196, 240, 0, 0.3); background: rgba(196, 240, 0, 0.05); padding: 4px 8px; border-radius: 4px; font-size: 11px; text-transform: uppercase; border: 1px solid #333;}
-        .status-online { color: var(--success-green); font-weight: bold; } .status-online::before { content: "● "; } .status-offline { color: var(--text-muted); } .status-offline::before { content: "● "; color: #555; }
-        
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
-        .senha-box { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--volt-green); text-align: center; width: 300px; }
-        .dashboard-panel { background: linear-gradient(180deg, #111 0%, #050505 100%); border: 1px solid #222; border-radius: 16px; padding: 30px; } .metric-box-tech { background: linear-gradient(145deg, #161616, #0a0a0a); border: 1px solid #2a2a2a; border-top: 1px solid rgba(196, 240, 0, 0.2); border-radius: 12px; padding: 25px 20px; text-align: center; } .metric-value-tech { font-size: 42px; font-weight: 900; color: var(--volt-green); margin: 5px 0 0 0; text-shadow: 0 0 15px rgba(196, 240, 0, 0.2); letter-spacing: -1px; }
-        
-        /* ESTILOS DE PONTO E AUDITORIA */
-        .relogio-container { background: #000; border: 2px solid #333; padding: 40px; border-radius: 50%; width: 250px; height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 30px auto; box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5); }
-        .relogio-hora { font-size: 48px; font-family: monospace; font-weight: bold; color: var(--volt-green); text-shadow: 0 0 20px rgba(196, 240, 0, 0.4); margin: 0;}
-        .relogio-data { font-size: 14px; color: #888; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px;}
-        .btn-ponto { padding: 15px 20px; font-size: 14px; font-weight: bold; border-radius: 8px; border: 1px solid; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;}
-        .btn-ponto-in { background: rgba(0, 204, 102, 0.1); border-color: var(--success-green); color: var(--success-green); } .btn-ponto-in:hover { background: var(--success-green); color: #000; box-shadow: 0 0 15px rgba(0, 204, 102, 0.3);}
-        .btn-ponto-out { background: rgba(255, 51, 51, 0.1); border-color: var(--error-red); color: var(--error-red); } .btn-ponto-out:hover { background: var(--error-red); color: #000; box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);}
-        .btn-ponto-break { background: rgba(255, 204, 0, 0.1); border-color: var(--warning-yellow); color: var(--warning-yellow); } .btn-ponto-break:hover { background: var(--warning-yellow); color: #000; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);}
-        .contagem-box { background: #111; border: 1px solid #333; padding: 25px; border-radius: 12px; text-align: center; } .contagem-input-grande { width: 100%; font-size: 28px; text-align: center; padding: 15px; font-weight: bold; border-radius: 8px; margin-bottom: 20px;}
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOLT RH & Auditoria</title><link rel="icon" type="image/png" href="icone_volt.png">
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<style>
+:root{--bg:#0d0d0d;--card:#161616;--volt:#c4f000;--text:#fff;--muted:#888;--border:#2a2a2a;--red:#ff3333;--green:#00cc66;--yellow:#ffcc00;--blue:#00aaff;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+.container{width:100%;max-width:1150px;padding:20px;box-sizing:border-box;}
+.view,.screen{display:none;animation:fadeIn .3s;}.view.active,.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;}
+.card{background:linear-gradient(145deg,#161616,#0a0a0a);border:1px solid #2a2a2a;border-top:2px solid #333;border-radius:12px;padding:25px;cursor:pointer;transition:.3s;display:flex;flex-direction:column;min-height:130px;}
+.card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.5);}
+.card h3{margin:0 0 10px 0;font-size:18px;} .card p{color:var(--muted);font-size:13px;flex-grow:1;} .card .act{font-size:12px;font-weight:bold;text-transform:uppercase;}
+.c-blue{border-top-color:var(--blue);}.c-blue .act{color:var(--blue);}.c-green{border-top-color:var(--volt);}.c-green .act{color:var(--volt);}
+.c-yellow{border-top-color:var(--yellow);}.c-yellow .act{color:var(--yellow);}.c-neutral{border-top-color:#555;}.c-neutral .act{color:#aaa;}
+.header{width:100%;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#000;box-sizing:border-box;}
+.logo{font-size:24px;font-weight:900;color:var(--text);cursor:pointer;}.logo span{color:var(--volt);}
+.btn{padding:12px 20px;background:var(--volt);color:#000;border:none;border-radius:6px;font-weight:bold;cursor:pointer;text-transform:uppercase;transition:.2s;width:100%;}
+.btn:hover{opacity:.9;transform:scale(1.02);}.btn-out{background:transparent;border:1px solid var(--muted);color:var(--text);padding:8px 15px;border-radius:4px;cursor:pointer;font-size:12px;text-transform:uppercase;}
+.form-grp{margin-bottom:15px;}.form-grp label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+.inp{width:100%;padding:12px;background:#050505;border:1px solid var(--border);color:white;border-radius:6px;box-sizing:border-box;} .inp:focus{border-color:var(--volt);outline:none;}
+.inp-bip{width:100%;padding:15px;font-size:20px;background:#000;border:1px solid var(--border);color:var(--volt);border-radius:8px;box-sizing:border-box;}
+.mod-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:25px;margin-bottom:20px;}
+.mod-hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:15px;margin-bottom:20px;}.mod-hdr h2{margin:0;color:var(--volt);font-size:22px;}
+table{width:100%;border-collapse:collapse;margin-top:10px;} th,td{border-bottom:1px solid var(--border);padding:12px 10px;text-align:left;font-size:13px;} th{color:var(--muted);text-transform:uppercase;}
+.tbl-wrap{background:#0a0a0a;border:1px solid #222;border-radius:8px;overflow-x:auto;} .tbl-wrap th{background:#050505;border-bottom:2px solid #222;}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:2000;align-items:center;justify-content:center;}
+.senha-box{background:var(--card);padding:30px;border-radius:12px;border:1px solid var(--volt);text-align:center;width:300px;}
+.relogio-box{background:#000;border:2px solid #333;padding:40px;border-radius:50%;width:220px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 30px;box-shadow:inset 0 0 30px rgba(0,0,0,.8);}
+.hora{font-size:42px;font-family:monospace;font-weight:bold;color:var(--volt);margin:0;text-shadow:0 0 15px rgba(196,240,0,.3);} .data{font-size:12px;color:#888;margin-top:5px;}
+.btn-p{padding:15px;font-weight:bold;border-radius:8px;border:1px solid;cursor:pointer;text-transform:uppercase;width:100%;background:rgba(0,0,0,.5);}
+.b-in{border-color:var(--green);color:var(--green);}.b-in:hover{background:var(--green);color:#000;} .b-out{border-color:var(--red);color:var(--red);}.b-out:hover{background:var(--red);color:#000;} .b-brk{border-color:var(--yellow);color:var(--yellow);}.b-brk:hover{background:var(--yellow);color:#000;}
+.badge{padding:4px 8px;border-radius:4px;font-size:11px;font-weight:bold;background:#222;} .bg-red{color:var(--red);background:rgba(255,51,51,.1);} .bg-green{color:var(--green);background:rgba(0,204,102,.1);} .bg-blue{color:var(--blue);background:rgba(0,170,255,.1);}
+</style>
 </head>
 <body>
 
-    <!-- CABEÇALHO GLOBAL -->
-    <div class="header">
-        <div class="logo-container" onclick="voltarLogoHome()">
-            <div class="logo-text">VOLT<svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 0L0 18.6667H10.6667L8 32L24 10.6667H13.3333L16 0Z" /></svg></div>
-        </div>
-        <div class="header-info">
-            <span id="headerNomeUser" style="color: var(--text-muted); font-size: 14px;">Identifique-se</span>
-            <button class="btn-logout" id="btnSair" onclick="fazerLogout()">SAIR</button>
-        </div>
+<div class="header">
+    <div class="logo" onclick="vHome()">VOLT<span>RH</span></div>
+    <div style="display:flex;gap:15px;align-items:center;">
+        <span id="hUser" style="color:var(--muted);font-size:14px;">Log in</span>
+        <button class="btn-out" id="bSair" style="display:none;border-color:var(--red);color:var(--red);" onclick="logout()">Sair</button>
+    </div>
+</div>
+
+<div id="mSenha" class="overlay">
+    <div class="senha-box"><h3 id="nLogin" style="margin-top:0;">Acesso</h3><input type="password" id="iSenha" class="inp" placeholder="Senha..." autofocus><p id="eSenha" style="color:var(--red);font-size:12px;display:none;">Senha incorreta.</p><div style="margin-top:20px;display:flex;gap:10px;"><button class="btn-out" style="flex:1;" onclick="document.getElementById('mSenha').style.display='none'">Cancelar</button><button class="btn" style="flex:1;padding:10px;" onclick="confLogin()">Entrar</button></div></div>
+</div>
+
+<div class="container">
+    <div id="vLog" class="view active">
+        <h2 style="text-align:center;margin-bottom:30px;">Acesso ao Sistema</h2>
+        <div class="grid-3" id="gUsers" style="max-width:800px;margin:0 auto;"></div>
     </div>
 
-    <!-- MODAL SENHA -->
-    <div id="modalSenha" class="modal-overlay">
-        <div class="senha-box">
-            <h3 id="nomeLogin" style="margin-top: 0; color: white;">Acesso: Nome</h3>
-            <input type="password" id="inputSenha" class="input-dark" placeholder="Digite a senha..." autofocus>
-            <p id="erroSenha" style="color: var(--error-red); font-size: 12px; display: none; margin-top: 10px;">Senha incorreta ou inativa.</p>
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button class="btn-outline" style="flex: 1;" onclick="fecharSenhaModal()">CANCELAR</button>
-                <button class="btn-volt" style="flex: 1; padding: 10px;" onclick="confirmarLogin()">ENTRAR</button>
+    <!-- VISÃO GESTOR (ADMIN) -->
+    <div id="vAdm" class="view">
+        <div id="aDash" class="screen active">
+            <div style="text-align:center;margin-bottom:30px;"><h1 style="margin:0;">Painel de Gestão - <span style="color:var(--volt);" id="txtGestor">Gestor</span></h1></div>
+            
+            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;">Gestão de Pessoas (RH)</h3>
+            <div class="grid-3" style="margin-bottom:30px;">
+                <div class="card c-blue" onclick="nav('aPonto')"><h3>⏱️ Folha de Ponto</h3><p>Audite os horários de entrada, pausas e saídas da equipa.</p><div class="act">Acessar</div></div>
+                <div class="card c-yellow" onclick="nav('aAjustes')"><h3>⚠️ Ajustes Pendentes</h3><p>Aprove correções de horários solicitadas pelos operadores.</p><div class="act">Ver Fila</div></div>
+                <div class="card c-green" onclick="nav('aMural')"><h3>📢 Mural & Diário</h3><p>Registe feedbacks da liderança e publique avisos globais.</p><div class="act">Gerenciar</div></div>
             </div>
+
+            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;">Auditoria de Estoque (WMS)</h3>
+            <div class="grid-3">
+                <div class="card c-red" onclick="nav('aDiverg')"><h3>🔍 Furos de Estoque</h3><p>Aprove ou corrija as divergências apontadas nas contagens cegas.</p><div class="act" style="color:var(--red);">Auditar</div></div>
+                <div class="card c-neutral" onclick="nav('aInbound')"><h3>📥 Inbound (Recebimento)</h3><p>Guarde as mercadorias físicas que chegaram no galpão.</p><div class="act">Alocar</div></div>
+                <div class="card c-neutral" onclick="nav('aCat')"><h3>🏷️ Catálogo Base</h3><p>Gira os SKUs e códigos EAN da operação.</p><div class="act">Configurar</div></div>
+            </div>
+            <div style="text-align:center;margin-top:30px;"><button class="btn-out" onclick="mudarView('vOp');nav('oDash');">⟵ Visão Operacional (Bater Ponto)</button></div>
         </div>
+
+        <div id="aPonto" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Folha de Ponto Digital</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div style="display:flex;gap:10px;margin-bottom:15px;"><input type="date" id="fDataPonto" class="inp" style="max-width:200px;margin:0;" onchange="loadPonto()"></div><div class="tbl-wrap"><table><thead><tr><th>Nome</th><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th></tr></thead><tbody id="tbPonto"></tbody></table></div></div></div>
+        <div id="aAjustes" class="screen"><div class="mod-box" style="border-color:var(--yellow);"><div class="mod-hdr"><h2 style="color:var(--yellow);">Solicitações de Ajuste (RH)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="tbl-wrap"><table><thead><tr><th>Data Solicitada</th><th>Colaborador</th><th>Motivo / Descrição</th><th>Ação</th></tr></thead><tbody id="tbAjustes"></tbody></table></div></div></div>
+        <div id="aMural" class="screen"><div class="grid-2"><div class="mod-box"><div class="mod-hdr"><h2>Mural de Avisos (Público)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><textarea id="txtAvisos" class="inp" rows="6" placeholder="Escreva avisos, feriados ou escalas aqui..."></textarea><button class="btn" style="margin-top:10px;" onclick="salvarInfo('mural')">Publicar Mural</button></div><div class="mod-box" style="border-color:var(--blue);"><div class="mod-hdr"><h2 style="color:var(--blue);">Diário de Liderança (Privado)</h2></div><textarea id="txtDiario" class="inp" rows="6" placeholder="Registe feedbacks, ocorrências ou notas sobre a equipa..."></textarea><button class="btn" style="background:var(--blue);margin-top:10px;" onclick="salvarInfo('diario')">Gravar Nota</button></div></div></div>
+        <div id="aDiverg" class="screen"><div class="mod-box" style="border-color:var(--red);"><div class="mod-hdr"><h2 style="color:var(--red);">Divergências de Inventário</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="tbl-wrap"><table><thead><tr><th>Data/Auditor</th><th>Endereço</th><th>SKU</th><th>Sistema</th><th>Físico</th><th>Ação</th></tr></thead><tbody id="tbDiverg"></tbody></table></div></div></div>
+        <div id="aInbound" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Inbound (Alocar Mercadoria)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="grid-2"><div><div class="form-grp"><label>1. Endereço</label><input type="text" id="inEnd" class="inp-bip" style="text-transform:uppercase;"></div><div class="form-grp"><label>2. Lote</label><input type="text" id="inLot" class="inp-bip" style="text-transform:uppercase;"></div></div><div><div class="form-grp"><label>3. Qtd Caixas</label><input type="number" id="inQtd" class="inp" value="1"></div><div class="form-grp"><label>4. Bipar EAN/SKU</label><input type="text" id="inSku" class="inp-bip" onkeypress="if(event.key==='Enter') saveInbound()"></div><button class="btn" onclick="saveInbound()">Guardar Estoque</button></div></div><h3 style="margin-top:30px;color:var(--volt);">Mapa de Estoque Recente</h3><div class="tbl-wrap"><table><thead><tr><th>Endereço</th><th>SKU</th><th>Lote</th><th>Unidades</th><th>Ação</th></tr></thead><tbody id="tbEstoque"></tbody></table></div></div></div>
+        <div id="aCat" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Catálogo de SKUs</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="grid-4" style="margin-bottom:20px;align-items:end;"><div class="form-grp" style="margin:0;"><label>SKU</label><input type="text" id="cSku" class="inp" style="text-transform:uppercase;"></div><div class="form-grp" style="margin:0;"><label>EAN Unitário</label><input type="text" id="cEan" class="inp"></div><div class="form-grp" style="margin:0;"><label>Qtd na Master</label><input type="number" id="cQtd" class="inp" value="100"></div><button class="btn" style="height:42px;" onclick="saveCat()">Adicionar</button></div><div class="tbl-wrap"><table><thead><tr><th>SKU</th><th>EAN</th><th>Qtd/Master</th></tr></thead><tbody id="tbCat"></tbody></table></div></div></div>
     </div>
 
-    <!-- MODAL EDIÇÃO INBOUND -->
-    <div id="modalEditarInbound" class="modal-overlay">
-        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--blue-action);">
-            <h3 style="color: var(--blue-action); margin-top: 0; margin-bottom: 20px;">Editar Lote / Estoque</h3>
-            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;"><div class="form-group"><label>Endereço Físico</label><input type="text" id="editInboundAddress" class="input-dark"></div><div class="form-group"><label>Lote</label><input type="text" id="editInboundLot" class="input-dark"></div></div>
-            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;"><div class="form-group"><label>Data Entrada</label><input type="date" id="editInboundData" class="input-dark"></div><div class="form-group"><label>Família</label><select id="editInboundFamilia" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone</option><option value="Power bank">Power bank</option></select></div></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalEditarInbound').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px; background-color: var(--blue-action);" onclick="salvarEdicaoInboundNuvem()">💾 Salvar Correção</button></div>
-        </div>
-    </div>
-
-    <!-- MODAL NOVO USUÁRIO -->
-    <div id="modalNovoUsuario" class="modal-overlay">
-        <div class="modulo-box" style="width: 100%; max-width: 450px; border-color: var(--volt-green);">
-            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo Perfil</h3>
-            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;"><div class="form-group"><label>Nome</label><input type="text" id="novoNome" class="input-dark" placeholder="Nome"></div><div class="form-group"><label>Cargo / Função</label><input type="text" id="novoFuncao" class="input-dark" placeholder="Ex: Operador"></div></div>
-            <div class="grid-2" style="gap: 10px; margin-bottom: 10px;"><div class="form-group"><label>Nível de Acesso</label><select id="novoRole" class="input-dark"><option value="estoque">Operador (Estoque/Auditor)</option><option value="admin">Gestor Administrador</option></select></div><div class="form-group"><label>Senha Inicial</label><input type="text" id="novoSenha" class="input-dark" placeholder="Senha"></div></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoUsuario').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoUsuario()">Cadastrar</button></div>
-        </div>
-    </div>
-
-    <!-- MODAL NOVO SKU -->
-    <div id="modalNovoSKU" class="modal-overlay">
-        <div class="modulo-box" style="width: 100%; max-width: 500px; border-color: var(--volt-green);">
-            <h3 style="color: var(--volt-green); margin-top: 0; margin-bottom: 20px;">Cadastrar Novo SKU Base</h3>
-            <div class="grid-2" style="gap: 10px;"><div class="form-group"><label>Nome / SKU</label><input type="text" id="cadSkuNovo" class="input-dark" placeholder="Nome Produto"></div><div class="form-group"><label>Código EAN</label><input type="text" id="cadEanNovo" class="input-dark" placeholder="Bipar EAN"></div></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="btn-outline" style="flex: 1;" onclick="document.getElementById('modalNovoSKU').style.display = 'none'">Cancelar</button><button class="btn-volt" style="flex: 1; padding: 10px;" onclick="salvarNovoSKUNuvem()">Salvar SKU</button></div>
-        </div>
-    </div>
-
-    <div class="container">
-        
-        <!-- ========================================== -->
-        <!-- VIEW 1: TELA DE LOGIN                      -->
-        <!-- ========================================== -->
-        <div id="viewLogin" class="view-layer active">
-            <div style="text-align: center; margin-bottom: 40px;"><h1 style="font-size: 32px; margin: 0;">Acesso ao Sistema</h1></div>
-            <div class="login-grid" id="gridUsuariosLogin"></div>
+    <!-- VISÃO OPERADOR -->
+    <div id="vOp" class="view">
+        <div id="oDash" class="screen active">
+            <div style="text-align:center;margin-bottom:30px;"><h1 style="margin:0;color:white;">Central do Colaborador</h1></div>
+            <div class="grid-2">
+                <div class="card c-blue" style="align-items:center;" onclick="nav('oPonto')"><div style="font-size:36px;margin-bottom:10px;">⏱️</div><h3 style="color:var(--blue);">Relógio de Ponto</h3><p>Registar entradas e saídas.</p></div>
+                <div class="card c-yellow" style="align-items:center;" onclick="nav('oAjuste')"><div style="font-size:36px;margin-bottom:10px;">📝</div><h3 style="color:var(--yellow);">Solicitar Ajuste</h3><p>Esqueceu de bater o ponto?</p></div>
+            </div>
+            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;margin-top:30px;">Auditoria de Estoque</h3>
+            <div class="grid-2">
+                <div class="card c-green" onclick="nav('oContagem')"><h3>🔍 Contagem Cega</h3><p>Vá à prateleira e insira a contagem real.</p><div class="act" style="color:var(--volt);">Iniciar Auditoria ➔</div></div>
+                <div class="card c-neutral" onclick="nav('aInbound')"><h3>📥 Inbound Direto</h3><p>Guardar mercadoria rapidamente.</p><div class="act">Abrir ➔</div></div>
+            </div>
+            <div id="bAdmWrap" style="display:none;text-align:center;margin-top:30px;"><button class="btn-out" onclick="mudarView('vAdm');nav('aDash');">⟵ Retornar Visão Gestor</button></div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW 2: VISÃO ADMINISTRADOR                -->
-        <!-- ========================================== -->
-        <div id="viewAdmin" class="view-layer">
-            <div id="adminDash" class="sub-screen active">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h1 id="saudacaoAdmin" style="font-size: 32px; margin: 0;">Boa noite, <span style="color: var(--volt-green);">Usuário</span></h1>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Módulo Gestor: RH e Auditoria de Estoque</p>
+        <div id="oPonto" class="screen">
+            <div class="mod-hdr" style="border:none;margin-bottom:0;"><button class="btn-out" style="border:none;" onclick="nav('oDash')">⟵ Voltar</button></div>
+            <div class="mod-box" style="text-align:center;border-color:var(--blue);padding:40px 20px;">
+                <h2 style="margin-top:0;color:var(--blue);margin-bottom:30px;">Ponto Eletrónico</h2>
+                <div class="relogio-box"><div class="hora" id="rHora">00:00:00</div><div class="data" id="rData">--</div></div>
+                <div style="max-width:350px;margin:0 auto;display:flex;flex-direction:column;gap:15px;">
+                    <button class="btn-p b-in" onclick="baterPonto('Entrada')">📍 Entrada</button>
+                    <div class="grid-2" style="gap:15px;"><button class="btn-p b-brk" onclick="baterPonto('Saida Almoco')">🍕 Saída Almoço</button><button class="btn-p b-brk" style="border-color:var(--blue);color:var(--blue);" onclick="baterPonto('Volta Almoco')">🔄 Volta Almoço</button></div>
+                    <button class="btn-p b-out" onclick="baterPonto('Saida')">🏠 Fim de Expediente</button>
                 </div>
-                
-                <h3 style="color: var(--text-light); margin-top: 10px; margin-bottom: 20px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Gestão de Recursos Humanos (RH)</h3>
-                <div class="grid-2" style="margin-bottom: 30px;">
-                    <div class="hub-card hub-card-blue" onclick="abrirModuloRelatorioPonto()">
-                        <div><h3 style="font-size: 16px; color: #00aaff;">⏱️ Folha de Ponto da Equipe</h3><p style="font-size: 12px;">Audite os horários de entrada, almoço e saída registrados pelos operadores.</p></div><div class="action" style="color: #00aaff;">Ver Registros ➔</div>
-                    </div>
-                    <div class="hub-card hub-card-neutral" onclick="abrirModuloAcessos()">
-                        <div><h3 style="font-size: 16px;">👥 Gestão de Acessos</h3><p style="font-size: 12px;">Crie perfis, cadastre a equipe e gerencie senhas do sistema.</p></div><div class="action">Abrir Painel ➔</div>
-                    </div>
-                </div>
-
-                <h3 style="color: var(--text-light); margin-top: 20px; margin-bottom: 20px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Auditoria de Estoque (WMS)</h3>
-                <div class="grid-4" style="margin-bottom: 30px;">
-                    <div class="hub-card hub-card-warning" style="min-height: 140px; padding: 20px;" onclick="abrirModuloDivergencias()">
-                        <div><h3 style="font-size: 16px; color: var(--warning-yellow);">🔍 Divergências</h3><p style="font-size: 12px;">Aprove ou corrija furos de estoque apontados nas contagens.</p></div><div class="action" style="color: var(--warning-yellow);">Ver Fila ➔</div>
-                    </div>
-                    <div class="hub-card hub-card-green" style="min-height: 140px; padding: 20px;" onclick="abrirModuloResumoEstoque()">
-                        <div><h3 style="font-size: 16px; color:white;">📈 Dashboard</h3><p style="font-size: 12px;">Saldo real do galpão.</p></div><div class="action">Ver Mapa ➔</div>
-                    </div>
-                    <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloEnderecamento()">
-                        <div><h3 style="font-size: 16px;">📥 Inbound</h3><p style="font-size: 12px;">Guarde mercadorias.</p></div><div class="action">Guardar Estoque ➔</div>
-                    </div>
-                    <div class="hub-card hub-card-neutral" style="min-height: 140px; padding: 20px;" onclick="abrirModuloCatalogo()">
-                        <div><h3 style="font-size: 16px;">🏷️ Catálogo Base</h3><p style="font-size: 12px;">Cadastre produtos.</p></div><div class="action">Configurar ➔</div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 40px; text-align: center;">
-                    <button class="btn-outline" style="border-color: #555; color: #aaa;" onclick="mudarViewLayerGlobal('viewEstoque'); navegarEstoque('estoqueDash');">⟵ Acessar Visão do Operador (Bater Ponto)</button>
-                </div>
-            </div>
-
-            <!-- TELAS ADMIN: RH PONTO -->
-            <div id="adminRelatorioPonto" class="sub-screen">
-                <div class="modulo-box" style="border-color: #00aaff;">
-                    <div class="modulo-header" style="border-bottom-color: #333;">
-                        <div><h2 style="color: #00aaff;">Folha de Ponto Digital</h2><p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Relatório de horários e batidas da equipe no galpão.</p></div><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
-                    </div>
-                    <div class="search-wrapper" style="background: transparent; border: none; padding: 0;">
-                        <input type="date" id="filtroDataPonto" class="input-dark" style="max-width: 250px; margin: 0;" onchange="carregarRelatorioPontos()">
-                    </div>
-                    <div class="tech-table-wrapper">
-                        <table class="tech-table">
-                            <thead><tr><th>Nome / Operador</th><th>Data</th><th>Entrada</th><th>Saída (Almoço)</th><th>Retorno (Almoço)</th><th>Fim Expediente</th></tr></thead>
-                            <tbody id="tabelaRelatorioPonto"><tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Selecione uma data para buscar.</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TELAS ADMIN: DIVERGÊNCIAS DE CONTAGEM -->
-            <div id="adminDivergencias" class="sub-screen">
-                <div class="modulo-box" style="border-color: var(--warning-yellow);">
-                    <div class="modulo-header" style="border-bottom-color: #333;">
-                        <div><h2 style="color: var(--warning-yellow);">Auditoria: Furos de Estoque</h2><p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Aprove ou corrija os saldos que deram diferença na contagem física.</p></div><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button>
-                    </div>
-                    <div class="tech-table-wrapper">
-                        <table class="tech-table">
-                            <thead><tr><th>Data/Hora</th><th>Auditor</th><th>Endereço</th><th>Produto / SKU</th><th>Qtd. Sistema</th><th>Qtd. Apontada</th><th style="text-align: right;">Ação</th></tr></thead>
-                            <tbody id="tabelaFilaDivergencias"><tr><td colspan="7" style="text-align: center; color: var(--volt-green); padding: 30px;">Carregando divergências...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TELAS ADMIN: CADASTROS E ESTOQUE -->
-            <div id="adminAcessos" class="sub-screen">
-                <div class="modulo-box"><div class="modulo-header"><h2>Gestão de Acessos</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><h3 style="color: var(--text-light); font-size: 16px; margin:0;">Usuários Cadastrados</h3><button class="btn-volt" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="document.getElementById('modalNovoUsuario').style.display = 'flex'">+ Novo Perfil</button></div><table><thead><tr><th>Nome</th><th>Nível</th><th>Status</th><th>Senha</th><th style="text-align: right;">Ações</th></tr></thead><tbody id="tabelaEquipeUsuarios"></tbody></table></div>
-            </div>
-
-            <div id="adminResumoEstoque" class="sub-screen">
-                <div class="modulo-box dashboard-panel"><div class="modulo-header" style="margin-bottom: 20px; border-bottom: none;"><div><h2 style="font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">Visão Geral <span style="color:white; font-weight: 300;">do Estoque</span></h2></div><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div><div class="grid-3" id="cardsResumoNumeros" style="margin-bottom: 30px;"><div class="metric-box-tech"><div class="metric-icon">📦</div><div class="metric-label-tech">Total de Caixas</div><div class="metric-value-tech" id="resumoCx">-</div></div><div class="metric-box-tech"><div class="metric-icon">⚡</div><div class="metric-label-tech">Unidades no Galpão</div><div class="metric-value-tech" id="resumoUn">-</div></div><div class="metric-box-tech"><div class="metric-icon">🏷️</div><div class="metric-label-tech">SKUs Diferentes</div><div class="metric-value-tech" id="resumoSkus">-</div></div></div><h3 style="color: var(--text-light); margin-top: 40px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">Posições de Estoque por Produto</h3><div class="grid-4" id="cardsEstoqueDashboard" style="margin-top: 20px;"></div></div>
-            </div>
-
-            <div id="adminEnderecamento" class="sub-screen">
-                <div class="modulo-box"><div class="modulo-header"><h2>Entrada (Inbound)</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div><div class="grid-2" style="gap: 30px;"><div><div class="grid-2"><div class="form-group"><label>1. ENDEREÇO FÍSICO</label><input type="text" id="inboundAddress" class="input-bip" placeholder="Ex: A-01-02" style="color: white; border-color: #555;"></div><div class="form-group"><label>2. LOTE DA GARANTIA</label><input type="text" id="inboundLot" class="input-bip" placeholder="Ex: NOV-2023" style="color: white; border-color: #555;"></div></div><div class="grid-2"><div class="form-group"><label>3. DATA ENTRADA</label><input type="date" id="inboundData" class="input-dark"></div><div class="form-group"><label>4. FAMÍLIA</label><select id="inboundFamilia" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone de ouvido</option><option value="Power bank">Power bank</option></select></div></div></div><div><div class="form-group"><label>5. QTD DE CAIXAS</label><input type="number" id="inboundMultiplier" class="input-dark" value="1" min="1"></div><div class="form-group"><label>6. BIPAR PRODUTO / EAN</label><input type="text" id="inboundProduct" class="input-bip" placeholder="Aguardando bipagem..." onkeypress="if(event.key === 'Enter') guardarEstoqueNuvem('Admin')" autofocus></div><div style="text-align: right; margin-top: 10px;"><button class="btn-volt" onclick="guardarEstoqueNuvem('Admin')">GUARDAR ESTOQUE</button></div></div></div><hr style="border-color: #222; margin: 40px 0;"><div><h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3><div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th>Endereço</th><th>Produto / SKU</th><th>Família</th><th>Lote (Entrada)</th><th>Caixas</th><th>Total Un.</th><th>Ação</th></tr></thead><tbody id="tabelaMapaEstoque"><tr><td colspan="7" style="text-align: center; color: var(--volt-green);">Carregando mapa do estoque...</td></tr></tbody></table></div></div></div>
-            </div>
-
-            <div id="adminCatalogo" class="sub-screen">
-                <div class="modulo-box"><div class="modulo-header" style="margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 15px;"><h2>Catálogo Base (SKUs)</h2><button class="btn-voltar" onclick="navegarAdmin('adminDash')">⟵ VOLTAR AO HUB</button></div><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;"><p style="color: var(--text-muted); font-size: 14px; margin: 0;">Cadastre os produtos e as quantidades na Caixa Master.</p><button class="btn-volt" style="width: auto; padding: 8px 15px; font-size: 12px;" onclick="document.getElementById('modalNovoSKU').style.display='flex'">+ Cadastrar Novo SKU</button></div><div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th style="padding: 15px;">Produto / SKU</th><th style="padding: 15px;">EAN Unitário</th><th style="padding: 15px;">EAN Master</th><th style="padding: 15px; text-align: center;">Qtd/M</th><th style="padding: 15px; text-align: right;">Ação</th></tr></thead><tbody id="tabelaCatalogoConfig"><tr><td colspan="5" style="text-align: center; color: var(--volt-green);">Carregando matriz...</td></tr></tbody></table></div></div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW 3: VISÃO OPERADOR (ESTOQUE)           -->
-        <!-- ========================================== -->
-        <div id="viewEstoque" class="view-layer">
-            <div id="estoqueDash" class="sub-screen active">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h1 style="font-size: 32px; margin: 0; color: white;">Central do Operador</h1>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Registre seu ponto e realize auditorias.</p>
-                </div>
-                
-                <div class="grid-2">
-                    <div class="hub-card hub-card-blue" style="min-height: 180px; align-items: center; justify-content: center;" onclick="abrirModuloBaterPonto()">
-                        <div style="text-align: center;"><div style="font-size: 40px; margin-bottom: 15px;">⏱️</div><h3 style="font-size: 22px; color: #00aaff;">Relógio de Ponto</h3><p style="font-size: 14px;">Registrar entradas e saídas.</p></div>
-                    </div>
-                    <div class="hub-card hub-card-warning" style="min-height: 180px; align-items: center; justify-content: center;" onclick="abrirModuloFazerContagem()">
-                        <div style="text-align: center;"><div style="font-size: 40px; margin-bottom: 15px;">🔍</div><h3 style="font-size: 22px; color: var(--warning-yellow);">Auditoria (Contagem Cega)</h3><p style="font-size: 14px;">Ir ao endereço e contar físico.</p></div>
-                    </div>
-                </div>
-
-                <div class="grid-2" style="margin-top: 20px;">
-                    <div class="hub-card hub-card-neutral" style="min-height: 80px; padding: 20px;" onclick="abrirModuloEnderecamentoEstoque()">
-                        <div style="display: flex; justify-content: space-between; align-items: center;"><div><h3 style="font-size: 16px; margin: 0;">📥 Inbound Direto</h3><p style="margin: 5px 0 0 0; font-size: 12px;">Guardar mercadoria rápida.</p></div><div class="action">Abrir ➔</div></div>
-                    </div>
-                </div>
-
-                <div id="btnVoltarAdminWrapper" style="display: none; margin-top: 40px; text-align: center;">
-                    <button class="btn-outline" style="border-color: #555; color: #aaa; padding: 10px 20px;" onclick="mudarViewLayerGlobal('viewAdmin'); navegarAdmin('adminDash');">⟵ Retornar para Visão Gestor</button>
-                </div>
+        <div id="oAjuste" class="screen">
+            <div class="mod-box" style="border-color:var(--yellow);max-width:500px;margin:0 auto;">
+                <div class="mod-hdr"><h2 style="color:var(--yellow);">Solicitar Ajuste</h2><button class="btn-out" onclick="nav('oDash')">Voltar</button></div>
+                <div class="form-grp"><label>Data do Ocorrido</label><input type="date" id="ajData" class="inp"></div>
+                <div class="form-grp"><label>Motivo do Ajuste (Qual horário esqueceu?)</label><textarea id="ajMotivo" class="inp" rows="4" placeholder="Ex: Esqueci de bater a saída do almoço. Retornei às 13:30."></textarea></div>
+                <button class="btn" style="background:var(--yellow);color:#000;" onclick="enviarAjuste()">Enviar Pedido</button>
             </div>
+        </div>
 
-            <!-- TELAS OPERADOR: BATER PONTO -->
-            <div id="opBaterPonto" class="sub-screen">
-                <div class="modulo-header" style="border:none; margin-bottom: 10px;"><button class="btn-outline" style="border:none; padding-left: 0; font-size: 14px;" onclick="voltarAoDash()">⟵ VOLTAR</button></div>
-                <div class="modulo-box" style="text-align: center; border-color: #00aaff; box-shadow: 0 0 30px rgba(0, 170, 255, 0.05); padding: 50px 20px;">
-                    <h2 style="margin-top: 0; color: #00aaff; margin-bottom: 40px;">Registro de Ponto Eletrônico</h2>
-                    <div class="relogio-container"><div class="relogio-hora" id="relogioHoraDigital">00:00:00</div><div class="relogio-data" id="relogioDataCompleta">SEG, 01 JAN 2024</div></div>
-                    <div style="max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px;">
-                        <button class="btn-ponto btn-ponto-in" onclick="registrarBatidaPonto('Entrada')">📍 Bater Ponto: ENTRADA</button>
-                        <div class="grid-2" style="gap: 15px;">
-                            <button class="btn-ponto btn-ponto-break" onclick="registrarBatidaPonto('Saida Almoco')">🍕 SAÍDA ALMOÇO</button>
-                            <button class="btn-ponto btn-ponto-break" style="border-color: #00aaff; color: #00aaff;" onclick="registrarBatidaPonto('Retorno Almoco')">🔄 VOLTA ALMOÇO</button>
-                        </div>
-                        <button class="btn-ponto btn-ponto-out" onclick="registrarBatidaPonto('Saida')">🏠 Bater Ponto: FIM DO DIA</button>
-                    </div>
-                    <p style="margin-top: 30px; font-size: 12px; color: #666;">Os horários são sincronizados com os servidores da nuvem.</p>
-                </div>
-            </div>
-
-            <!-- TELAS OPERADOR: CONTAGEM CEGA (AUDITORIA) -->
-            <div id="opFazerContagem" class="sub-screen">
-                <div class="modulo-header" style="border:none; margin-bottom: 10px;"><button class="btn-outline" style="border:none; padding-left: 0; font-size: 14px;" onclick="voltarAoDash()">⟵ VOLTAR</button></div>
-                <div class="modulo-box contagem-box" style="border-color: var(--warning-yellow);">
-                    <h2 style="color: var(--warning-yellow); margin-top: 0; margin-bottom: 30px; font-size: 28px;">Auditoria de Posição</h2>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Vá até o endereço, bipe a etiqueta da prateleira, bipe o produto e insira a contagem real.</p>
-                    <div style="max-width: 500px; margin: 0 auto; text-align: left;">
-                        <div class="form-group"><label style="color: white; font-size: 12px;">1. Bipar Endereço Físico</label><input type="text" id="contagemEndereco" class="input-dark contagem-input-grande" placeholder="Ex: A-01" autofocus style="text-transform: uppercase;"></div>
-                        <div class="form-group"><label style="color: white; font-size: 12px;">2. Bipar Produto / EAN</label><input type="text" id="contagemProduto" class="input-dark contagem-input-grande" placeholder="SKU / EAN"></div>
-                        <div class="form-group"><label style="color: var(--volt-green); font-size: 12px;">3. Quantidade Encontrada (Física)</label><input type="number" id="contagemQtd" class="input-bip contagem-input-grande" placeholder="0" style="color: var(--volt-green);"></div>
-                        <button class="btn-volt" style="padding: 20px; font-size: 18px; margin-top: 20px; background-color: var(--warning-yellow); color: #000;" onclick="enviarContagemCega()">✔ ENVIAR CONTAGEM</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="estoqueEnderecamento" class="sub-screen">
-                <div class="modulo-box"><div class="modulo-header"><h2>Guardar Mercadoria (Inbound)</h2><button class="btn-voltar" onclick="voltarAoDash()">⟵ VOLTAR</button></div><div class="grid-2" style="gap: 30px;"><div><div class="grid-2"><div class="form-group"><label>1. ENDEREÇO FÍSICO</label><input type="text" id="inboundAddressEstoque" class="input-bip" style="color: white; border-color: #555;"></div><div class="form-group"><label>2. LOTE</label><input type="text" id="inboundLotEstoque" class="input-bip" style="color: white; border-color: #555;"></div></div><div class="grid-2"><div class="form-group"><label>3. DATA ENTRADA</label><input type="date" id="inboundDataEstoque" class="input-dark"></div><div class="form-group"><label>4. FAMÍLIA</label><select id="inboundFamiliaEstoque" class="input-dark"><option value="Cabo">Cabo</option><option value="Fonte">Fonte</option><option value="Fone de ouvido">Fone</option><option value="Power bank">Power bank</option></select></div></div></div><div><div class="form-group"><label>5. QTD CAIXAS</label><input type="number" id="inboundMultiplierEstoque" class="input-dark" value="1" min="1"></div><div class="form-group"><label>6. BIPAR MASTER/EAN</label><input type="text" id="inboundProductEstoque" class="input-bip" onkeypress="if(event.key === 'Enter') guardarEstoqueNuvem('Op')" autofocus></div><div style="text-align: right; margin-top: 10px;"><button class="btn-volt" onclick="guardarEstoqueNuvem('Op')">GUARDAR ESTOQUE</button></div></div></div><hr style="border-color: #222; margin: 40px 0;"><div><h3 style="color: var(--volt-green); font-size: 16px; margin-bottom: 15px;">Mapa de Estoque (Ao Vivo)</h3><div style="background: #111; border-radius: 8px; border: 1px solid #222; overflow-x: auto;"><table style="margin-top: 0;"><thead style="background: #000;"><tr><th>Endereço</th><th>Produto / SKU</th><th>Família</th><th>Lote (Entrada)</th><th>Caixas</th><th>Total Un.</th><th>Ação</th></tr></thead><tbody id="tabelaMapaEstoqueOp"></tbody></table></div></div></div>
+        <div id="oContagem" class="screen">
+            <div class="mod-box" style="max-width:500px;margin:0 auto;border-color:var(--volt);">
+                <div class="mod-hdr"><h2>Auditoria de Posição</h2><button class="btn-out" onclick="nav('oDash')">Voltar</button></div>
+                <div class="form-grp"><label>1. Bipar Endereço</label><input type="text" id="auEnd" class="inp-bip" style="text-transform:uppercase;"></div>
+                <div class="form-grp"><label>2. Bipar Produto (EAN/SKU)</label><input type="text" id="auProd" class="inp-bip"></div>
+                <div class="form-grp"><label>3. Quantidade Física Real</label><input type="number" id="auQtd" class="inp-bip" placeholder="0"></div>
+                <button class="btn" style="margin-top:10px;padding:20px;font-size:18px;" onclick="enviarAuditoria()">Gravar Contagem</button>
             </div>
         </div>
     </div>
+</div>
 
 <script>
 // ==========================================
-// FUNÇÕES DE SISTEMA, NAVEGAÇÃO E LOGIN
+// LÓGICA CORE: NAVEGAÇÃO E DADOS
 // ==========================================
-function voltarAoDash(){if(papelLogado==='admin'){mudarViewLayerGlobal('viewAdmin');navegarAdmin('adminDash');}else{mudarViewLayerGlobal('viewEstoque');navegarEstoque('estoqueDash');}}
-function mudarViewLayerGlobal(viewId){document.querySelectorAll('.view-layer').forEach(el=>el.classList.remove('active'));const target=document.getElementById(viewId);if(target)target.classList.add('active');}
-function navegarAdmin(subScreenId){document.querySelectorAll('#viewAdmin .sub-screen').forEach(el=>el.classList.remove('active'));const target=document.getElementById(subScreenId);if(target)target.classList.add('active');}
-function navegarEstoque(subScreenId){document.querySelectorAll('#viewEstoque .sub-screen').forEach(el=>el.classList.remove('active'));const target=document.getElementById(subScreenId);if(target)target.classList.add('active');}
-function voltarLogoHome(){if(usuarioLogado)voltarAoDash();}
+const fbc={apiKey:"AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU",authDomain:"hub-volt.firebaseapp.com",projectId:"hub-volt"};
+let db=null; try{firebase.initializeApp(fbc);db=firebase.firestore();}catch(e){}
 
-let bdUsuariosLogistica={}; let usuarioLogado=null; let papelLogado=null; let usuarioSelecionadoTemp=null; let catalogoCompleto=[]; let globalEstoqueData=[]; let idEditLoteGlobal=null;
+let users={'Lucas':{role:'admin',senha:'123'},'Bruna':{role:'admin',senha:'123'},'Rafael':{role:'admin',senha:'123'},'Gabriel':{role:'estoque',senha:'123'},'Nathan':{role:'estoque',senha:'123'}};
+let uLog=null, pLog=null, uTemp=null, cat=[];
 
-// FIREBASE INIT
-const firebaseConfig={apiKey:"AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU",authDomain:"hub-volt.firebaseapp.com",projectId:"hub-volt",storageBucket:"hub-volt.firebasestorage.app",messagingSenderId:"483817757628",appId:"1:483817757628:web:076e4aa5f16ffcab00e9b9"};
-let db=null; try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();}catch(e){console.log(e);}
-
-window.onload=function(){
-    bdUsuariosLogistica={'Lucas':{role:'admin',senha:'123',status:'ativo'},'Equipe':{role:'estoque',senha:'123',status:'ativo'}};
-    renderLoginGrid();
-    
-    const today=new Date().toISOString().split('T')[0];
-    if(document.getElementById('inboundData'))document.getElementById('inboundData').value=today;
-    if(document.getElementById('inboundDataEstoque'))document.getElementById('inboundDataEstoque').value=today;
-    if(document.getElementById('filtroDataPonto'))document.getElementById('filtroDataPonto').value=today;
-
-    const savedUser=localStorage.getItem('hubVoltUser'); const savedRole=localStorage.getItem('hubVoltRole');
-    if(savedUser&&savedRole&&bdUsuariosLogistica[savedUser]){
-        usuarioLogado=savedUser;papelLogado=savedRole;
-        document.getElementById('headerNomeUser').innerHTML=`Usuário: <strong style="color:white;">${usuarioLogado}</strong>`;
-        document.getElementById('btnSair').style.display='block'; document.getElementById('modalSenha').style.display='none';
-        if(papelLogado==='admin'){const wrap=document.getElementById('btnVoltarAdminWrapper');if(wrap)wrap.style.display='block';}
-        atualizarSaudacao(); mudarViewLayerGlobal(papelLogado==='admin'?'viewAdmin':'viewEstoque');
+window.onload=()=>{
+    loadUsers(); buildLogin();
+    setInterval(tick, 1000);
+    const d=new Date().toISOString().split('T')[0];
+    if(document.getElementById('fDataPonto')) document.getElementById('fDataPonto').value=d;
+    if(document.getElementById('ajData')) document.getElementById('ajData').value=d;
+    if(localStorage.getItem('hUser')){
+        uLog=localStorage.getItem('hUser'); pLog=localStorage.getItem('hRole');
+        authSuccess();
     }
-    setTimeout(()=>{if(db){carregarUsuariosDaNuvem();inicializarCatalogoMestre();}},500);
-    setInterval(atualizarRelogioPonto, 1000); // Relógio rodando a cada segundo
+    setTimeout(()=>{loadCat(); loadMural();}, 800);
 };
 
-function renderLoginGrid(){const grid=document.getElementById('gridUsuariosLogin');if(!grid)return;grid.innerHTML='';for(let nome in bdUsuariosLogistica){const user=bdUsuariosLogistica[nome];if(user.status!=='inativo'){const isEstoque=user.role==='estoque';const colorCor=isEstoque?'white':'var(--volt-green)';const borderCor=isEstoque?'#444':'var(--border-color)';const badgeCor=isEstoque?'#888':'var(--volt-green)';grid.innerHTML+=`<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="color:${colorCor};border-color:${borderCor};">${nome.charAt(0)}</div><h3 style="margin:0;margin-top:10px;">${nome}</h3><span style="font-size:11px;color:${badgeCor};">${isEstoque?'ESTOQUE':'ADMIN'}</span></div>`;}}}
-async function carregarUsuariosDaNuvem(){try{const snapshot=await db.collection("usuarios").get();if(!snapshot.empty){let tempBd={};snapshot.forEach((doc)=>{tempBd[doc.id]=doc.data();});bdUsuariosLogistica=tempBd;renderLoginGrid();}}catch(error){}}
-function abrirModalSenha(nome){usuarioSelecionadoTemp=nome;document.getElementById('nomeLogin').innerText=`Acesso: ${nome}`;document.getElementById('inputSenha').value='';document.getElementById('erroSenha').style.display='none';document.getElementById('modalSenha').style.display='flex';setTimeout(()=>document.getElementById('inputSenha').focus(),150);}
-function fecharSenhaModal(){document.getElementById('modalSenha').style.display='none';}
-function confirmarLogin(){const senha=document.getElementById('inputSenha').value;const credencial=bdUsuariosLogistica[usuarioSelecionadoTemp];if(credencial&&senha===credencial.senha){usuarioLogado=usuarioSelecionadoTemp;papelLogado=credencial.role;localStorage.setItem('hubVoltUser',usuarioLogado);localStorage.setItem('hubVoltRole',papelLogado);document.getElementById('headerNomeUser').innerHTML=`Usuário: <strong style="color:white;">${usuarioLogado}</strong>`;document.getElementById('btnSair').style.display='block';if(papelLogado==='admin'){const wrap=document.getElementById('btnVoltarAdminWrapper');if(wrap)wrap.style.display='block';}fecharSenhaModal();atualizarSaudacao();mudarViewLayerGlobal(papelLogado==='admin'?'viewAdmin':'viewEstoque');if(papelLogado==='admin')renderizarTabelaAcessosAdmin();}else{document.getElementById('erroSenha').style.display='block';}}
-const iSenha=document.getElementById('inputSenha');if(iSenha)iSenha.addEventListener('keypress',e=>{if(e.key==='Enter')confirmarLogin();});
-function fazerLogout(){localStorage.removeItem('hubVoltUser');localStorage.removeItem('hubVoltRole');location.reload();}
-function atualizarSaudacao(){const hora=new Date().getHours();let texto="Boa noite";if(hora>=5&&hora<12)texto="Bom dia";else if(hora>=12&&hora<18)texto="Boa tarde";const saud=document.getElementById('saudacaoAdmin');if(saud)saud.innerHTML=`${texto}, <span>${usuarioLogado||'Usuário'}</span>`;}
-
-// ==========================================
-// RH: PONTO ELETRÔNICO (NOVO)
-// ==========================================
-function atualizarRelogioPonto() {
-    const elHora = document.getElementById('relogioHoraDigital'); const elData = document.getElementById('relogioDataCompleta');
-    if(!elHora || !elData) return;
-    const d = new Date();
-    const horaStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0');
-    const dias = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB']; const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-    const dataStr = `${dias[d.getDay()]}, ${String(d.getDate()).padStart(2, '0')} ${meses[d.getMonth()]} ${d.getFullYear()}`;
-    elHora.innerText = horaStr; elData.innerText = dataStr;
+function tick(){
+    const elH=document.getElementById('rHora'), elD=document.getElementById('rData'); if(!elH)return;
+    const d=new Date(); elH.innerText=d.toLocaleTimeString('pt-BR');
+    elD.innerText=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'long'}).toUpperCase();
 }
 
-function abrirModuloBaterPonto() { navegarEstoque('opBaterPonto'); }
+function mudarView(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));document.getElementById(v).classList.add('active');}
+function nav(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));document.getElementById(s).classList.add('active');if(s==='aPonto')loadPonto();if(s==='aAjustes')loadAjustes();if(s==='aDiverg')loadDiverg();if(s==='aInbound')loadMap();}
+function vHome(){if(uLog){if(pLog==='admin'){mudarView('vAdm');nav('aDash');}else{mudarView('vOp');nav('oDash');}}}
 
-async function registrarBatidaPonto(tipoBatida) {
-    if(!usuarioLogado) return alert("Usuário não identificado.");
-    const d = new Date();
-    const dataIso = d.toISOString().split('T')[0]; // Ex: 2026-09-28
-    const horaExata = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-    const docId = `${usuarioLogado}_${dataIso}`;
-    
-    try {
-        const docRef = db.collection("rh_ponto").doc(docId);
-        const docSnap = await docRef.get();
-        let payload = {};
-        
-        if (tipoBatida === 'Entrada') {
-            if(docSnap.exists && docSnap.data().horaEntrada) return alert("Você já registrou a Entrada hoje!");
-            payload = { nome: usuarioLogado, data: dataIso, horaEntrada: horaExata, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-        } else if (tipoBatida === 'Saida Almoco') {
-            payload = { horaSaidaAlmoco: horaExata };
-        } else if (tipoBatida === 'Retorno Almoco') {
-            payload = { horaRetornoAlmoco: horaExata };
-        } else if (tipoBatida === 'Saida') {
-            payload = { horaFim: horaExata };
+function buildLogin(){const g=document.getElementById('gUsers');g.innerHTML='';for(let n in users){g.innerHTML+=`<div class="card" style="align-items:center;min-height:auto;" onclick="opnLogin('${n}')"><div class="user-avatar">${n[0]}</div><h3 style="margin:5px 0;">${n}</h3><span class="badge ${users[n].role==='admin'?'bg-blue':'bg-green'}">${users[n].role.toUpperCase()}</span></div>`;}}
+async function loadUsers(){try{const s=await db.collection("usuarios").get();if(!s.empty){users={};s.forEach(d=>users[d.id]=d.data());buildLogin();}}catch(e){}}
+function opnLogin(n){uTemp=n;document.getElementById('nLogin').innerText=`Acesso: ${n}`;document.getElementById('iSenha').value='';document.getElementById('eSenha').style.display='none';document.getElementById('mSenha').style.display='flex';setTimeout(()=>document.getElementById('iSenha').focus(),100);}
+function confLogin(){if(document.getElementById('iSenha').value===users[uTemp].senha){uLog=uTemp;pLog=users[uTemp].role;localStorage.setItem('hUser',uLog);localStorage.setItem('hRole',pLog);document.getElementById('mSenha').style.display='none';authSuccess();}else{document.getElementById('eSenha').style.display='block';}}
+document.getElementById('iSenha').addEventListener('keypress',e=>{if(e.key==='Enter')confLogin();});
+function logout(){localStorage.clear();location.reload();}
+function authSuccess(){
+    document.getElementById('hUser').innerHTML=`<strong style="color:white;">${uLog}</strong>`;document.getElementById('bSair').style.display='block';
+    if(pLog==='admin'){document.getElementById('txtGestor').innerText=uLog;document.getElementById('bAdmWrap').style.display='block';mudarView('vAdm');nav('aDash');}else{mudarView('vOp');nav('oDash');}
+}
+
+// ==========================================
+// MÓDULO RH: PONTO E AJUSTES
+// ==========================================
+async function baterPonto(tipo){
+    if(!uLog) return; const d=new Date(); const dtIso=d.toISOString().split('T')[0]; const hr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); const docId=`${uLog}_${dtIso}`;
+    try{
+        const r=db.collection("rh_ponto").doc(docId); const sn=await r.get(); let pay={};
+        if(tipo==='Entrada'){if(sn.exists&&sn.data().ent)return alert("Entrada já registada hoje!");pay={nome:uLog,data:dtIso,ent:hr,ts:firebase.firestore.FieldValue.serverTimestamp()};}
+        else if(tipo==='Saida Almoco') pay={sAlm:hr}; else if(tipo==='Volta Almoco') pay={vAlm:hr}; else if(tipo==='Saida') pay={sai:hr};
+        await r.set(pay,{merge:true}); alert(`✅ ${tipo} registada às ${hr}`); vHome();
+    }catch(e){alert("Erro ao bater ponto.");}
+}
+
+async function loadPonto(){
+    const dt=document.getElementById('fDataPonto').value; const tb=document.getElementById('tbPonto'); if(!dt)return;
+    tb.innerHTML='<tr><td colspan="6" style="text-align:center;">Buscando...</td></tr>';
+    try{
+        const sn=await db.collection("rh_ponto").where("data","==",dt).get(); tb.innerHTML=''; let c=0;
+        sn.forEach(doc=>{c++; const p=doc.data(); tb.innerHTML+=`<tr><td><strong style="color:white;">${p.nome}</strong></td><td><span class="badge">${p.data}</span></td><td style="color:var(--green);font-weight:bold;">${p.ent||'--:--'}</td><td style="color:var(--yellow);">${p.sAlm||'--:--'}</td><td style="color:var(--yellow);">${p.vAlm||'--:--'}</td><td style="color:var(--red);font-weight:bold;">${p.sai||'--:--'}</td></tr>`;});
+        if(c===0)tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;">Sem registos.</td></tr>';
+    }catch(e){}
+}
+
+async function enviarAjuste(){
+    const dt=document.getElementById('ajData').value; const mot=document.getElementById('ajMotivo').value.trim(); if(!dt||!mot) return alert("Preencha todos os campos.");
+    try{ await db.collection("rh_ajustes").add({nome:uLog,data:dt,motivo:mot,status:'pendente',ts:firebase.firestore.FieldValue.serverTimestamp()}); alert("Pedido de ajuste enviado à gestão."); document.getElementById('ajMotivo').value=''; vHome(); }catch(e){}
+}
+
+async function loadAjustes(){
+    const tb=document.getElementById('tbAjustes'); tb.innerHTML='<tr><td colspan="4">Buscando...</td></tr>';
+    try{
+        const sn=await db.collection("rh_ajustes").where("status","==","pendente").get(); tb.innerHTML=''; let c=0;
+        sn.forEach(d=>{c++; const a=d.data(); tb.innerHTML+=`<tr><td><span class="badge">${a.data}</span></td><td><strong style="color:white;">${a.nome}</strong></td><td>${a.motivo}</td><td><button class="btn-out" style="border-color:var(--green);color:var(--green);margin-right:5px;" onclick="updAjuste('${d.id}','ok')">✔ Tratado</button></td></tr>`;});
+        if(c===0)tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:#888;">Sem pendências.</td></tr>';
+    }catch(e){}
+}
+async function updAjuste(id, st){await db.collection("rh_ajustes").doc(id).update({status:st}); loadAjustes();}
+
+// ==========================================
+// MÓDULO WMS: AUDITORIA E INBOUND
+// ==========================================
+async function loadCat(){try{const s=await db.collection("catalogo").get();s.forEach(d=>cat.push(d.data()));}catch(e){}}
+async function saveCat(){const s=document.getElementById('cSku').value.toUpperCase().trim(); const e=document.getElementById('cEan').value.trim(); const q=parseInt(document.getElementById('cQtd').value)||100; if(!s||!e)return; try{await db.collection("catalogo").doc(e).set({sku:s,ean:e,qtd:q});alert("SKU Adicionado!");document.getElementById('cSku').value='';document.getElementById('cEan').value='';cat.push({sku:s,ean:e,qtd:q});}catch(er){}}
+
+async function saveInbound(){
+    const en=document.getElementById('inEnd').value.toUpperCase().trim(); const lo=document.getElementById('inLot').value.toUpperCase().trim(); const cx=parseInt(document.getElementById('inQtd').value)||1; const b=document.getElementById('inSku').value.trim();
+    if(!en||!lo||!b) return alert("Preencha Endereço, Lote e Bipe o EAN.");
+    let p=cat.find(x=>x.ean===b||x.sku===b.toUpperCase()); if(!p) return alert("EAN/SKU não encontrado no Catálogo.");
+    const id=`${en}_${lo}_${p.ean}`; const qT=p.qtd*cx;
+    try{
+        const rf=db.collection("estoque").doc(id); const sn=await rf.get();
+        if(sn.exists) await rf.update({qtd:firebase.firestore.FieldValue.increment(qT),cxs:firebase.firestore.FieldValue.increment(cx)}); else await rf.set({end:en,lote:lo,sku:p.sku,ean:p.ean,qtd:qT,cxs:cx,ts:new Date().toISOString()});
+        document.getElementById('inSku').value=''; document.getElementById('inSku').focus(); loadMap();
+    }catch(e){alert("Erro ao alocar.");}
+}
+async function loadMap(){
+    const tb=document.getElementById('tbEstoque'); if(!tb)return; tb.innerHTML='';
+    try{
+        const sn=await db.collection("estoque").get(); let i=[]; sn.forEach(d=>i.push({id:d.id,...d.data()})); i.sort((a,b)=>a.end.localeCompare(b.end));
+        i.forEach(x=>{if(x.qtd>0) tb.innerHTML+=`<tr><td><span class="badge">${x.end}</span></td><td><strong style="color:white;">${x.sku}</strong></td><td><span class="badge" style="background:#222;">${x.lote}</span></td><td style="color:var(--volt);font-weight:bold;">${x.qtd} un</td><td><button class="btn-out" style="border-color:var(--red);color:var(--red);padding:4px 8px;" onclick="delEstoque('${x.id}')">✖</button></td></tr>`;});
+    }catch(e){}
+}
+async function delEstoque(id){if(confirm("Apagar saldo?")){await db.collection("estoque").doc(id).delete();loadMap();}}
+
+async function enviarAuditoria(){
+    const en=document.getElementById('auEnd').value.toUpperCase().trim(); const pd=document.getElementById('auProd').value.trim(); const qf=parseInt(document.getElementById('auQtd').value);
+    if(!en||!pd||isNaN(qf)) return alert("Preencha tudo."); let p=cat.find(x=>x.ean===pd||x.sku===pd.toUpperCase()); if(!p) return alert("Produto não reconhecido.");
+    try{
+        const sn=await db.collection("estoque").where("end","==",en).where("sku","==",p.sku).get(); let qS=0; sn.forEach(m=>qS+=m.data().qtd);
+        await db.collection("auditoria").add({nome:uLog,end:en,sku:p.sku,qSis:qS,qFis:qf,diff:(qS!==qf),ts:new Date().toISOString(),st:(qS!==qf)?'pend':'ok'});
+        if(qS===qf) alert(`✅ Exato! Sistema: ${qS}`); else alert(`⚠️ DIVERGÊNCIA! Sistema esperava ${qS}. Gravado para análise.`);
+        document.getElementById('auProd').value=''; document.getElementById('auQtd').value=''; document.getElementById('auProd').focus();
+    }catch(e){}
+}
+
+async function loadDiverg(){
+    const tb=document.getElementById('tbDiverg'); tb.innerHTML='<tr><td colspan="6">Buscando...</td></tr>';
+    try{
+        const sn=await db.collection("auditoria").where("st","==","pend").get(); tb.innerHTML=''; let c=0;
+        sn.forEach(d=>{c++; const a=d.data(); let bdg=a.qFis>a.qSis?`<span class="bg-green badge">+${a.qFis-a.qSis}</span>`:`<span class="bg-red badge">${a.qFis-a.qSis}</span>`; tb.innerHTML+=`<tr><td><strong style="color:white;">${a.nome}</strong></td><td><span class="badge">${a.end}</span></td><td><strong style="color:white;">${a.sku}</strong></td><td>${a.qSis}</td><td style="color:var(--yellow);font-weight:bold;">${a.qFis} ${bdg}</td><td><button class="btn-out" style="border-color:var(--volt);color:var(--volt);margin-right:5px;" onclick="ajustarDiv('${d.id}','${a.end}','${a.sku}',${a.qSis},${a.qFis})">Ajustar</button><button class="btn-out" style="border-color:var(--muted);color:var(--muted);" onclick="ignorarDiv('${d.id}')">Ignorar</button></td></tr>`;});
+        if(c===0) tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;">Sem divergências.</td></tr>';
+    }catch(e){}
+}
+async function ignorarDiv(id){await db.collection("auditoria").doc(id).update({st:'ignorado'});loadDiverg();}
+async function ajustarDiv(id,en,sku,qs,qf){
+    if(!confirm(`Ajustar saldo para ${qf}?`))return; const df=qf-qs; let p=cat.find(x=>x.sku===sku);
+    try{
+        const sn=await db.collection("estoque").where("end","==",en).where("sku","==",sku).get();
+        if(df>0){
+            if(!sn.empty) await db.collection("estoque").doc(sn.docs[0].id).update({qtd:firebase.firestore.FieldValue.increment(df)});
+            else await db.collection("estoque").doc(`${en}_AJUSTE_${p.ean}`).set({end:en,lote:'AJUSTE',sku:sku,ean:p.ean,qtd:df,cxs:1,ts:new Date().toISOString()});
+        }else if(df<0){
+            let f=Math.abs(df); for(let m of sn.docs){if(f<=0)break; let d=m.data(); let ab=Math.min(f,d.qtd); f-=ab; if(d.qtd===ab) await db.collection("estoque").doc(m.id).delete(); else await db.collection("estoque").doc(m.id).update({qtd:firebase.firestore.FieldValue.increment(-ab)});}
         }
-
-        await docRef.set(payload, { merge: true });
-        alert(`✅ Ponto registrado com sucesso: ${tipoBatida} às ${horaExata}`);
-        voltarAoDash();
-    } catch(e) { alert("Erro de conexão ao bater ponto."); }
-}
-
-function abrirModuloRelatorioPonto() { navegarAdmin('adminRelatorioPonto'); carregarRelatorioPontos(); }
-
-async function carregarRelatorioPontos() {
-    const dataFiltro = document.getElementById('filtroDataPonto').value;
-    const tbody = document.getElementById('tabelaRelatorioPonto');
-    if(!dataFiltro) return;
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #00aaff; padding: 30px;">Buscando registros na nuvem...</td></tr>';
-    
-    try {
-        const snap = await db.collection("rh_ponto").where("data", "==", dataFiltro).get();
-        tbody.innerHTML = ''; let contador = 0;
-        snap.forEach(doc => {
-            contador++; const p = doc.data();
-            const ent = p.horaEntrada || '--:--'; const sAlm = p.horaSaidaAlmoco || '--:--'; const rAlm = p.horaRetornoAlmoco || '--:--'; const fim = p.horaFim || '--:--';
-            tbody.innerHTML += `<tr><td><strong style="color:white;">${p.nome}</strong></td><td><span class="badge-data">${p.data}</span></td><td style="color:var(--success-green); font-weight:bold;">${ent}</td><td style="color:var(--warning-yellow);">${sAlm}</td><td style="color:var(--warning-yellow);">${rAlm}</td><td style="color:var(--error-red); font-weight:bold;">${fim}</td></tr>`;
-        });
-        if(contador === 0) tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #888; padding: 30px;">Nenhum ponto registrado no dia ${dataFiltro}.</td></tr>`;
-    } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red); padding: 30px;">Erro ao buscar dados.</td></tr>'; }
+        await db.collection("auditoria").doc(id).update({st:'ajustado'}); alert("✅ Saldo Corrigido!"); loadDiverg();
+    }catch(e){}
 }
 
 // ==========================================
-// AUDITORIA: CONTAGEM CEGA E DIVERGÊNCIAS
+// MURAL E DIÁRIO DE LIDERANÇA
 // ==========================================
-function abrirModuloFazerContagem() { 
-    document.getElementById('contagemEndereco').value = ''; document.getElementById('contagemProduto').value = ''; document.getElementById('contagemQtd').value = ''; 
-    navegarEstoque('opFazerContagem'); 
+async function salvarInfo(tipo){
+    const txt=document.getElementById(tipo==='mural'?'txtAvisos':'txtDiario').value.trim(); if(!txt)return;
+    try{await db.collection("informacoes").doc(tipo).set({texto:txt}); alert("Guardado!");}catch(e){}
 }
-
-async function enviarContagemCega() {
-    const endereco = document.getElementById('contagemEndereco').value.trim().toUpperCase();
-    const bipProduto = document.getElementById('contagemProduto').value.trim();
-    const qtdFisica = parseInt(document.getElementById('contagemQtd').value);
-
-    if(!endereco || !bipProduto || isNaN(qtdFisica)) return alert("Preencha o Endereço, bipe o Produto e insira a Quantidade Física correta.");
-    
-    let prodInfo = catalogoCompleto.find(p => p.ean === bipProduto || p.sku.toUpperCase() === bipProduto.toUpperCase() || p.masterEan === bipProduto);
-    if(!prodInfo) return alert("Produto não reconhecido no catálogo.");
-
-    try {
-        const mapSnap = await db.collection("estoque_posicoes").where("endereco", "==", endereco).where("sku", "==", prodInfo.sku).get();
-        let qtdSistemaTotal = 0; let docsAfetados = [];
-        
-        mapSnap.forEach(m => { 
-            let d = m.data(); 
-            qtdSistemaTotal += d.quantidade; 
-            docsAfetados.push(m.id); // Pode ter mais de um lote no mesmo endereço
-        });
-
-        // Grava sempre na nuvem a auditoria
-        await db.collection("auditoria_contagens").add({
-            operador: usuarioLogado, endereco: endereco, sku: prodInfo.sku, 
-            qtdSistema: qtdSistemaTotal, qtdFisica: qtdFisica, 
-            divergencia: (qtdSistemaTotal !== qtdFisica),
-            data: new Date().toISOString(), status: (qtdSistemaTotal !== qtdFisica) ? 'pendente' : 'ok',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        if(qtdSistemaTotal === qtdFisica) {
-            alert(`✅ Contagem exata! O sistema já possuía ${qtdSistemaTotal} un.`);
-        } else {
-            alert(`⚠️ DIVERGÊNCIA! O sistema esperava ${qtdSistemaTotal} un. O desvio foi gravado para o Administrador analisar.`);
-        }
-        
-        document.getElementById('contagemProduto').value = ''; document.getElementById('contagemQtd').value = ''; document.getElementById('contagemProduto').focus();
-    } catch(e) { alert("Erro de conexão com a base de dados."); }
-}
-
-function abrirModuloDivergencias() { navegarAdmin('adminDivergencias'); carregarFilaDivergencias(); }
-
-async function carregarFilaDivergencias() {
-    const tbody = document.getElementById('tabelaFilaDivergencias'); tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--warning-yellow); padding: 30px;">Buscando furos de estoque na nuvem...</td></tr>';
-    try {
-        const snap = await db.collection("auditoria_contagens").where("status", "==", "pendente").get();
-        tbody.innerHTML = ''; let contador = 0;
-        
-        let audits = []; snap.forEach(doc => audits.push({id: doc.id, ...doc.data()}));
-        audits.sort((a,b) => { let tA = a.timestamp ? a.timestamp.toMillis() : 0; let tB = b.timestamp ? b.timestamp.toMillis() : 0; return tB - tA; });
-
-        audits.forEach(a => {
-            contador++;
-            let badgeDiff = a.qtdFisica > a.qtdSistema ? `<span style="color:var(--success-green); font-weight:bold;">(+${a.qtdFisica - a.qtdSistema})</span>` : `<span style="color:var(--error-red); font-weight:bold;">(${a.qtdFisica - a.qtdSistema})</span>`;
-            let d = new Date(a.data); let strData = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
-            tbody.innerHTML += `<tr><td><strong style="color:white;">${a.operador}</strong><br><span style="font-size:10px;color:#888;">${strData}</span></td><td><span class="badge-endereco">${a.endereco}</span></td><td><strong style="color:white;">${a.sku}</strong></td><td style="color:#aaa;">${a.qtdSistema} un</td><td><strong style="color:var(--warning-yellow); font-size:16px;">${a.qtdFisica} un</strong> <br>${badgeDiff}</td><td style="text-align:right;"><button class="btn-outline-2" style="border-color:var(--volt-green); color:var(--volt-green); margin-right:5px;" onclick="ajustarDivergenciaAuditoria('${a.id}', '${a.endereco}', '${a.sku}', ${a.qtdSistema}, ${a.qtdFisica})">✔ Ajustar Saldo</button><button class="btn-outline-2" style="border-color:#555; color:#aaa;" onclick="recusarDivergencia('${a.id}')">✖ Recusar</button></td></tr>`;
-        });
-        if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888; padding: 30px;">O estoque está 100% acurado. Nenhuma divergência pendente.</td></tr>';
-    } catch(e) {}
-}
-
-async function recusarDivergencia(idReq) { if(confirm("Ignorar esta contagem do operador e manter o saldo atual do sistema?")) { await db.collection("auditoria_contagens").doc(idReq).update({ status: 'recusada' }); carregarFilaDivergencias(); } }
-
-async function ajustarDivergenciaAuditoria(idReq, endereco, sku, qtdSis, qtdFisica) {
-    if(!confirm(`Confirma o ajuste do saldo do sistema de ${qtdSis} para a contagem real de ${qtdFisica} unidades?`)) return;
-    try {
-        let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === sku.toUpperCase());
-        if(!prodInfo) return alert("Produto não encontrado no catálogo base.");
-
-        const diff = qtdFisica - qtdSis; 
-        
-        // Estratégia de Ajuste:
-        // 1. Procuramos se existe alguma posição desse SKU nesse endereço.
-        const mapSnap = await db.collection("estoque_posicoes").where("endereco", "==", endereco).where("sku", "==", sku).get();
-        
-        if (diff > 0) {
-            // Sobrou estoque na realidade (Soma)
-            if(!mapSnap.empty) {
-                // Adiciona a sobra no primeiro lote que achar
-                let docAdd = mapSnap.docs[0];
-                await db.collection("estoque_posicoes").doc(docAdd.id).update({ quantidade: firebase.firestore.FieldValue.increment(diff) });
-            } else {
-                // Se não existia nada lá, cria um lote "AJUSTE"
-                let newDocId = `${endereco}_AJUSTE_${prodInfo.ean}`;
-                await db.collection("estoque_posicoes").doc(newDocId).set({ endereco: endereco, lote: 'AJUSTE-AUDITORIA', ean: prodInfo.ean, sku: prodInfo.sku, quantidade: diff, caixas: 1, dataEntrada: new Date().toISOString().split('T')[0], familia: 'Outros', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            }
-        } else if (diff < 0) {
-            // Faltou estoque na realidade (Subtrai). Abate dos lotes existentes até zerar a diferença.
-            let falta = Math.abs(diff);
-            for(let m of mapSnap.docs) {
-                if(falta <= 0) break;
-                let data = m.data();
-                let abater = Math.min(falta, data.quantidade);
-                falta -= abater;
-                if(data.quantidade === abater) {
-                    await db.collection("estoque_posicoes").doc(m.id).delete();
-                } else {
-                    await db.collection("estoque_posicoes").doc(m.id).update({ quantidade: firebase.firestore.FieldValue.increment(-abater) });
-                }
-            }
-        }
-
-        // Finaliza o chamado
-        await db.collection("auditoria_contagens").doc(idReq).update({ status: 'ajustada_admin' });
-        alert("✅ Estoque corrigido com sucesso e batendo com o físico!");
-        carregarFilaDivergencias();
-    } catch(e) { alert("Erro ao ajustar o banco de dados."); console.log(e); }
-}
-
-// ==========================================
-// CATÁLOGO E INBOUND MANTIDOS
-// ==========================================
-async function inicializarCatalogoMestre(){catalogoCompleto=[...baseCatalogoVOLT];catalogoCompleto.forEach(p=>{p.masterEan='';p.qtdMaster=100;});try{const snapshot=await db.collection("catalogo_produtos").get();snapshot.forEach(doc=>{const data=doc.data();let prod=catalogoCompleto.find(p=>p.ean===data.eanUnitario);if(prod){prod.masterEan=data.eanMaster||'';prod.qtdMaster=data.qtdMaster||100;}else{catalogoCompleto.push({sku:data.sku,ean:data.eanUnitario,masterEan:data.eanMaster||'',qtdMaster:data.qtdMaster||100});}});}catch(e){}catalogoCompleto.sort((a,b)=>a.sku.localeCompare(b.sku));}
-async function abrirModuloCatalogo(){navegarAdmin('adminCatalogo');const tbody=document.getElementById('tabelaCatalogoConfig');tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--volt-green);padding:20px;">Buscando base...</td></tr>';try{const snapshot=await db.collection("catalogo_produtos").get();let nuvemDados={};snapshot.forEach(doc=>{nuvemDados[doc.id]=doc.data();});tbody.innerHTML='';catalogoCompleto.forEach(prod=>{const salvo=nuvemDados[prod.ean]||{};const mEan=salvo.eanMaster||'';const mQtd=salvo.qtdMaster||100;tbody.innerHTML+=`<tr style="border-bottom:1px solid #222;"><td style="padding:10px 15px;"><strong style="color:white;font-size:14px;">${prod.sku}</strong></td><td style="padding:10px 15px;color:#aaa;font-family:monospace;font-size:13px;">${prod.ean}</td><td style="padding:10px 15px;"><input type="text" id="master_${prod.ean}" class="input-editavel" placeholder="EAN Master" value="${mEan}"></td><td style="padding:10px 15px;width:100px;"><input type="number" id="qtd_${prod.ean}" class="input-editavel" style="text-align:center;" value="${mQtd}"></td><td style="padding:10px 15px;text-align:right;"><button class="btn-outline-2" style="border-color:var(--volt-green);color:var(--volt-green);" onclick="salvarProdutoCatalogo('${prod.ean}','${prod.sku}')">Salvar</button></td></tr>`;});}catch(e){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--error-red);padding:20px;">Erro.</td></tr>';}}
-async function salvarProdutoCatalogo(eanUnitario,sku){const mEan=document.getElementById(`master_${eanUnitario}`).value.trim();const mQtd=document.getElementById(`qtd_${eanUnitario}`).value;try{await db.collection("catalogo_produtos").doc(eanUnitario).set({sku:sku,eanUnitario:eanUnitario,eanMaster:mEan,qtdMaster:Number(mQtd)},{merge:true});let p=catalogoCompleto.find(x=>x.ean===eanUnitario);if(p){p.masterEan=mEan;p.qtdMaster=Number(mQtd);}alert(`Catálogo salvo!`);}catch(e){}}
-async function salvarNovoSKUNuvem(){const sku=document.getElementById('cadSkuNovo').value.trim();const eanUnitario=document.getElementById('cadEanNovo').value.trim();const eanMaster=document.getElementById('cadMasterNovo').value.trim();const qtdMaster=document.getElementById('cadQtdMasterNovo').value;if(!sku||!eanUnitario)return alert("SKU e EAN Unitário são obrigatórios.");try{await db.collection("catalogo_produtos").doc(eanUnitario).set({sku:sku,eanUnitario:eanUnitario,eanMaster:eanMaster,qtdMaster:Number(qtdMaster)});alert(`✅ Criado!`);document.getElementById('modalNovoSKU').style.display='none';await inicializarCatalogoMestre();abrirModuloCatalogo();}catch(e){}}
-
-function abrirModuloEnderecamento(){navegarAdmin('adminEnderecamento');carregarMapaEstoque('Admin');}
-function abrirModuloEnderecamentoEstoque(){navegarEstoque('estoqueEnderecamento');carregarMapaEstoque('Op');}
-async function carregarMapaEstoque(perfil){const tbody=document.getElementById(perfil==='Admin'?'tabelaMapaEstoque':'tabelaMapaEstoqueOp');tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--volt-green);padding:20px;">Buscando mapa do estoque...</td></tr>';try{const snapshot=await db.collection("estoque_posicoes").get();let itens=[];snapshot.forEach(doc=>{itens.push({id:doc.id,...doc.data()})});itens.sort((a,b)=>(a.endereco||'').localeCompare(b.endereco||''));tbody.innerHTML='';let contador=0;itens.forEach(item=>{if(item.quantidade>0){contador++;const dEnt=item.dataEntrada?new Date(item.dataEntrada).toLocaleDateString('pt-BR'):'-';tbody.innerHTML+=`<tr style="border-bottom:1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-familia">${item.familia||'-'}</span></td><td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px;color:#888;">${dEnt}</span></td><td>${item.caixas} cx</td><td style="color:var(--volt-green);font-weight:bold;font-size:16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color:var(--blue-action);color:var(--blue-action);margin-right:5px;" onclick="abrirEdicaoInbound('${item.id}','${perfil}')">✏️</button><button class="btn-outline-2" style="border-color:var(--error-red);color:var(--error-red);" onclick="zerarPosicaoEstoque('${item.id}','${perfil}')">✖</button></td></tr>`;}});if(contador===0)tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#888;">Nenhum produto alocado nos endereços ainda.</td></tr>';}catch(e){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--error-red);">Erro ao carregar mapa.</td></tr>';}}
-async function guardarEstoqueNuvem(perfil='Admin'){const fieldAddress=perfil==='Admin'?'inboundAddress':'inboundAddressEstoque';const fieldLot=perfil==='Admin'?'inboundLot':'inboundLotEstoque';const fieldProduct=perfil==='Admin'?'inboundProduct':'inboundProductEstoque';const fieldMultiplier=perfil==='Admin'?'inboundMultiplier':'inboundMultiplierEstoque';const fieldData=perfil==='Admin'?'inboundData':'inboundDataEstoque';const fieldFamilia=perfil==='Admin'?'inboundFamilia':'inboundFamiliaEstoque';const endereco=document.getElementById(fieldAddress).value.trim().toUpperCase();const lote=document.getElementById(fieldLot).value.trim().toUpperCase();const eanBipado=document.getElementById(fieldProduct).value.trim();const mult=parseInt(document.getElementById(fieldMultiplier).value)||1;const dataEnt=document.getElementById(fieldData).value;const fam=document.getElementById(fieldFamilia).value;if(!endereco||!lote||!eanBipado)return alert("Preencha Endereço, Lote e bipe o Produto.");let produtoEncontrado=null;let isMaster=false;for(let prod of catalogoCompleto){if(prod.ean===eanBipado){produtoEncontrado=prod;isMaster=false;break;}if(prod.masterEan&&prod.masterEan===eanBipado){produtoEncontrado=prod;isMaster=true;break;}}if(!produtoEncontrado){document.getElementById(fieldProduct).value='';return alert("Código não encontrado no Catálogo. Cadastre-o primeiro.");}const qtdAdicionar=(isMaster?produtoEncontrado.qtdMaster:1)*mult;const caixasAdicionar=(isMaster?1:0)*mult;document.getElementById(fieldProduct).value='';document.getElementById(fieldProduct).focus();document.getElementById(fieldMultiplier).value='1';try{const docId=`${endereco}_${lote}_${produtoEncontrado.ean}`;const docRef=db.collection("estoque_posicoes").doc(docId);const docSnap=await docRef.get();if(docSnap.exists){await docRef.update({quantidade:firebase.firestore.FieldValue.increment(qtdAdicionar),caixas:firebase.firestore.FieldValue.increment(caixasAdicionar),dataEntrada:dataEnt,familia:fam});}else{await docRef.set({endereco:endereco,lote:lote,ean:produtoEncontrado.ean,sku:produtoEncontrado.sku,quantidade:qtdAdicionar,caixas:caixasAdicionar,dataEntrada:dataEnt,familia:fam,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}carregarMapaEstoque(perfil);}catch(e){alert("Erro ao guardar estoque.");}}
-async function zerarPosicaoEstoque(id,perfil){if(confirm("Tem certeza que deseja apagar este saldo do mapa?")){await db.collection("estoque_posicoes").doc(id).delete();carregarMapaEstoque(perfil);}}
-async function abrirEdicaoInbound(id_doc,perfil){idEditLoteGlobal={id:id_doc,perfil:perfil};try{const doc=await db.collection("estoque_posicoes").doc(id_doc).get();const data=doc.data();document.getElementById('editInboundAddress').value=data.endereco;document.getElementById('editInboundLot').value=data.lote;document.getElementById('editInboundData').value=data.dataEntrada||'';document.getElementById('editInboundFamilia').value=data.familia||'Cabo';document.getElementById('modalEditarInbound').style.display='flex';}catch(e){alert("Erro.");}}
-async function salvarEdicaoInboundNuvem(){const end=document.getElementById('editInboundAddress').value.toUpperCase();const lot=document.getElementById('editInboundLot').value.toUpperCase();const dat=document.getElementById('editInboundData').value;const fam=document.getElementById('editInboundFamilia').value;try{await db.collection("estoque_posicoes").doc(idEditLoteGlobal.id).update({endereco:end,lote:lot,dataEntrada:dat,familia:fam});alert("Dados corrigidos!");document.getElementById('modalEditarInbound').style.display='none';carregarMapaEstoque(idEditLoteGlobal.perfil);}catch(e){alert("Erro.");}}
-
-// ==========================================
-// DASHBOARD E ACESSOS
-// ==========================================
-async function abrirModuloResumoEstoque(){navegarAdmin('adminResumoEstoque');document.getElementById('resumoCx').innerText="...";document.getElementById('resumoUn').innerText="...";document.getElementById('resumoSkus').innerText="...";try{const snapshot=await db.collection("estoque_posicoes").get();let totalCx=0;let totalUn=0;let skusSet=new Set();globalEstoqueData=[];snapshot.forEach(doc=>{const item=doc.data();if(item.quantidade>0){globalEstoqueData.push(item);totalCx+=item.caixas;totalUn+=item.quantidade;skusSet.add(item.sku);}});document.getElementById('resumoCx').innerText=totalCx;document.getElementById('resumoUn').innerText=totalUn;document.getElementById('resumoSkus').innerText=skusSet.size;}catch(e){}}
-function abrirModuloAcessos(){navegarAdmin('adminAcessos');renderizarTabelaAcessosAdmin();}
-function renderizarTabelaAcessosAdmin(){const tbody=document.getElementById('tabelaEquipeUsuarios');tbody.innerHTML='';for(let nome in bdUsuariosLogistica){const user=bdUsuariosLogistica[nome];const isAtivo=(user.status!=='inativo');tbody.innerHTML+=`<tr style="${!isAtivo?'opacity:.5;background:rgba(255,51,51,.05);':''}"><td><strong>${nome}</strong></td><td>${user.funcao||'Equipe'}</td><td><span style="color:var(--volt-green); font-size:11px;">${user.role.toUpperCase()}</span></td><td><span style="color:${isAtivo?'var(--success-green)':'var(--text-muted)'};">${isAtivo?'Ativo':'Desligado'}</span></td><td style="text-align:right;"><button class="btn-outline-2" style="border-color:${isAtivo?'var(--error-red)':'var(--success-green)'};color:${isAtivo?'var(--error-red)':'var(--success-green)'};" onclick="toggleStatusUsuarioNuvem('${nome}',${isAtivo})">${isAtivo?'Desligar':'Reativar'}</button></td></tr>`;}}
-async function toggleStatusUsuarioNuvem(nome,isAtivo){if(isAtivo&&!confirm(`Desativar ${nome}?`))return;try{await db.collection("usuarios").doc(nome).update({status:isAtivo?'inativo':'ativo'});await carregarUsuariosDaNuvem();renderizarTabelaAcessosAdmin();}catch(error){}}
-async function salvarNovoUsuario(){const nome=document.getElementById('novoNome').value.trim();const funcao=document.getElementById('novoFuncao').value.trim();const role=document.getElementById('novoRole').value;const senha=document.getElementById('novoSenha').value.trim();if(!nome||!senha)return alert("Preencha Nome e Senha.");try{await db.collection("usuarios").doc(nome).set({role:role,senha:senha,status:'ativo',funcao:funcao||'Auditor'});alert(`✅ Perfil gerado!`);document.getElementById('modalNovoUsuario').style.display='none';await carregarUsuariosDaNuvem();renderizarTabelaAcessosAdmin();}catch(error){}}
+async function loadMural(){try{const m=await db.collection("informacoes").doc("mural").get();if(m.exists&&document.getElementById('txtAvisos'))document.getElementById('txtAvisos').value=m.data().texto;const d=await db.collection("informacoes").doc("diario").get();if(d.exists&&document.getElementById('txtDiario'))document.getElementById('txtDiario').value=d.data().texto;}catch(e){}}
 </script>
+</body>
+</html>
