@@ -1,293 +1,384 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VOLT RH & Auditoria</title><link rel="icon" type="image/png" href="icone_volt.png">
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<style>
-:root{--bg:#0d0d0d;--card:#161616;--volt:#c4f000;--text:#fff;--muted:#888;--border:#2a2a2a;--red:#ff3333;--green:#00cc66;--yellow:#ffcc00;--blue:#00aaff;}
-body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
-.container{width:100%;max-width:1150px;padding:20px;box-sizing:border-box;}
-.view,.screen{display:none;animation:fadeIn .3s;}.view.active,.screen.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;}
-.card{background:linear-gradient(145deg,#161616,#0a0a0a);border:1px solid #2a2a2a;border-top:2px solid #333;border-radius:12px;padding:25px;cursor:pointer;transition:.3s;display:flex;flex-direction:column;min-height:130px;}
-.card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.5);}
-.card h3{margin:0 0 10px 0;font-size:18px;} .card p{color:var(--muted);font-size:13px;flex-grow:1;} .card .act{font-size:12px;font-weight:bold;text-transform:uppercase;}
-.c-blue{border-top-color:var(--blue);}.c-blue .act{color:var(--blue);}.c-green{border-top-color:var(--volt);}.c-green .act{color:var(--volt);}
-.c-yellow{border-top-color:var(--yellow);}.c-yellow .act{color:var(--yellow);}.c-neutral{border-top-color:#555;}.c-neutral .act{color:#aaa;}
-.header{width:100%;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#000;box-sizing:border-box;}
-.logo{font-size:24px;font-weight:900;color:var(--text);cursor:pointer;}.logo span{color:var(--volt);}
-.btn{padding:12px 20px;background:var(--volt);color:#000;border:none;border-radius:6px;font-weight:bold;cursor:pointer;text-transform:uppercase;transition:.2s;width:100%;}
-.btn:hover{opacity:.9;transform:scale(1.02);}.btn-out{background:transparent;border:1px solid var(--muted);color:var(--text);padding:8px 15px;border-radius:4px;cursor:pointer;font-size:12px;text-transform:uppercase;}
-.form-grp{margin-bottom:15px;}.form-grp label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
-.inp{width:100%;padding:12px;background:#050505;border:1px solid var(--border);color:white;border-radius:6px;box-sizing:border-box;} .inp:focus{border-color:var(--volt);outline:none;}
-.inp-bip{width:100%;padding:15px;font-size:20px;background:#000;border:1px solid var(--border);color:var(--volt);border-radius:8px;box-sizing:border-box;}
-.mod-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:25px;margin-bottom:20px;}
-.mod-hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:15px;margin-bottom:20px;}.mod-hdr h2{margin:0;color:var(--volt);font-size:22px;}
-table{width:100%;border-collapse:collapse;margin-top:10px;} th,td{border-bottom:1px solid var(--border);padding:12px 10px;text-align:left;font-size:13px;} th{color:var(--muted);text-transform:uppercase;}
-.tbl-wrap{background:#0a0a0a;border:1px solid #222;border-radius:8px;overflow-x:auto;} .tbl-wrap th{background:#050505;border-bottom:2px solid #222;}
-.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:2000;align-items:center;justify-content:center;}
-.senha-box{background:var(--card);padding:30px;border-radius:12px;border:1px solid var(--volt);text-align:center;width:300px;}
-.relogio-box{background:#000;border:2px solid #333;padding:40px;border-radius:50%;width:220px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 30px;box-shadow:inset 0 0 30px rgba(0,0,0,.8);}
-.hora{font-size:42px;font-family:monospace;font-weight:bold;color:var(--volt);margin:0;text-shadow:0 0 15px rgba(196,240,0,.3);} .data{font-size:12px;color:#888;margin-top:5px;}
-.btn-p{padding:15px;font-weight:bold;border-radius:8px;border:1px solid;cursor:pointer;text-transform:uppercase;width:100%;background:rgba(0,0,0,.5);}
-.b-in{border-color:var(--green);color:var(--green);}.b-in:hover{background:var(--green);color:#000;} .b-out{border-color:var(--red);color:var(--red);}.b-out:hover{background:var(--red);color:#000;} .b-brk{border-color:var(--yellow);color:var(--yellow);}.b-brk:hover{background:var(--yellow);color:#000;}
-.badge{padding:4px 8px;border-radius:4px;font-size:11px;font-weight:bold;background:#222;} .bg-red{color:var(--red);background:rgba(255,51,51,.1);} .bg-green{color:var(--green);background:rgba(0,204,102,.1);} .bg-blue{color:var(--blue);background:rgba(0,170,255,.1);}
-</style>
-</head>
-<body>
-
-<div class="header">
-    <div class="logo" onclick="vHome()">VOLT<span>RH</span></div>
-    <div style="display:flex;gap:15px;align-items:center;">
-        <span id="hUser" style="color:var(--muted);font-size:14px;">Log in</span>
-        <button class="btn-out" id="bSair" style="display:none;border-color:var(--red);color:var(--red);" onclick="logout()">Sair</button>
-    </div>
-</div>
-
-<div id="mSenha" class="overlay">
-    <div class="senha-box"><h3 id="nLogin" style="margin-top:0;">Acesso</h3><input type="password" id="iSenha" class="inp" placeholder="Senha..." autofocus><p id="eSenha" style="color:var(--red);font-size:12px;display:none;">Senha incorreta.</p><div style="margin-top:20px;display:flex;gap:10px;"><button class="btn-out" style="flex:1;" onclick="document.getElementById('mSenha').style.display='none'">Cancelar</button><button class="btn" style="flex:1;padding:10px;" onclick="confLogin()">Entrar</button></div></div>
-</div>
-
-<div class="container">
-    <div id="vLog" class="view active">
-        <h2 style="text-align:center;margin-bottom:30px;">Acesso ao Sistema</h2>
-        <div class="grid-3" id="gUsers" style="max-width:800px;margin:0 auto;"></div>
-    </div>
-
-    <!-- VISÃO GESTOR (ADMIN) -->
-    <div id="vAdm" class="view">
-        <div id="aDash" class="screen active">
-            <div style="text-align:center;margin-bottom:30px;"><h1 style="margin:0;">Painel de Gestão - <span style="color:var(--volt);" id="txtGestor">Gestor</span></h1></div>
-            
-            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;">Gestão de Pessoas (RH)</h3>
-            <div class="grid-3" style="margin-bottom:30px;">
-                <div class="card c-blue" onclick="nav('aPonto')"><h3>⏱️ Folha de Ponto</h3><p>Audite os horários de entrada, pausas e saídas da equipa.</p><div class="act">Acessar</div></div>
-                <div class="card c-yellow" onclick="nav('aAjustes')"><h3>⚠️ Ajustes Pendentes</h3><p>Aprove correções de horários solicitadas pelos operadores.</p><div class="act">Ver Fila</div></div>
-                <div class="card c-green" onclick="nav('aMural')"><h3>📢 Mural & Diário</h3><p>Registe feedbacks da liderança e publique avisos globais.</p><div class="act">Gerenciar</div></div>
-            </div>
-
-            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;">Auditoria de Estoque (WMS)</h3>
-            <div class="grid-3">
-                <div class="card c-red" onclick="nav('aDiverg')"><h3>🔍 Furos de Estoque</h3><p>Aprove ou corrija as divergências apontadas nas contagens cegas.</p><div class="act" style="color:var(--red);">Auditar</div></div>
-                <div class="card c-neutral" onclick="nav('aInbound')"><h3>📥 Inbound (Recebimento)</h3><p>Guarde as mercadorias físicas que chegaram no galpão.</p><div class="act">Alocar</div></div>
-                <div class="card c-neutral" onclick="nav('aCat')"><h3>🏷️ Catálogo Base</h3><p>Gira os SKUs e códigos EAN da operação.</p><div class="act">Configurar</div></div>
-            </div>
-            <div style="text-align:center;margin-top:30px;"><button class="btn-out" onclick="mudarView('vOp');nav('oDash');">⟵ Visão Operacional (Bater Ponto)</button></div>
-        </div>
-
-        <div id="aPonto" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Folha de Ponto Digital</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div style="display:flex;gap:10px;margin-bottom:15px;"><input type="date" id="fDataPonto" class="inp" style="max-width:200px;margin:0;" onchange="loadPonto()"></div><div class="tbl-wrap"><table><thead><tr><th>Nome</th><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th></tr></thead><tbody id="tbPonto"></tbody></table></div></div></div>
-        <div id="aAjustes" class="screen"><div class="mod-box" style="border-color:var(--yellow);"><div class="mod-hdr"><h2 style="color:var(--yellow);">Solicitações de Ajuste (RH)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="tbl-wrap"><table><thead><tr><th>Data Solicitada</th><th>Colaborador</th><th>Motivo / Descrição</th><th>Ação</th></tr></thead><tbody id="tbAjustes"></tbody></table></div></div></div>
-        <div id="aMural" class="screen"><div class="grid-2"><div class="mod-box"><div class="mod-hdr"><h2>Mural de Avisos (Público)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><textarea id="txtAvisos" class="inp" rows="6" placeholder="Escreva avisos, feriados ou escalas aqui..."></textarea><button class="btn" style="margin-top:10px;" onclick="salvarInfo('mural')">Publicar Mural</button></div><div class="mod-box" style="border-color:var(--blue);"><div class="mod-hdr"><h2 style="color:var(--blue);">Diário de Liderança (Privado)</h2></div><textarea id="txtDiario" class="inp" rows="6" placeholder="Registe feedbacks, ocorrências ou notas sobre a equipa..."></textarea><button class="btn" style="background:var(--blue);margin-top:10px;" onclick="salvarInfo('diario')">Gravar Nota</button></div></div></div>
-        <div id="aDiverg" class="screen"><div class="mod-box" style="border-color:var(--red);"><div class="mod-hdr"><h2 style="color:var(--red);">Divergências de Inventário</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="tbl-wrap"><table><thead><tr><th>Data/Auditor</th><th>Endereço</th><th>SKU</th><th>Sistema</th><th>Físico</th><th>Ação</th></tr></thead><tbody id="tbDiverg"></tbody></table></div></div></div>
-        <div id="aInbound" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Inbound (Alocar Mercadoria)</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="grid-2"><div><div class="form-grp"><label>1. Endereço</label><input type="text" id="inEnd" class="inp-bip" style="text-transform:uppercase;"></div><div class="form-grp"><label>2. Lote</label><input type="text" id="inLot" class="inp-bip" style="text-transform:uppercase;"></div></div><div><div class="form-grp"><label>3. Qtd Caixas</label><input type="number" id="inQtd" class="inp" value="1"></div><div class="form-grp"><label>4. Bipar EAN/SKU</label><input type="text" id="inSku" class="inp-bip" onkeypress="if(event.key==='Enter') saveInbound()"></div><button class="btn" onclick="saveInbound()">Guardar Estoque</button></div></div><h3 style="margin-top:30px;color:var(--volt);">Mapa de Estoque Recente</h3><div class="tbl-wrap"><table><thead><tr><th>Endereço</th><th>SKU</th><th>Lote</th><th>Unidades</th><th>Ação</th></tr></thead><tbody id="tbEstoque"></tbody></table></div></div></div>
-        <div id="aCat" class="screen"><div class="mod-box"><div class="mod-hdr"><h2>Catálogo de SKUs</h2><button class="btn-out" onclick="nav('aDash')">Voltar</button></div><div class="grid-4" style="margin-bottom:20px;align-items:end;"><div class="form-grp" style="margin:0;"><label>SKU</label><input type="text" id="cSku" class="inp" style="text-transform:uppercase;"></div><div class="form-grp" style="margin:0;"><label>EAN Unitário</label><input type="text" id="cEan" class="inp"></div><div class="form-grp" style="margin:0;"><label>Qtd na Master</label><input type="number" id="cQtd" class="inp" value="100"></div><button class="btn" style="height:42px;" onclick="saveCat()">Adicionar</button></div><div class="tbl-wrap"><table><thead><tr><th>SKU</th><th>EAN</th><th>Qtd/Master</th></tr></thead><tbody id="tbCat"></tbody></table></div></div></div>
-    </div>
-
-    <!-- VISÃO OPERADOR -->
-    <div id="vOp" class="view">
-        <div id="oDash" class="screen active">
-            <div style="text-align:center;margin-bottom:30px;"><h1 style="margin:0;color:white;">Central do Colaborador</h1></div>
-            <div class="grid-2">
-                <div class="card c-blue" style="align-items:center;" onclick="nav('oPonto')"><div style="font-size:36px;margin-bottom:10px;">⏱️</div><h3 style="color:var(--blue);">Relógio de Ponto</h3><p>Registar entradas e saídas.</p></div>
-                <div class="card c-yellow" style="align-items:center;" onclick="nav('oAjuste')"><div style="font-size:36px;margin-bottom:10px;">📝</div><h3 style="color:var(--yellow);">Solicitar Ajuste</h3><p>Esqueceu de bater o ponto?</p></div>
-            </div>
-            <h3 style="border-bottom:1px solid #333;padding-bottom:10px;margin-top:30px;">Auditoria de Estoque</h3>
-            <div class="grid-2">
-                <div class="card c-green" onclick="nav('oContagem')"><h3>🔍 Contagem Cega</h3><p>Vá à prateleira e insira a contagem real.</p><div class="act" style="color:var(--volt);">Iniciar Auditoria ➔</div></div>
-                <div class="card c-neutral" onclick="nav('aInbound')"><h3>📥 Inbound Direto</h3><p>Guardar mercadoria rapidamente.</p><div class="act">Abrir ➔</div></div>
-            </div>
-            <div id="bAdmWrap" style="display:none;text-align:center;margin-top:30px;"><button class="btn-out" onclick="mudarView('vAdm');nav('aDash');">⟵ Retornar Visão Gestor</button></div>
-        </div>
-
-        <div id="oPonto" class="screen">
-            <div class="mod-hdr" style="border:none;margin-bottom:0;"><button class="btn-out" style="border:none;" onclick="nav('oDash')">⟵ Voltar</button></div>
-            <div class="mod-box" style="text-align:center;border-color:var(--blue);padding:40px 20px;">
-                <h2 style="margin-top:0;color:var(--blue);margin-bottom:30px;">Ponto Eletrónico</h2>
-                <div class="relogio-box"><div class="hora" id="rHora">00:00:00</div><div class="data" id="rData">--</div></div>
-                <div style="max-width:350px;margin:0 auto;display:flex;flex-direction:column;gap:15px;">
-                    <button class="btn-p b-in" onclick="baterPonto('Entrada')">📍 Entrada</button>
-                    <div class="grid-2" style="gap:15px;"><button class="btn-p b-brk" onclick="baterPonto('Saida Almoco')">🍕 Saída Almoço</button><button class="btn-p b-brk" style="border-color:var(--blue);color:var(--blue);" onclick="baterPonto('Volta Almoco')">🔄 Volta Almoço</button></div>
-                    <button class="btn-p b-out" onclick="baterPonto('Saida')">🏠 Fim de Expediente</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="oAjuste" class="screen">
-            <div class="mod-box" style="border-color:var(--yellow);max-width:500px;margin:0 auto;">
-                <div class="mod-hdr"><h2 style="color:var(--yellow);">Solicitar Ajuste</h2><button class="btn-out" onclick="nav('oDash')">Voltar</button></div>
-                <div class="form-grp"><label>Data do Ocorrido</label><input type="date" id="ajData" class="inp"></div>
-                <div class="form-grp"><label>Motivo do Ajuste (Qual horário esqueceu?)</label><textarea id="ajMotivo" class="inp" rows="4" placeholder="Ex: Esqueci de bater a saída do almoço. Retornei às 13:30."></textarea></div>
-                <button class="btn" style="background:var(--yellow);color:#000;" onclick="enviarAjuste()">Enviar Pedido</button>
-            </div>
-        </div>
-
-        <div id="oContagem" class="screen">
-            <div class="mod-box" style="max-width:500px;margin:0 auto;border-color:var(--volt);">
-                <div class="mod-hdr"><h2>Auditoria de Posição</h2><button class="btn-out" onclick="nav('oDash')">Voltar</button></div>
-                <div class="form-grp"><label>1. Bipar Endereço</label><input type="text" id="auEnd" class="inp-bip" style="text-transform:uppercase;"></div>
-                <div class="form-grp"><label>2. Bipar Produto (EAN/SKU)</label><input type="text" id="auProd" class="inp-bip"></div>
-                <div class="form-grp"><label>3. Quantidade Física Real</label><input type="number" id="auQtd" class="inp-bip" placeholder="0"></div>
-                <button class="btn" style="margin-top:10px;padding:20px;font-size:18px;" onclick="enviarAuditoria()">Gravar Contagem</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
 // ==========================================
-// LÓGICA CORE: NAVEGAÇÃO E DADOS
+// FUNÇÕES DE SISTEMA, NAVEGAÇÃO E LOGIN
 // ==========================================
-const fbc={apiKey:"AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU",authDomain:"hub-volt.firebaseapp.com",projectId:"hub-volt"};
-let db=null; try{firebase.initializeApp(fbc);db=firebase.firestore();}catch(e){}
+function voltarAoDash(){if(papelLogado==='admin'){mudarViewLayerGlobal('viewAdmin');navegarAdmin('adminDash');}else{mudarViewLayerGlobal('viewEstoque');navegarEstoque('estoqueDash');}}
+function mudarViewLayerGlobal(viewId){document.querySelectorAll('.view-layer').forEach(el=>el.classList.remove('active'));const target=document.getElementById(viewId);if(target)target.classList.add('active');}
+function navegarAdmin(subScreenId){document.querySelectorAll('#viewAdmin .sub-screen').forEach(el=>el.classList.remove('active'));const target=document.getElementById(subScreenId);if(target)target.classList.add('active');}
+function navegarEstoque(subScreenId){document.querySelectorAll('#viewEstoque .sub-screen').forEach(el=>el.classList.remove('active'));const target=document.getElementById(subScreenId);if(target)target.classList.add('active');}
+function voltarLogoHome(){if(usuarioLogado)voltarAoDash();}
 
-let users={'Lucas':{role:'admin',senha:'123'},'Bruna':{role:'admin',senha:'123'},'Rafael':{role:'admin',senha:'123'},'Gabriel':{role:'estoque',senha:'123'},'Nathan':{role:'estoque',senha:'123'}};
-let uLog=null, pLog=null, uTemp=null, cat=[];
+let bdUsuariosLogistica={}; let usuarioLogado=null; let papelLogado=null; let usuarioSelecionadoTemp=null; let catalogoCompleto=[]; let globalEstoqueData=[]; let idEditLoteGlobal=null;
 
-window.onload=()=>{
-    loadUsers(); buildLogin();
-    setInterval(tick, 1000);
-    const d=new Date().toISOString().split('T')[0];
-    if(document.getElementById('fDataPonto')) document.getElementById('fDataPonto').value=d;
-    if(document.getElementById('ajData')) document.getElementById('ajData').value=d;
-    if(localStorage.getItem('hUser')){
-        uLog=localStorage.getItem('hUser'); pLog=localStorage.getItem('hRole');
-        authSuccess();
-    }
-    setTimeout(()=>{loadCat(); loadMural();}, 800);
+// FIREBASE INIT
+const firebaseConfig={apiKey:"AIzaSyCgNHJzro7Odo_aLjpSXxzodQWJr3RzWhU",authDomain:"hub-volt.firebaseapp.com",projectId:"hub-volt",storageBucket:"hub-volt.firebasestorage.app",messagingSenderId:"483817757628",appId:"1:483817757628:web:076e4aa5f16ffcab00e9b9"};
+let db=null; try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();}catch(e){console.log(e);}
+
+window.onload=function(){
+    // Mostra mensagem de carregamento enquanto busca no Firebase
+    const gridUsuarios = document.getElementById('gridUsuariosLogin');
+    if(gridUsuarios) gridUsuarios.innerHTML = '<p style="color:var(--volt-green); grid-column: span 4; text-align: center;">Conectando ao Firebase e buscando usuários...</p>';
+    
+    const today=new Date().toISOString().split('T')[0];
+    if(document.getElementById('inboundData'))document.getElementById('inboundData').value=today;
+    if(document.getElementById('inboundDataEstoque'))document.getElementById('inboundDataEstoque').value=today;
+    if(document.getElementById('filtroDataPonto'))document.getElementById('filtroDataPonto').value=today;
+
+    setTimeout(()=>{if(db){carregarUsuariosDaNuvem();inicializarCatalogoMestre();}},500);
+    setInterval(atualizarRelogioPonto, 1000); // Relógio rodando a cada segundo
 };
 
-function tick(){
-    const elH=document.getElementById('rHora'), elD=document.getElementById('rData'); if(!elH)return;
-    const d=new Date(); elH.innerText=d.toLocaleTimeString('pt-BR');
-    elD.innerText=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'long'}).toUpperCase();
+function verificarLoginSalvo() {
+    const savedUser=localStorage.getItem('hubVoltUser'); const savedRole=localStorage.getItem('hubVoltRole');
+    if(savedUser&&savedRole&&bdUsuariosLogistica[savedUser]){
+        usuarioLogado=savedUser;papelLogado=savedRole;
+        document.getElementById('headerNomeUser').innerHTML=`Usuário: <strong style="color:white;">${usuarioLogado}</strong>`;
+        document.getElementById('btnSair').style.display='block'; document.getElementById('modalSenha').style.display='none';
+        if(papelLogado==='admin'){const wrap=document.getElementById('btnVoltarAdminWrapper');if(wrap)wrap.style.display='block';}
+        atualizarSaudacao(); mudarViewLayerGlobal(papelLogado==='admin'?'viewAdmin':'viewEstoque');
+    }
 }
 
-function mudarView(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));document.getElementById(v).classList.add('active');}
-function nav(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));document.getElementById(s).classList.add('active');if(s==='aPonto')loadPonto();if(s==='aAjustes')loadAjustes();if(s==='aDiverg')loadDiverg();if(s==='aInbound')loadMap();}
-function vHome(){if(uLog){if(pLog==='admin'){mudarView('vAdm');nav('aDash');}else{mudarView('vOp');nav('oDash');}}}
-
-function buildLogin(){const g=document.getElementById('gUsers');g.innerHTML='';for(let n in users){g.innerHTML+=`<div class="card" style="align-items:center;min-height:auto;" onclick="opnLogin('${n}')"><div class="user-avatar">${n[0]}</div><h3 style="margin:5px 0;">${n}</h3><span class="badge ${users[n].role==='admin'?'bg-blue':'bg-green'}">${users[n].role.toUpperCase()}</span></div>`;}}
-async function loadUsers(){try{const s=await db.collection("usuarios").get();if(!s.empty){users={};s.forEach(d=>users[d.id]=d.data());buildLogin();}}catch(e){}}
-function opnLogin(n){uTemp=n;document.getElementById('nLogin').innerText=`Acesso: ${n}`;document.getElementById('iSenha').value='';document.getElementById('eSenha').style.display='none';document.getElementById('mSenha').style.display='flex';setTimeout(()=>document.getElementById('iSenha').focus(),100);}
-function confLogin(){if(document.getElementById('iSenha').value===users[uTemp].senha){uLog=uTemp;pLog=users[uTemp].role;localStorage.setItem('hUser',uLog);localStorage.setItem('hRole',pLog);document.getElementById('mSenha').style.display='none';authSuccess();}else{document.getElementById('eSenha').style.display='block';}}
-document.getElementById('iSenha').addEventListener('keypress',e=>{if(e.key==='Enter')confLogin();});
-function logout(){localStorage.clear();location.reload();}
-function authSuccess(){
-    document.getElementById('hUser').innerHTML=`<strong style="color:white;">${uLog}</strong>`;document.getElementById('bSair').style.display='block';
-    if(pLog==='admin'){document.getElementById('txtGestor').innerText=uLog;document.getElementById('bAdmWrap').style.display='block';mudarView('vAdm');nav('aDash');}else{mudarView('vOp');nav('oDash');}
-}
-
-// ==========================================
-// MÓDULO RH: PONTO E AJUSTES
-// ==========================================
-async function baterPonto(tipo){
-    if(!uLog) return; const d=new Date(); const dtIso=d.toISOString().split('T')[0]; const hr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); const docId=`${uLog}_${dtIso}`;
-    try{
-        const r=db.collection("rh_ponto").doc(docId); const sn=await r.get(); let pay={};
-        if(tipo==='Entrada'){if(sn.exists&&sn.data().ent)return alert("Entrada já registada hoje!");pay={nome:uLog,data:dtIso,ent:hr,ts:firebase.firestore.FieldValue.serverTimestamp()};}
-        else if(tipo==='Saida Almoco') pay={sAlm:hr}; else if(tipo==='Volta Almoco') pay={vAlm:hr}; else if(tipo==='Saida') pay={sai:hr};
-        await r.set(pay,{merge:true}); alert(`✅ ${tipo} registada às ${hr}`); vHome();
-    }catch(e){alert("Erro ao bater ponto.");}
-}
-
-async function loadPonto(){
-    const dt=document.getElementById('fDataPonto').value; const tb=document.getElementById('tbPonto'); if(!dt)return;
-    tb.innerHTML='<tr><td colspan="6" style="text-align:center;">Buscando...</td></tr>';
-    try{
-        const sn=await db.collection("rh_ponto").where("data","==",dt).get(); tb.innerHTML=''; let c=0;
-        sn.forEach(doc=>{c++; const p=doc.data(); tb.innerHTML+=`<tr><td><strong style="color:white;">${p.nome}</strong></td><td><span class="badge">${p.data}</span></td><td style="color:var(--green);font-weight:bold;">${p.ent||'--:--'}</td><td style="color:var(--yellow);">${p.sAlm||'--:--'}</td><td style="color:var(--yellow);">${p.vAlm||'--:--'}</td><td style="color:var(--red);font-weight:bold;">${p.sai||'--:--'}</td></tr>`;});
-        if(c===0)tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;">Sem registos.</td></tr>';
-    }catch(e){}
-}
-
-async function enviarAjuste(){
-    const dt=document.getElementById('ajData').value; const mot=document.getElementById('ajMotivo').value.trim(); if(!dt||!mot) return alert("Preencha todos os campos.");
-    try{ await db.collection("rh_ajustes").add({nome:uLog,data:dt,motivo:mot,status:'pendente',ts:firebase.firestore.FieldValue.serverTimestamp()}); alert("Pedido de ajuste enviado à gestão."); document.getElementById('ajMotivo').value=''; vHome(); }catch(e){}
-}
-
-async function loadAjustes(){
-    const tb=document.getElementById('tbAjustes'); tb.innerHTML='<tr><td colspan="4">Buscando...</td></tr>';
-    try{
-        const sn=await db.collection("rh_ajustes").where("status","==","pendente").get(); tb.innerHTML=''; let c=0;
-        sn.forEach(d=>{c++; const a=d.data(); tb.innerHTML+=`<tr><td><span class="badge">${a.data}</span></td><td><strong style="color:white;">${a.nome}</strong></td><td>${a.motivo}</td><td><button class="btn-out" style="border-color:var(--green);color:var(--green);margin-right:5px;" onclick="updAjuste('${d.id}','ok')">✔ Tratado</button></td></tr>`;});
-        if(c===0)tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:#888;">Sem pendências.</td></tr>';
-    }catch(e){}
-}
-async function updAjuste(id, st){await db.collection("rh_ajustes").doc(id).update({status:st}); loadAjustes();}
-
-// ==========================================
-// MÓDULO WMS: AUDITORIA E INBOUND
-// ==========================================
-async function loadCat(){try{const s=await db.collection("catalogo").get();s.forEach(d=>cat.push(d.data()));}catch(e){}}
-async function saveCat(){const s=document.getElementById('cSku').value.toUpperCase().trim(); const e=document.getElementById('cEan').value.trim(); const q=parseInt(document.getElementById('cQtd').value)||100; if(!s||!e)return; try{await db.collection("catalogo").doc(e).set({sku:s,ean:e,qtd:q});alert("SKU Adicionado!");document.getElementById('cSku').value='';document.getElementById('cEan').value='';cat.push({sku:s,ean:e,qtd:q});}catch(er){}}
-
-async function saveInbound(){
-    const en=document.getElementById('inEnd').value.toUpperCase().trim(); const lo=document.getElementById('inLot').value.toUpperCase().trim(); const cx=parseInt(document.getElementById('inQtd').value)||1; const b=document.getElementById('inSku').value.trim();
-    if(!en||!lo||!b) return alert("Preencha Endereço, Lote e Bipe o EAN.");
-    let p=cat.find(x=>x.ean===b||x.sku===b.toUpperCase()); if(!p) return alert("EAN/SKU não encontrado no Catálogo.");
-    const id=`${en}_${lo}_${p.ean}`; const qT=p.qtd*cx;
-    try{
-        const rf=db.collection("estoque").doc(id); const sn=await rf.get();
-        if(sn.exists) await rf.update({qtd:firebase.firestore.FieldValue.increment(qT),cxs:firebase.firestore.FieldValue.increment(cx)}); else await rf.set({end:en,lote:lo,sku:p.sku,ean:p.ean,qtd:qT,cxs:cx,ts:new Date().toISOString()});
-        document.getElementById('inSku').value=''; document.getElementById('inSku').focus(); loadMap();
-    }catch(e){alert("Erro ao alocar.");}
-}
-async function loadMap(){
-    const tb=document.getElementById('tbEstoque'); if(!tb)return; tb.innerHTML='';
-    try{
-        const sn=await db.collection("estoque").get(); let i=[]; sn.forEach(d=>i.push({id:d.id,...d.data()})); i.sort((a,b)=>a.end.localeCompare(b.end));
-        i.forEach(x=>{if(x.qtd>0) tb.innerHTML+=`<tr><td><span class="badge">${x.end}</span></td><td><strong style="color:white;">${x.sku}</strong></td><td><span class="badge" style="background:#222;">${x.lote}</span></td><td style="color:var(--volt);font-weight:bold;">${x.qtd} un</td><td><button class="btn-out" style="border-color:var(--red);color:var(--red);padding:4px 8px;" onclick="delEstoque('${x.id}')">✖</button></td></tr>`;});
-    }catch(e){}
-}
-async function delEstoque(id){if(confirm("Apagar saldo?")){await db.collection("estoque").doc(id).delete();loadMap();}}
-
-async function enviarAuditoria(){
-    const en=document.getElementById('auEnd').value.toUpperCase().trim(); const pd=document.getElementById('auProd').value.trim(); const qf=parseInt(document.getElementById('auQtd').value);
-    if(!en||!pd||isNaN(qf)) return alert("Preencha tudo."); let p=cat.find(x=>x.ean===pd||x.sku===pd.toUpperCase()); if(!p) return alert("Produto não reconhecido.");
-    try{
-        const sn=await db.collection("estoque").where("end","==",en).where("sku","==",p.sku).get(); let qS=0; sn.forEach(m=>qS+=m.data().qtd);
-        await db.collection("auditoria").add({nome:uLog,end:en,sku:p.sku,qSis:qS,qFis:qf,diff:(qS!==qf),ts:new Date().toISOString(),st:(qS!==qf)?'pend':'ok'});
-        if(qS===qf) alert(`✅ Exato! Sistema: ${qS}`); else alert(`⚠️ DIVERGÊNCIA! Sistema esperava ${qS}. Gravado para análise.`);
-        document.getElementById('auProd').value=''; document.getElementById('auQtd').value=''; document.getElementById('auProd').focus();
-    }catch(e){}
-}
-
-async function loadDiverg(){
-    const tb=document.getElementById('tbDiverg'); tb.innerHTML='<tr><td colspan="6">Buscando...</td></tr>';
-    try{
-        const sn=await db.collection("auditoria").where("st","==","pend").get(); tb.innerHTML=''; let c=0;
-        sn.forEach(d=>{c++; const a=d.data(); let bdg=a.qFis>a.qSis?`<span class="bg-green badge">+${a.qFis-a.qSis}</span>`:`<span class="bg-red badge">${a.qFis-a.qSis}</span>`; tb.innerHTML+=`<tr><td><strong style="color:white;">${a.nome}</strong></td><td><span class="badge">${a.end}</span></td><td><strong style="color:white;">${a.sku}</strong></td><td>${a.qSis}</td><td style="color:var(--yellow);font-weight:bold;">${a.qFis} ${bdg}</td><td><button class="btn-out" style="border-color:var(--volt);color:var(--volt);margin-right:5px;" onclick="ajustarDiv('${d.id}','${a.end}','${a.sku}',${a.qSis},${a.qFis})">Ajustar</button><button class="btn-out" style="border-color:var(--muted);color:var(--muted);" onclick="ignorarDiv('${d.id}')">Ignorar</button></td></tr>`;});
-        if(c===0) tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;">Sem divergências.</td></tr>';
-    }catch(e){}
-}
-async function ignorarDiv(id){await db.collection("auditoria").doc(id).update({st:'ignorado'});loadDiverg();}
-async function ajustarDiv(id,en,sku,qs,qf){
-    if(!confirm(`Ajustar saldo para ${qf}?`))return; const df=qf-qs; let p=cat.find(x=>x.sku===sku);
-    try{
-        const sn=await db.collection("estoque").where("end","==",en).where("sku","==",sku).get();
-        if(df>0){
-            if(!sn.empty) await db.collection("estoque").doc(sn.docs[0].id).update({qtd:firebase.firestore.FieldValue.increment(df)});
-            else await db.collection("estoque").doc(`${en}_AJUSTE_${p.ean}`).set({end:en,lote:'AJUSTE',sku:sku,ean:p.ean,qtd:df,cxs:1,ts:new Date().toISOString()});
-        }else if(df<0){
-            let f=Math.abs(df); for(let m of sn.docs){if(f<=0)break; let d=m.data(); let ab=Math.min(f,d.qtd); f-=ab; if(d.qtd===ab) await db.collection("estoque").doc(m.id).delete(); else await db.collection("estoque").doc(m.id).update({qtd:firebase.firestore.FieldValue.increment(-ab)});}
+function renderLoginGrid(){
+    const grid=document.getElementById('gridUsuariosLogin');if(!grid)return;grid.innerHTML='';
+    for(let nome in bdUsuariosLogistica){
+        const user=bdUsuariosLogistica[nome];
+        if(user.status!=='inativo'){
+            const isEstoque=user.role==='estoque';const colorCor=isEstoque?'white':'var(--volt-green)';const borderCor=isEstoque?'#444':'var(--border-color)';const badgeCor=isEstoque?'#888':'var(--volt-green)';
+            grid.innerHTML+=`<div class="user-card" onclick="abrirModalSenha('${nome}')"><div class="user-avatar" style="color:${colorCor};border-color:${borderCor};">${nome.charAt(0)}</div><h3 style="margin:0;margin-top:10px;">${nome}</h3><span style="font-size:11px;color:${badgeCor};">${isEstoque?'ESTOQUE / AUDITOR':'ADMINISTRADOR'}</span></div>`;
         }
-        await db.collection("auditoria").doc(id).update({st:'ajustado'}); alert("✅ Saldo Corrigido!"); loadDiverg();
-    }catch(e){}
+    }
+}
+
+async function carregarUsuariosDaNuvem(){
+    try{
+        const snapshot=await db.collection("usuarios").get();
+        if(!snapshot.empty){
+            let tempBd={};
+            snapshot.forEach((doc)=>{tempBd[doc.id]=doc.data();});
+            bdUsuariosLogistica=tempBd;
+            renderLoginGrid();
+            verificarLoginSalvo(); // Só verifica o login automático DEPOIS de carregar as senhas
+        } else {
+            document.getElementById('gridUsuariosLogin').innerHTML = '<p style="color:#888; grid-column: span 4; text-align: center;">Nenhum usuário cadastrado no sistema.</p>';
+        }
+    }catch(error){
+        document.getElementById('gridUsuariosLogin').innerHTML = '<p style="color:var(--error-red); grid-column: span 4; text-align: center;">Erro de conexão com o banco de dados.</p>';
+    }
+}
+
+function abrirModalSenha(nome){usuarioSelecionadoTemp=nome;document.getElementById('nomeLogin').innerText=`Acesso: ${nome}`;document.getElementById('inputSenha').value='';document.getElementById('erroSenha').style.display='none';document.getElementById('modalSenha').style.display='flex';setTimeout(()=>document.getElementById('inputSenha').focus(),150);}
+function fecharSenhaModal(){document.getElementById('modalSenha').style.display='none';}
+
+function confirmarLogin(){
+    const senha=document.getElementById('inputSenha').value;const credencial=bdUsuariosLogistica[usuarioSelecionadoTemp];
+    if(credencial&&senha===credencial.senha){
+        usuarioLogado=usuarioSelecionadoTemp;papelLogado=credencial.role;
+        localStorage.setItem('hubVoltUser',usuarioLogado);localStorage.setItem('hubVoltRole',papelLogado);
+        document.getElementById('headerNomeUser').innerHTML=`Usuário: <strong style="color:white;">${usuarioLogado}</strong>`;
+        document.getElementById('btnSair').style.display='block';
+        if(papelLogado==='admin'){const wrap=document.getElementById('btnVoltarAdminWrapper');if(wrap)wrap.style.display='block';}
+        fecharSenhaModal();atualizarSaudacao();mudarViewLayerGlobal(papelLogado==='admin'?'viewAdmin':'viewEstoque');
+        if(papelLogado==='admin')renderizarTabelaAcessosAdmin();
+    }else{document.getElementById('erroSenha').style.display='block';}
+}
+
+const iSenha=document.getElementById('inputSenha');if(iSenha)iSenha.addEventListener('keypress',e=>{if(e.key==='Enter')confirmarLogin();});
+function fazerLogout(){localStorage.removeItem('hubVoltUser');localStorage.removeItem('hubVoltRole');location.reload();}
+function atualizarSaudacao(){const hora=new Date().getHours();let texto="Boa noite";if(hora>=5&&hora<12)texto="Bom dia";else if(hora>=12&&hora<18)texto="Boa tarde";const saud=document.getElementById('saudacaoAdmin');if(saud)saud.innerHTML=`${texto}, <span>${usuarioLogado||'Usuário'}</span>`;}
+
+// ==========================================
+// RH: PONTO ELETRÔNICO (NOVO)
+// ==========================================
+function atualizarRelogioPonto() {
+    const elHora = document.getElementById('relogioHoraDigital'); const elData = document.getElementById('relogioDataCompleta');
+    if(!elHora || !elData) return;
+    const d = new Date();
+    const horaStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0');
+    const dias = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB']; const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+    const dataStr = `${dias[d.getDay()]}, ${String(d.getDate()).padStart(2, '0')} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+    elHora.innerText = horaStr; elData.innerText = dataStr;
+}
+
+function abrirModuloBaterPonto() { navegarEstoque('opBaterPonto'); }
+
+async function registrarBatidaPonto(tipoBatida) {
+    if(!usuarioLogado) return alert("Usuário não identificado.");
+    const d = new Date();
+    const dataIso = d.toISOString().split('T')[0];
+    const horaExata = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    const docId = `${usuarioLogado}_${dataIso}`;
+    
+    try {
+        const docRef = db.collection("rh_ponto").doc(docId);
+        const docSnap = await docRef.get();
+        let payload = {};
+        
+        if (tipoBatida === 'Entrada') {
+            if(docSnap.exists && docSnap.data().horaEntrada) return alert("Você já registrou a Entrada hoje!");
+            payload = { nome: usuarioLogado, data: dataIso, horaEntrada: horaExata, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+        } else if (tipoBatida === 'Saida Almoco') {
+            payload = { horaSaidaAlmoco: horaExata };
+        } else if (tipoBatida === 'Retorno Almoco') {
+            payload = { horaRetornoAlmoco: horaExata };
+        } else if (tipoBatida === 'Saida') {
+            payload = { horaFim: horaExata };
+        }
+
+        await docRef.set(payload, { merge: true });
+        alert(`✅ Ponto registrado com sucesso: ${tipoBatida} às ${horaExata}`);
+        voltarAoDash();
+    } catch(e) { alert("Erro de conexão ao bater ponto."); }
+}
+
+function abrirModuloRelatorioPonto() { navegarAdmin('adminRelatorioPonto'); carregarRelatorioPontos(); }
+
+async function carregarRelatorioPontos() {
+    const dataFiltro = document.getElementById('filtroDataPonto').value;
+    const tbody = document.getElementById('tabelaRelatorioPonto');
+    if(!dataFiltro) return;
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #00aaff; padding: 30px;">Buscando registros na nuvem...</td></tr>';
+    
+    try {
+        const snap = await db.collection("rh_ponto").where("data", "==", dataFiltro).get();
+        tbody.innerHTML = ''; let contador = 0;
+        snap.forEach(doc => {
+            contador++; const p = doc.data();
+            const ent = p.horaEntrada || '--:--'; const sAlm = p.horaSaidaAlmoco || '--:--'; const rAlm = p.horaRetornoAlmoco || '--:--'; const fim = p.horaFim || '--:--';
+            
+            // Calculo Simples de Carga Horária se tiver entrada e saída
+            let cargaTexto = "Pendente";
+            if(p.horaEntrada && p.horaFim) {
+                let he = p.horaEntrada.split(':'); let hs = p.horaFim.split(':');
+                let minE = parseInt(he[0])*60 + parseInt(he[1]); let minS = parseInt(hs[0])*60 + parseInt(hs[1]);
+                let diff = minS - minE;
+                
+                // Desconto do almoço se bateu
+                if(p.horaSaidaAlmoco && p.horaRetornoAlmoco) {
+                    let hsa = p.horaSaidaAlmoco.split(':'); let hra = p.horaRetornoAlmoco.split(':');
+                    let minSA = parseInt(hsa[0])*60 + parseInt(hsa[1]); let minRA = parseInt(hra[0])*60 + parseInt(hra[1]);
+                    diff -= (minRA - minSA);
+                }
+                if(diff > 0) { let fh = Math.floor(diff/60); let fm = diff%60; cargaTexto = `${fh}h ${fm}m`; }
+            }
+
+            tbody.innerHTML += `<tr><td><strong style="color:white;">${p.nome}</strong></td><td><span class="badge-data">${p.data}</span></td><td style="color:var(--success-green); font-weight:bold;">${ent}</td><td style="color:var(--warning-yellow);">${sAlm}</td><td style="color:var(--warning-yellow);">${rAlm}</td><td style="color:var(--error-red); font-weight:bold;">${fim}</td><td style="color:#aaa;">${cargaTexto}</td></tr>`;
+        });
+        if(contador === 0) tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #888; padding: 30px;">Nenhum ponto registrado no dia ${dataFiltro}.</td></tr>`;
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--error-red); padding: 30px;">Erro ao buscar dados.</td></tr>'; }
+}
+
+function exportarPontosCSV() {
+    // Uma função simples para você poder extrair para Excel no futuro
+    alert("Função de exportação para Excel (CSV) pronta para ser ativada na próxima versão!");
 }
 
 // ==========================================
-// MURAL E DIÁRIO DE LIDERANÇA
+// AUDITORIA: CONTAGEM CEGA E DIVERGÊNCIAS
 // ==========================================
-async function salvarInfo(tipo){
-    const txt=document.getElementById(tipo==='mural'?'txtAvisos':'txtDiario').value.trim(); if(!txt)return;
-    try{await db.collection("informacoes").doc(tipo).set({texto:txt}); alert("Guardado!");}catch(e){}
+function abrirModuloFazerContagem() { 
+    document.getElementById('contagemEndereco').value = ''; document.getElementById('contagemProduto').value = ''; document.getElementById('contagemQtd').value = ''; 
+    navegarEstoque('opFazerContagem'); 
 }
-async function loadMural(){try{const m=await db.collection("informacoes").doc("mural").get();if(m.exists&&document.getElementById('txtAvisos'))document.getElementById('txtAvisos').value=m.data().texto;const d=await db.collection("informacoes").doc("diario").get();if(d.exists&&document.getElementById('txtDiario'))document.getElementById('txtDiario').value=d.data().texto;}catch(e){}}
+
+async function enviarContagemCega() {
+    const endereco = document.getElementById('contagemEndereco').value.trim().toUpperCase();
+    const bipProduto = document.getElementById('contagemProduto').value.trim();
+    const qtdFisica = parseInt(document.getElementById('contagemQtd').value);
+
+    if(!endereco || !bipProduto || isNaN(qtdFisica)) return alert("Preencha o Endereço, bipe o Produto e insira a Quantidade Física correta.");
+    
+    let prodInfo = catalogoCompleto.find(p => p.ean === bipProduto || p.sku.toUpperCase() === bipProduto.toUpperCase() || p.masterEan === bipProduto);
+    if(!prodInfo) return alert("Produto não reconhecido no catálogo.");
+
+    try {
+        const mapSnap = await db.collection("estoque_posicoes").where("endereco", "==", endereco).where("sku", "==", prodInfo.sku).get();
+        let qtdSistemaTotal = 0; let docsAfetados = [];
+        
+        mapSnap.forEach(m => { 
+            let d = m.data(); 
+            qtdSistemaTotal += d.quantidade; 
+            docsAfetados.push(m.id);
+        });
+
+        await db.collection("auditoria_contagens").add({
+            operador: usuarioLogado, endereco: endereco, sku: prodInfo.sku, 
+            qtdSistema: qtdSistemaTotal, qtdFisica: qtdFisica, 
+            divergencia: (qtdSistemaTotal !== qtdFisica),
+            data: new Date().toISOString(), status: (qtdSistemaTotal !== qtdFisica) ? 'pendente' : 'ok',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        if(qtdSistemaTotal === qtdFisica) {
+            alert(`✅ Contagem exata! O sistema já possuía ${qtdSistemaTotal} un.`);
+        } else {
+            alert(`⚠️ DIVERGÊNCIA! O sistema esperava ${qtdSistemaTotal} un. O desvio foi gravado para o Administrador analisar.`);
+        }
+        
+        document.getElementById('contagemProduto').value = ''; document.getElementById('contagemQtd').value = ''; document.getElementById('contagemProduto').focus();
+    } catch(e) { alert("Erro de conexão com a base de dados."); }
+}
+
+function abrirModuloDivergencias() { navegarAdmin('adminDivergencias'); carregarFilaDivergencias(); }
+
+async function carregarFilaDivergencias() {
+    const tbody = document.getElementById('tabelaFilaDivergencias'); tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--warning-yellow); padding: 30px;">Buscando furos de estoque na nuvem...</td></tr>';
+    try {
+        const snap = await db.collection("auditoria_contagens").where("status", "==", "pendente").get();
+        tbody.innerHTML = ''; let contador = 0;
+        
+        let audits = []; snap.forEach(doc => audits.push({id: doc.id, ...doc.data()}));
+        audits.sort((a,b) => { let tA = a.timestamp ? a.timestamp.toMillis() : 0; let tB = b.timestamp ? b.timestamp.toMillis() : 0; return tB - tA; });
+
+        audits.forEach(a => {
+            contador++;
+            let badgeDiff = a.qtdFisica > a.qtdSistema ? `<span style="color:var(--success-green); font-weight:bold;">(+${a.qtdFisica - a.qtdSistema})</span>` : `<span style="color:var(--error-red); font-weight:bold;">(${a.qtdFisica - a.qtdSistema})</span>`;
+            let d = new Date(a.data); let strData = d.toLocaleDateString('pt-BR') + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+            tbody.innerHTML += `<tr><td><strong style="color:white;">${a.operador}</strong><br><span style="font-size:10px;color:#888;">${strData}</span></td><td><span class="badge-endereco">${a.endereco}</span></td><td><strong style="color:white;">${a.sku}</strong></td><td style="color:#aaa;">${a.qtdSistema} un</td><td><strong style="color:var(--warning-yellow); font-size:16px;">${a.qtdFisica} un</strong> <br>${badgeDiff}</td><td style="text-align:right;"><button class="btn-outline-2" style="border-color:var(--volt-green); color:var(--volt-green); margin-right:5px;" onclick="ajustarDivergenciaAuditoria('${a.id}', '${a.endereco}', '${a.sku}', ${a.qtdSistema}, ${a.qtdFisica})">✔ Ajustar Saldo</button><button class="btn-outline-2" style="border-color:#555; color:#aaa;" onclick="recusarDivergencia('${a.id}')">✖ Recusar</button></td></tr>`;
+        });
+        if(contador === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888; padding: 30px;">O estoque está 100% acurado. Nenhuma divergência pendente.</td></tr>';
+    } catch(e) {}
+}
+
+async function recusarDivergencia(idReq) { if(confirm("Ignorar esta contagem do operador e manter o saldo atual do sistema?")) { await db.collection("auditoria_contagens").doc(idReq).update({ status: 'recusada' }); carregarFilaDivergencias(); } }
+
+async function ajustarDivergenciaAuditoria(idReq, endereco, sku, qtdSis, qtdFisica) {
+    if(!confirm(`Confirma o ajuste do saldo do sistema de ${qtdSis} para a contagem real de ${qtdFisica} unidades?`)) return;
+    try {
+        let prodInfo = catalogoCompleto.find(p => p.sku.toUpperCase() === sku.toUpperCase());
+        if(!prodInfo) return alert("Produto não encontrado no catálogo base.");
+
+        const diff = qtdFisica - qtdSis; 
+        const mapSnap = await db.collection("estoque_posicoes").where("endereco", "==", endereco).where("sku", "==", sku).get();
+        
+        if (diff > 0) {
+            if(!mapSnap.empty) {
+                let docAdd = mapSnap.docs[0];
+                await db.collection("estoque_posicoes").doc(docAdd.id).update({ quantidade: firebase.firestore.FieldValue.increment(diff) });
+            } else {
+                let newDocId = `${endereco}_AJUSTE_${prodInfo.ean}`;
+                await db.collection("estoque_posicoes").doc(newDocId).set({ endereco: endereco, lote: 'AJUSTE-AUDITORIA', ean: prodInfo.ean, sku: prodInfo.sku, quantidade: diff, caixas: 1, dataEntrada: new Date().toISOString().split('T')[0], familia: 'Outros', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            }
+        } else if (diff < 0) {
+            let falta = Math.abs(diff);
+            for(let m of mapSnap.docs) {
+                if(falta <= 0) break;
+                let data = m.data();
+                let abater = Math.min(falta, data.quantidade);
+                falta -= abater;
+                if(data.quantidade === abater) {
+                    await db.collection("estoque_posicoes").doc(m.id).delete();
+                } else {
+                    await db.collection("estoque_posicoes").doc(m.id).update({ quantidade: firebase.firestore.FieldValue.increment(-abater) });
+                }
+            }
+        }
+
+        await db.collection("auditoria_contagens").doc(idReq).update({ status: 'ajustada_admin' });
+        alert("✅ Estoque corrigido com sucesso e batendo com o físico!");
+        carregarFilaDivergencias();
+    } catch(e) { alert("Erro ao ajustar o banco de dados."); console.log(e); }
+}
+
+// ==========================================
+// CATÁLOGO E INBOUND (MANTIDOS E ENXUTOS)
+// ==========================================
+async function inicializarCatalogoMestre(){
+    try{
+        const snapshot=await db.collection("catalogo_produtos").get();
+        if(!snapshot.empty) {
+            catalogoCompleto = [];
+            snapshot.forEach(doc=>{catalogoCompleto.push(doc.data());});
+        }
+    }catch(e){}
+}
+
+async function abrirModuloCatalogo(){
+    navegarAdmin('adminCatalogo');
+    const tbody=document.getElementById('tabelaCatalogoConfig');tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--volt-green);padding:20px;">Buscando base...</td></tr>';
+    try{
+        const snapshot=await db.collection("catalogo_produtos").get();
+        tbody.innerHTML='';
+        if(snapshot.empty) {
+            tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#888;">Nenhum produto cadastrado.</td></tr>';
+            return;
+        }
+        snapshot.forEach(doc=>{
+            const p=doc.data();
+            tbody.innerHTML+=`<tr style="border-bottom:1px solid #222;"><td style="padding:10px 15px;"><strong style="color:white;font-size:14px;">${p.sku}</strong></td><td style="padding:10px 15px;color:#aaa;font-family:monospace;font-size:13px;">${p.eanUnitario}</td><td style="padding:10px 15px;"><span class="badge-data">${p.eanMaster||'N/D'}</span></td><td style="padding:10px 15px; text-align:center; color:var(--volt-green); font-weight:bold;">${p.qtdMaster||100}</td><td style="padding:10px 15px;text-align:right;"><button class="btn-outline-2" style="border-color:var(--error-red);color:var(--error-red);" onclick="deletarSKU('${p.eanUnitario}')">✖</button></td></tr>`;
+        });
+    }catch(e){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--error-red);padding:20px;">Erro.</td></tr>';}
+}
+
+async function salvarNovoSKUNuvem(){
+    const sku=document.getElementById('cadSkuNovo').value.trim().toUpperCase(); const eanUnitario=document.getElementById('cadEanNovo').value.trim(); const eanMaster=document.getElementById('cadMasterNovo').value.trim(); const qtdMaster=document.getElementById('cadQtdMasterNovo').value;
+    if(!sku||!eanUnitario)return alert("SKU e EAN Unitário são obrigatórios.");
+    try{
+        await db.collection("catalogo_produtos").doc(eanUnitario).set({sku:sku,eanUnitario:eanUnitario,eanMaster:eanMaster,qtdMaster:Number(qtdMaster)});
+        alert(`✅ Produto cadastrado com sucesso!`); document.getElementById('modalNovoSKU').style.display='none'; 
+        document.getElementById('cadSkuNovo').value=''; document.getElementById('cadEanNovo').value=''; document.getElementById('cadMasterNovo').value='';
+        await inicializarCatalogoMestre(); abrirModuloCatalogo();
+    }catch(e){}
+}
+
+async function deletarSKU(ean) {
+    if(confirm("Deseja realmente apagar este produto do catálogo?")) {
+        try { await db.collection("catalogo_produtos").doc(ean).delete(); abrirModuloCatalogo(); } catch(e) {}
+    }
+}
+
+function abrirModuloEnderecamento(){navegarAdmin('adminEnderecamento');carregarMapaEstoque('Admin');}
+function abrirModuloEnderecamentoEstoque(){navegarEstoque('estoqueEnderecamento');carregarMapaEstoque('Op');}
+async function carregarMapaEstoque(perfil){const tbody=document.getElementById(perfil==='Admin'?'tabelaMapaEstoque':'tabelaMapaEstoqueOp');tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--volt-green);padding:20px;">Buscando mapa do estoque...</td></tr>';try{const snapshot=await db.collection("estoque_posicoes").get();let itens=[];snapshot.forEach(doc=>{itens.push({id:doc.id,...doc.data()})});itens.sort((a,b)=>(a.endereco||'').localeCompare(b.endereco||''));tbody.innerHTML='';let contador=0;itens.forEach(item=>{if(item.quantidade>0){contador++;const dEnt=item.dataEntrada?new Date(item.dataEntrada).toLocaleDateString('pt-BR'):'-';tbody.innerHTML+=`<tr style="border-bottom:1px solid #222;"><td><span class="badge-endereco">${item.endereco}</span></td><td><strong>${item.sku}</strong></td><td><span class="badge-familia">${item.familia||'-'}</span></td><td><span class="badge-lote">${item.lote}</span><br><span style="font-size:10px;color:#888;">${dEnt}</span></td><td>${item.caixas} cx</td><td style="color:var(--volt-green);font-weight:bold;font-size:16px;">${item.quantidade}</td><td><button class="btn-outline-2" style="border-color:var(--blue-action);color:var(--blue-action);margin-right:5px;" onclick="abrirEdicaoInbound('${item.id}','${perfil}')">✏️</button><button class="btn-outline-2" style="border-color:var(--error-red);color:var(--error-red);" onclick="zerarPosicaoEstoque('${item.id}','${perfil}')">✖</button></td></tr>`;}});if(contador===0)tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#888;">Nenhum produto alocado nos endereços ainda.</td></tr>';}catch(e){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--error-red);">Erro ao carregar mapa.</td></tr>';}}
+
+async function guardarEstoqueNuvem(perfil='Admin'){
+    const fieldAddress=perfil==='Admin'?'inboundAddress':'inboundAddressEstoque';const fieldLot=perfil==='Admin'?'inboundLot':'inboundLotEstoque';const fieldProduct=perfil==='Admin'?'inboundProduct':'inboundProductEstoque';const fieldMultiplier=perfil==='Admin'?'inboundMultiplier':'inboundMultiplierEstoque';const fieldData=perfil==='Admin'?'inboundData':'inboundDataEstoque';const fieldFamilia=perfil==='Admin'?'inboundFamilia':'inboundFamiliaEstoque';
+    const endereco=document.getElementById(fieldAddress).value.trim().toUpperCase();const lote=document.getElementById(fieldLot).value.trim().toUpperCase();const eanBipado=document.getElementById(fieldProduct).value.trim();const mult=parseInt(document.getElementById(fieldMultiplier).value)||1;const dataEnt=document.getElementById(fieldData).value;const fam=document.getElementById(fieldFamilia).value;
+    if(!endereco||!lote||!eanBipado)return alert("Preencha Endereço, Lote e bipe o Produto.");
+    
+    let produtoEncontrado=null;let isMaster=false;
+    for(let prod of catalogoCompleto){if(prod.eanUnitario===eanBipado){produtoEncontrado=prod;isMaster=false;break;}if(prod.eanMaster&&prod.eanMaster===eanBipado){produtoEncontrado=prod;isMaster=true;break;}}
+    if(!produtoEncontrado){document.getElementById(fieldProduct).value='';return alert("Código não encontrado no Catálogo. Cadastre-o primeiro.");}
+    
+    const qtdAdicionar=(isMaster?produtoEncontrado.qtdMaster:1)*mult;const caixasAdicionar=(isMaster?1:0)*mult;
+    document.getElementById(fieldProduct).value='';document.getElementById(fieldProduct).focus();document.getElementById(fieldMultiplier).value='1';
+    
+    try{
+        const docId=`${endereco}_${lote}_${produtoEncontrado.eanUnitario}`;
+        const docRef=db.collection("estoque_posicoes").doc(docId);
+        const docSnap=await docRef.get();
+        if(docSnap.exists){
+            await docRef.update({quantidade:firebase.firestore.FieldValue.increment(qtdAdicionar),caixas:firebase.firestore.FieldValue.increment(caixasAdicionar),dataEntrada:dataEnt,familia:fam});
+        }else{
+            await docRef.set({endereco:endereco,lote:lote,ean:produtoEncontrado.eanUnitario,sku:produtoEncontrado.sku,quantidade:qtdAdicionar,caixas:caixasAdicionar,dataEntrada:dataEnt,familia:fam,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+        }
+        carregarMapaEstoque(perfil);
+    }catch(e){alert("Erro ao guardar estoque.");}
+}
+
+async function zerarPosicaoEstoque(id,perfil){if(confirm("Tem certeza que deseja apagar este saldo do mapa?")){await db.collection("estoque_posicoes").doc(id).delete();carregarMapaEstoque(perfil);}}
+async function abrirEdicaoInbound(id_doc,perfil){idEditLoteGlobal={id:id_doc,perfil:perfil};try{const doc=await db.collection("estoque_posicoes").doc(id_doc).get();const data=doc.data();document.getElementById('editInboundAddress').value=data.endereco;document.getElementById('editInboundLot').value=data.lote;document.getElementById('editInboundData').value=data.dataEntrada||'';document.getElementById('editInboundFamilia').value=data.familia||'Cabo';document.getElementById('modalEditarInbound').style.display='flex';}catch(e){alert("Erro ao carregar dados.");}}
+async function salvarEdicaoInboundNuvem(){const end=document.getElementById('editInboundAddress').value.toUpperCase();const lot=document.getElementById('editInboundLot').value.toUpperCase();const dat=document.getElementById('editInboundData').value;const fam=document.getElementById('editInboundFamilia').value;try{await db.collection("estoque_posicoes").doc(idEditLoteGlobal.id).update({endereco:end,lote:lot,dataEntrada:dat,familia:fam});alert("Dados corrigidos!");document.getElementById('modalEditarInbound').style.display='none';carregarMapaEstoque(idEditLoteGlobal.perfil);}catch(e){alert("Erro ao atualizar.");}}
+
+// ==========================================
+// ADMIN: DASHBOARD E ACESSOS
+// ==========================================
+async function abrirModuloResumoEstoque(){
+    navegarAdmin('adminResumoEstoque');
+    document.getElementById('resumoCx').innerText="...";document.getElementById('resumoUn').innerText="...";document.getElementById('resumoSkus').innerText="...";
+    try{
+        const snapshot=await db.collection("estoque_posicoes").get();let totalCx=0;let totalUn=0;let skusSet=new Set();let skuMap={};
+        snapshot.forEach(doc=>{const item=doc.data();if(item.quantidade>0){totalCx+=item.caixas;totalUn+=item.quantidade;skusSet.add(item.sku);if(!skuMap[item.sku])skuMap[item.sku]={sku:item.sku,qtd:0,locs:new Set()};skuMap[item.sku].qtd+=item.quantidade;skuMap[item.sku].locs.add(item.endereco);}});
+        document.getElementById('resumoCx').innerText=totalCx;document.getElementById('resumoUn').innerText=totalUn;document.getElementById('resumoSkus').innerText=skusSet.size;
+        
+        const containerCards=document.getElementById('cardsEstoqueDashboard');containerCards.innerHTML='';
+        let sortedSkusMap=Object.values(skuMap).sort((a,b)=>b.qtd-a.qtd);
+        sortedSkusMap.forEach(s=>{const locaisStr=Array.from(s.locs).join(', ');containerCards.innerHTML+=`<div class="hub-card hub-card-neutral" style="min-height:auto;padding:15px;"><h3 style="font-size:18px;color:var(--volt-green);margin-bottom:5px;">${s.sku}</h3><p style="font-size:14px;color:white;margin-bottom:5px;">Total: <strong>${s.qtd} un</strong></p><p style="font-size:11px;color:#888;margin:0;line-height:1.3;">Endereços: ${locaisStr}</p></div>`;});
+    }catch(e){}
+}
+
+function abrirModuloAcessos(){navegarAdmin('adminAcessos');renderizarTabelaAcessosAdmin();}
+function renderizarTabelaAcessosAdmin(){const tbody=document.getElementById('tabelaEquipeUsuarios');tbody.innerHTML='';for(let nome in bdUsuariosLogistica){const user=bdUsuariosLogistica[nome];const isAtivo=(user.status!=='inativo');tbody.innerHTML+=`<tr style="${!isAtivo?'opacity:.5;background:rgba(255,51,51,.05);':''}"><td><strong>${nome}</strong></td><td>${user.role.toUpperCase()}</td><td><span class="${isAtivo?'status-online':'status-offline'}">${isAtivo?'Ativo':'Desligado'}</span></td><td style="text-align:right;"><button class="btn-outline-2" style="border-color:${isAtivo?'var(--error-red)':'var(--success-green)'};color:${isAtivo?'var(--error-red)':'var(--success-green)'};" onclick="toggleStatusUsuarioNuvem('${nome}',${isAtivo})">${isAtivo?'Desligar':'Reativar'}</button></td></tr>`;}}
+async function toggleStatusUsuarioNuvem(nome,isAtivo){if(isAtivo&&!confirm(`Desativar o acesso de ${nome}?`))return;try{await db.collection("usuarios").doc(nome).update({status:isAtivo?'inativo':'ativo'});await carregarUsuariosDaNuvem();renderizarTabelaAcessosAdmin();}catch(error){}}
+async function salvarNovoUsuario(){const nome=document.getElementById('novoNome').value.trim();const role=document.getElementById('novoRole').value;const senha=document.getElementById('novoSenha').value.trim();if(!nome||!senha)return alert("Preencha Nome e Senha.");try{await db.collection("usuarios").doc(nome).set({role:role,senha:senha,status:'ativo'});alert(`✅ Perfil gerado!`);document.getElementById('modalNovoUsuario').style.display='none';await carregarUsuariosDaNuvem();renderizarTabelaAcessosAdmin();}catch(error){}}
 </script>
-</body>
-</html>
